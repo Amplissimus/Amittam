@@ -3,6 +3,7 @@ import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  print('test');
   runApp(MyApp());
 }
 
@@ -40,9 +41,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print(getPassword('password'));
+          print(getPassword('password').password);
         },
-        tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
     );
