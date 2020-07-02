@@ -25,7 +25,7 @@ class Password {
       _$PasswordFromJson(json);
 }
 
-Future<Password> generatePassword(String password) async {
+Future<Password> getPassword(String password) async {
   final cryptor = new PlatformStringCryptor();
   String encryptionKey = await cryptor.generateRandomKey();
   String encryptedPassword = await cryptor.encrypt(password, encryptionKey);

@@ -1,4 +1,5 @@
 import 'package:amittam/libs/lib.dart';
+import 'package:amittam/libs/uilib.dart';
 import 'package:amittam/values.dart';
 import 'package:flutter/material.dart';
 
@@ -29,25 +30,11 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    updateBrightness();
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        centerTitle: true,
-        title: Text(
-          'Amittam',
-          style: TextStyle(fontSize: 25),
-        ),
-      ),
+      appBar: customAppBar(title: 'Amittam'),
       body: Container(
         color: Colors.transparent,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          print(await generatePassword('moin'));
-        },
       ),
     );
   }
