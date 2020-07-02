@@ -1,40 +1,49 @@
-import 'package:amittam/libs/lib.dart';
-import 'package:amittam/libs/uilib.dart';
+import 'package:amittam/objects/password.dart';
 import 'package:amittam/values.dart';
 import 'package:flutter/material.dart';
 
-import 'objects/password.dart';
-
 void main() {
-  runApp(MainApp());
+  runApp(MyApp());
 }
 
-class MainApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MainPage(),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MainPage extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+  final String title;
+
   @override
-  MainPageState createState() => MainPageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class MainPageState extends State<MainPage> {
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
-      appBar: customAppBar(title: 'Amittam'),
-      body: Container(
-        color: Colors.transparent,
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          print(await getPassword('password'));
+        },
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
       ),
     );
   }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 import 'package:json_serializable/builder.dart';
 import 'package:json_serializable/json_serializable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:encrypt/encrypt.dart' as crypt;
 
 part 'password.g.dart';
 
@@ -15,6 +15,10 @@ class Password {
   String encryptionKey = '';
   String encryptedPassword = '';
 
+  String get password =>
+      crypt.Encrypter(crypt.AES(crypt.Key.fromBase64(encryptionKey)))
+          .decrypt(crypt.Encrypted.fromBase64(encryptedPassword));
+
   @override
   String toString() {
     return 'encryptionKey: $encryptionKey, encryptedPassword: $encryptedPassword';
@@ -26,9 +30,10 @@ class Password {
 }
 
 Future<Password> getPassword(String password) async {
-  final cryptor = new PlatformStringCryptor();
-  String encryptionKey = await cryptor.generateRandomKey();
-  String encryptedPassword = await cryptor.encrypt(password, encryptionKey);
+  var key = crypt.Key.fromSecureRandom(32);
+  String encryptionKey = key.base64;
+  String encryptedPassword =
+      crypt.Encrypter(crypt.AES(key)).encrypt(password).base64;
   return Password(
       encryptionKey: encryptionKey, encryptedPassword: encryptedPassword);
 }
