@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as crypt;
 
-part 'password.g.dart';
-
 class Password {
-  Password({
-    @required this.encryptionKey,
-    @required this.encryptedPassword,
-  });
+  Password(String password) {
+    var key = crypt.Key.fromSecureRandom(32);
+    crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(key));
+    this.encryptionKey = key.base64;
+    this.encryptedPassword =
+        crypter.encrypt(password, iv: crypt.IV.fromLength(16)).base64;
+  }
   String encryptionKey = '';
   String encryptedPassword = '';
 
@@ -41,14 +42,4 @@ class Password {
   String toJson() {
     return json.encode(toMap());
   }
-}
-
-Password getPassword(String password) {
-  var key = crypt.Key.fromSecureRandom(32);
-  var iv = crypt.IV.fromLength(16);
-  crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(key));
-  String encryptionKey = key.base64;
-  String encryptedPassword = crypter.encrypt(password, iv: iv).base64;
-  return Password(
-      encryptionKey: encryptionKey, encryptedPassword: encryptedPassword);
 }

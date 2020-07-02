@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print(getPassword('password').password);
+          print(Password('password').password);
         },
         child: Icon(Icons.add),
       ),
