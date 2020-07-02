@@ -1,5 +1,5 @@
-import 'package:amittam/objects/password.dart';
-import 'package:amittam/values.dart';
+import 'package:Amittam/objects/password.dart';
+import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -39,8 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          print(await getPassword('password'));
+        onPressed: () {
+          print(getPassword('password'));
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),

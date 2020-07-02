@@ -29,7 +29,7 @@ class Password {
       _$PasswordFromJson(json);
 }
 
-Future<Password> getPassword(String password) async {
+Password getPassword(String password) {
   var key = crypt.Key.fromSecureRandom(32);
   String encryptionKey = key.base64;
   String encryptedPassword =
