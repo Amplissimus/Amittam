@@ -2,6 +2,8 @@ import 'package:amittam/libs/lib.dart';
 import 'package:amittam/values.dart';
 import 'package:flutter/material.dart';
 
+import 'objects/password.dart';
+
 void main() {
   runApp(MainApp());
 }
@@ -41,6 +43,11 @@ class MainPageState extends State<MainPage> {
       ),
       body: Container(
         color: Colors.transparent,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          print(await generatePassword('moin'));
+        },
       ),
     );
   }
