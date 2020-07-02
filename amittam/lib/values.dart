@@ -13,10 +13,18 @@ class CustomColors {
     if (darkMode) {
       colorBackground = Colors.black;
       colorForeground = Colors.white;
+      lightBackground = Color.fromRGBO(45, 45, 45, 1);
+      lightForeground = Color.fromRGBO(220, 220, 220, 1);
     } else {
       colorForeground = Colors.black;
       colorBackground = Colors.white;
+      lightBackground = Color.fromRGBO(220, 220, 220, 1);
+      lightForeground = Color.fromRGBO(45, 45, 45, 1);
     }
     isDarkMode = darkMode;
   }
+}
+
+class Strings {
+  static String get appTitle => 'Amittam';
 }
