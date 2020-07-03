@@ -8,3 +8,8 @@ void updateBrightness() {
   bool isDarkMode = brightness == Brightness.dark;
   CustomColors.setMode(darkMode: isDarkMode);
 }
+
+String errorString(dynamic e) {
+  if (e is Error) return '$e\n${e.stackTrace}';
+  return e.toString();
+}

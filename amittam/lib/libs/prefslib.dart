@@ -1,14 +1,42 @@
+import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/objects/password.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:encrypt/encrypt.dart' as crypt;
 
 class Prefs {
   static SharedPreferences preferences;
-  Future<void> initializePrefs() async {
+
+  static Future<void> initialize() async {
     preferences = await SharedPreferences.getInstance();
   }
 
   static set firstLogin(bool b) => preferences.setBool('key', b);
   static bool get firstLogin => getBool('first_login', true);
+
+  String getDecryptedMasterPassword(String password) {
+    String encryptedPassword =
+        preferences.getString('encrypted_master_password');
+    if (encryptedPassword == null) return null;
+    String decryptedPassword = '';
+    try {
+      var key = crypt.Key.fromUtf8(password);
+      crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(key));
+      decryptedPassword = crypter.decrypt(
+          crypt.Encrypted.fromBase64(encryptedPassword),
+          iv: crypt.IV.fromLength(16));
+      return decryptedPassword;
+    } catch (e) {
+      return errorString(e);
+    }
+  }
+
+  void setMasterPassword(String password) {
+    var key = crypt.Key.fromUtf8(password);
+    crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(key));
+    String encryptedPassowrd =
+        crypter.encrypt(password, iv: crypt.IV.fromLength(16)).base64;
+    preferences.setString('encrypted_master_password', encryptedPassowrd);
+  }
 
   static List<Password> getPasswords() {
     List<Password> tempPasswords = [];

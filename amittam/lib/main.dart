@@ -1,6 +1,8 @@
 import 'package:Amittam/libs/lib.dart';
+import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
 import 'package:Amittam/objects/password.dart';
+import 'package:Amittam/screens/first_login.dart';
 import 'package:Amittam/values.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +29,12 @@ class SplashScreenPageState extends State<SplashScreenPage> {
   void initState() {
     updateBrightness();
     super.initState();
-    Future.delayed(Duration(milliseconds: 1500), () {
+    Future.delayed(Duration(milliseconds: 1500), () async {
+      await Prefs.initialize();
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => MainApp(),
+            builder: (context) => Prefs.firstLogin ? FirstLogin() : MainApp(),
           ));
     });
   }
