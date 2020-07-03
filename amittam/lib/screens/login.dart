@@ -1,28 +1,29 @@
+import 'dart:math';
+
 import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
-import 'package:Amittam/main.dart';
 import 'package:Amittam/values.dart';
+import 'package:Amittam/main.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
 
-import 'package:encrypt/encrypt.dart' as crypt;
-
-class FirstLogin extends StatelessWidget {
+class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     updateBrightness();
-    return MaterialApp(home: FirstLoginPage());
+    return MaterialApp(home: LoginPage());
   }
 }
 
-class FirstLoginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => FirstLoginPageState();
+  State<StatefulWidget> createState() => LoginPageState();
 }
 
-class FirstLoginPageState extends State<FirstLoginPage> {
+class LoginPageState extends State<LoginPage> {
   Color passwordStrengthColor = Colors.grey;
   GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
   TextEditingController masterPWTextFieldController = TextEditingController();
@@ -65,34 +66,23 @@ class FirstLoginPageState extends State<FirstLoginPage> {
                   errorText: masterPWTextFieldErrorString,
                   controller: masterPWTextFieldController,
                   key: masterPWTextFieldKey,
-                  hint: 'Set Masterpassword',
-                  onChanged: (textFieldText) {
+                  hint: 'Enter Masterpassword',
+                  onChanged: (value) {
                     setState(() => masterPWTextFieldErrorString = null);
-                    String value = textFieldText.trim();
-                    if (textFieldText.contains(' '))
-                      masterPWTextFieldController.text = value;
-
-                    double strength = estimatePasswordStrength(value);
-
-                    if (strength < 0.3)
-                      setState(() => passwordStrengthColor = Colors.grey);
-                    else if (strength < 0.7)
-                      setState(() => passwordStrengthColor = Colors.orange);
-                    else
-                      setState(() => passwordStrengthColor = Colors.green);
+                    String text = masterPWTextFieldController.text.trim();
+                    if (estimatePasswordStrength(text) < 0.3) {
+                      return;
+                    } else if (Prefs.masterPasswordIsValid(text)) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MainApp(),
+                        ),
+                      );
+                    }
                   },
                 ),
-                Padding(padding: EdgeInsets.all(8)),
-                AnimatedContainer(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: passwordStrengthColor,
-                    border: Border(),
-                  ),
-                  height: 10,
-                  duration: Duration(milliseconds: 250),
-                ),
-                Padding(padding: EdgeInsets.all(48)),
+                Padding(padding: EdgeInsets.all(64)),
               ],
             ),
           ),
@@ -106,31 +96,22 @@ class FirstLoginPageState extends State<FirstLoginPage> {
         },
       ),
       floatingActionButton: extendedFab(
-        label: Text('Set Password'),
         onPressed: () {
-          double strength =
-              estimatePasswordStrength(masterPWTextFieldController.text.trim());
-          if (strength < 0.3) {
-            setState(() =>
-                masterPWTextFieldErrorString = 'Password not strong enough!');
-            return;
-          }
-          try {
-            Prefs.setMasterPassword(masterPWTextFieldController.text.trim());
-          } catch (e) {
-            print(errorString(e));
-            print('something failed');
-            return;
-          }
-          Prefs.firstLogin = false;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainApp(),
-            ),
-          );
+          String text = masterPWTextFieldController.text.trim();
+          if (estimatePasswordStrength(text) < 0.3)
+            setState(() => masterPWTextFieldErrorString = 'Impossible input!');
+          else if (!Prefs.masterPasswordIsValid(text))
+            setState(() => masterPWTextFieldErrorString = 'Invalid input!');
+          else
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MainApp(),
+              ),
+            );
         },
-        icon: Icon(MdiIcons.formTextboxPassword),
+        icon: Icon(MdiIcons.login),
+        label: Text('Log in'),
       ),
     );
   }

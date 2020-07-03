@@ -1,5 +1,6 @@
 import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/objects/password.dart';
+import 'package:Amittam/values.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:encrypt/encrypt.dart' as crypt;
 
@@ -12,24 +13,6 @@ class Prefs {
 
   static set firstLogin(bool b) => preferences.setBool('first_login', b);
   static bool get firstLogin => getBool('first_login', true);
-
-  static String getDecryptedMasterPassword(String password) {
-    String encryptedPassword =
-        preferences.getString('encrypted_master_password');
-    if (encryptedPassword == null) return null;
-    String decryptedPassword = '';
-    try {
-      Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(password));
-      crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
-      decryptedPassword = crypter.decrypt(
-          crypt.Encrypted.fromBase64(encryptedPassword),
-          iv: crypt.IV.fromLength(16));
-      print('decryptedPassword: $decryptedPassword');
-      return decryptedPassword;
-    } catch (e) {
-      return errorString(e);
-    }
-  }
 
   static void setMasterPassword(String password) {
     Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(password));
@@ -53,17 +36,18 @@ class Prefs {
                   iv: crypt.IV.fromLength(16))
               .trim() !=
           'validationTest') return false;
-      print('master password is valid');
+      print('Entered Masterpassword is valid!');
+      Values.masterPassword = password;
       return true;
     } catch (e) {
-      print(errorString(e));
+      print('Entered Masterpassword is not valid!');
       return false;
     }
   }
 
   static List<Password> getPasswords() {
     List<Password> tempPasswords = [];
-    List<String> tempStringList = getStringList('key', []);
+    List<String> tempStringList = getStringList('passwords', []);
     for (String tempString in tempStringList) {
       tempPasswords.add(Password.fromJson(tempString));
     }
@@ -75,7 +59,8 @@ class Prefs {
     for (Password password in passwords) {
       tempStringList.add(password.toJson());
     }
-    preferences.setStringList('key', tempStringList);
+    preferences.setStringList('passwords', tempStringList);
+    Values.passwords = passwords;
   }
 
   static getBool(String key, bool standardValue) {

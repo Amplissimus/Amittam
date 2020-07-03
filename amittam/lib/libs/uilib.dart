@@ -24,7 +24,7 @@ Widget customTextFormField({
   TextEditingController controller,
   String errorText,
   void Function(String) onChanged,
-  bool enableInteractiveSelection,
+  bool enableInteractiveSelection = true,
   Widget suffixIcon,
   bool obscureText = false,
 }) {
@@ -92,4 +92,11 @@ Widget switchWithText({
       activeColor: Colors.green,
     ),
   );
+}
+
+class MainBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+          BuildContext context, Widget child, AxisDirection axisDirection) =>
+      child;
 }

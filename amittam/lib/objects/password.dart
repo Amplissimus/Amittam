@@ -1,16 +1,22 @@
 import 'dart:convert';
 
+import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as crypt;
 
 class Password {
-  Password(String password) {
-    key = crypt.Key.fromUtf8(password);
+  Password(String password, {this.username, this.platform, this.notes}) {
+    if (Values.masterPassword == null || Values.masterPassword.isEmpty)
+      throw 'Masterpassword not defined! Password could not be initialized!';
+    key = crypt.Key.fromUtf8(expandStringTo32Characters(Values.masterPassword));
     crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(key));
     this.encryptedPassword =
         crypter.encrypt(password, iv: crypt.IV.fromLength(16)).base64;
   }
 
+  String platform;
+  String username;
+  String notes;
   String encryptedPassword = '';
 
   static var key;
@@ -25,7 +31,10 @@ class Password {
   }
 
   Password.fromMap(Map<String, dynamic> json)
-      : encryptedPassword = json['encryptedPassword'];
+      : platform = json['platform'],
+        username = json['username'],
+        notes = json['notes'],
+        encryptedPassword = json['encryptedPassword'];
 
   factory Password.fromJson(String jsonString) {
     return Password.fromMap(json.decode(jsonString));
@@ -33,6 +42,9 @@ class Password {
 
   Map toMap() {
     return {
+      'platform': this.platform,
+      'username': this.username,
+      'notes': this.notes,
       'encryptedPassword': this.encryptedPassword,
     };
   }
@@ -50,6 +62,5 @@ String expandStringTo32Characters(String string) {
     tempString = '$tempString${string.substring(i)}';
     if (i >= string.length - 1) i = 0;
   }
-  print(tempString.replaceRange(31, tempString.length - 1, ''));
   return tempString.replaceRange(31, tempString.length - 1, '');
 }

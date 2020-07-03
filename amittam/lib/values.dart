@@ -1,3 +1,4 @@
+import 'package:Amittam/objects/password.dart';
 import 'package:flutter/material.dart';
 
 class CustomColors {
@@ -29,4 +30,7 @@ class Strings {
   static String get appTitle => 'Amittam';
 }
 
-class Values {}
+class Values {
+  static String masterPassword;
+  static List<Password> passwords = [];
+}

@@ -2,7 +2,9 @@ import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
 import 'package:Amittam/objects/password.dart';
+import 'package:Amittam/screens/add_password.dart';
 import 'package:Amittam/screens/first_login.dart';
+import 'package:Amittam/screens/login.dart';
 import 'package:Amittam/values.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
@@ -31,10 +33,15 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
+      Values.passwords = Prefs.getPasswords();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Prefs.firstLogin ? FirstLogin() : MainApp(),
+          builder: (context) => (Prefs.firstLogin ||
+                  Prefs.preferences.getString('encrypted_master_password') ==
+                      null)
+              ? FirstLogin()
+              : Login(),
         ),
       );
     });
@@ -70,6 +77,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     updateBrightness();
     return MaterialApp(
+      builder: (context, child) {
+        return ScrollConfiguration(behavior: MainBehavior(), child: child);
+      },
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -93,10 +103,28 @@ class MainPageState extends State<MainPage> {
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
       appBar: customAppBar(title: Strings.appTitle),
-      body: Center(),
+      body: Center(
+        child: ListView.separated(
+          itemBuilder: (context, index) {
+            Password password = Values.passwords[index];
+            return ListTile(
+              title: Text(password.platform),
+              subtitle: Text(password.username),
+            );
+          },
+          separatorBuilder: (context, index) =>
+              Divider(color: CustomColors.colorForeground),
+          itemCount: Values.passwords.length,
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print(Password('password').password);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddPassword(),
+            ),
+          );
         },
         child: Icon(Icons.add),
       ),
