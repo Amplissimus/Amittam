@@ -10,7 +10,7 @@ class Prefs {
     preferences = await SharedPreferences.getInstance();
   }
 
-  static set firstLogin(bool b) => preferences.setBool('key', b);
+  static set firstLogin(bool b) => preferences.setBool('first_login', b);
   static bool get firstLogin => getBool('first_login', true);
 
   static String getDecryptedMasterPassword(String password) {
@@ -44,16 +44,19 @@ class Prefs {
 
   static bool masterPasswordIsValid(String password) {
     try {
-      Password.key = crypt.Key.fromUtf8(password);
+      Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(password));
       crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
       String encryptedValidationTest =
           preferences.getString('encryption_master_pw_validation_test');
       if (crypter
-              .decrypt(crypt.Encrypted.fromBase64(encryptedValidationTest))
+              .decrypt(crypt.Encrypted.fromBase64(encryptedValidationTest),
+                  iv: crypt.IV.fromLength(16))
               .trim() !=
           'validationTest') return false;
+      print('master password is valid');
       return true;
     } catch (e) {
+      print(errorString(e));
       return false;
     }
   }

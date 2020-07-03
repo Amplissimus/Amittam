@@ -27,6 +27,8 @@ class FirstLoginPageState extends State<FirstLoginPage> {
   GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
   TextEditingController masterPWTextFieldController = TextEditingController();
   String masterPWTextFieldErrorString;
+  bool masterPWTextFieldInputHidden = true;
+  bool allowFingerprint = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,22 @@ class FirstLoginPageState extends State<FirstLoginPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 customTextFormField(
+                  suffixIcon: IconButton(
+                    splashColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    icon: masterPWTextFieldInputHidden
+                        ? Icon(Icons.visibility,
+                            color: CustomColors.colorForeground)
+                        : Icon(Icons.visibility_off,
+                            color: CustomColors.colorForeground),
+                    onPressed: () => setState(() =>
+                        masterPWTextFieldInputHidden =
+                            !masterPWTextFieldInputHidden),
+                  ),
+                  obscureText: masterPWTextFieldInputHidden,
+                  enableInteractiveSelection: false,
                   textinputType: TextInputType.visiblePassword,
                   errorText: masterPWTextFieldErrorString,
                   controller: masterPWTextFieldController,
@@ -52,6 +70,8 @@ class FirstLoginPageState extends State<FirstLoginPage> {
                   onChanged: (textFieldText) {
                     setState(() => masterPWTextFieldErrorString = null);
                     String value = textFieldText.trim();
+                    if (textFieldText.contains(' '))
+                      masterPWTextFieldController.text = value;
 
                     double strength = estimatePasswordStrength(value);
 
@@ -72,7 +92,8 @@ class FirstLoginPageState extends State<FirstLoginPage> {
                   ),
                   height: 10,
                   duration: Duration(milliseconds: 250),
-                )
+                ),
+                Padding(padding: EdgeInsets.all(48)),
               ],
             ),
           ),
@@ -102,6 +123,13 @@ class FirstLoginPageState extends State<FirstLoginPage> {
             print('something failed');
             return;
           }
+          Prefs.firstLogin = false;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainApp(),
+            ),
+          );
         },
         icon: Icon(MdiIcons.formTextboxPassword),
       ),

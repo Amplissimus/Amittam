@@ -31,12 +31,12 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
-      await Prefs.preferences.clear();
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Prefs.firstLogin ? FirstLogin() : MainApp(),
-          ));
+        context,
+        MaterialPageRoute(
+          builder: (context) => Prefs.firstLogin ? FirstLogin() : MainApp(),
+        ),
+      );
     });
   }
 

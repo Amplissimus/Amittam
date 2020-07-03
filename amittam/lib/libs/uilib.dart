@@ -24,8 +24,13 @@ Widget customTextFormField({
   TextEditingController controller,
   String errorText,
   void Function(String) onChanged,
+  bool enableInteractiveSelection,
+  Widget suffixIcon,
+  bool obscureText = false,
 }) {
   return TextFormField(
+    obscureText: obscureText,
+    enableInteractiveSelection: enableInteractiveSelection,
     onChanged: onChanged,
     cursorColor: CustomColors.colorForeground,
     controller: controller,
@@ -33,6 +38,7 @@ Widget customTextFormField({
     keyboardType: textinputType,
     style: TextStyle(color: CustomColors.colorForeground),
     decoration: InputDecoration(
+      suffixIcon: suffixIcon,
       errorText: errorText,
       labelText: hint,
       fillColor: CustomColors.colorForeground,
@@ -68,5 +74,22 @@ Widget extendedFab({
     focusElevation: 0,
     splashColor: CustomColors.colorForeground,
     focusColor: Colors.transparent,
+  );
+}
+
+Widget switchWithText({
+  @required String text,
+  @required bool value,
+  void Function(bool) onChanged,
+}) {
+  return ListTile(
+    title: Text(text, style: TextStyle(color: CustomColors.colorForeground)),
+    trailing: Switch(
+      inactiveTrackColor: Colors.grey,
+      inactiveThumbColor: CustomColors.colorForeground,
+      value: value,
+      onChanged: onChanged,
+      activeColor: Colors.green,
+    ),
   );
 }

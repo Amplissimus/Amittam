@@ -28,3 +28,5 @@ class CustomColors {
 class Strings {
   static String get appTitle => 'Amittam';
 }
+
+class Values {}
