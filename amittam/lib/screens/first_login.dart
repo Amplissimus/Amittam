@@ -1,8 +1,13 @@
 import 'package:Amittam/libs/lib.dart';
+import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
+import 'package:Amittam/main.dart';
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:password_strength/password_strength.dart';
+
+import 'package:encrypt/encrypt.dart' as crypt;
 
 class FirstLogin extends StatelessWidget {
   @override
@@ -19,6 +24,10 @@ class FirstLoginPage extends StatefulWidget {
 
 class FirstLoginPageState extends State<FirstLoginPage> {
   Color passwordStrengthColor = Colors.grey;
+  GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
+  TextEditingController masterPWTextFieldController = TextEditingController();
+  String masterPWTextFieldErrorString;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,14 +44,20 @@ class FirstLoginPageState extends State<FirstLoginPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 customTextFormField(
+                  textinputType: TextInputType.visiblePassword,
+                  errorText: masterPWTextFieldErrorString,
+                  controller: masterPWTextFieldController,
+                  key: masterPWTextFieldKey,
                   hint: 'Set Masterpassword',
                   onChanged: (textFieldText) {
+                    setState(() => masterPWTextFieldErrorString = null);
                     String value = textFieldText.trim();
-                    if (value.length <= 5)
+
+                    double strength = estimatePasswordStrength(value);
+
+                    if (strength < 0.3)
                       setState(() => passwordStrengthColor = Colors.grey);
-                    else if (value.length >= 10)
-                      setState(() => passwordStrengthColor = Colors.green);
-                    else if (value.length > 5)
+                    else if (strength < 0.7)
                       setState(() => passwordStrengthColor = Colors.orange);
                     else
                       setState(() => passwordStrengthColor = Colors.green);
@@ -72,7 +87,22 @@ class FirstLoginPageState extends State<FirstLoginPage> {
       ),
       floatingActionButton: extendedFab(
         label: Text('Set Password'),
-        onPressed: () {},
+        onPressed: () {
+          double strength =
+              estimatePasswordStrength(masterPWTextFieldController.text.trim());
+          if (strength < 0.3) {
+            setState(() =>
+                masterPWTextFieldErrorString = 'Password not strong enough!');
+            return;
+          }
+          try {
+            Prefs.setMasterPassword(masterPWTextFieldController.text.trim());
+          } catch (e) {
+            print(errorString(e));
+            print('something failed');
+            return;
+          }
+        },
         icon: Icon(MdiIcons.formTextboxPassword),
       ),
     );

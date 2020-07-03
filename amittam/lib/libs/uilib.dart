@@ -22,6 +22,7 @@ Widget customTextFormField({
   TextInputType textinputType,
   GlobalKey<FormFieldState> key,
   TextEditingController controller,
+  String errorText,
   void Function(String) onChanged,
 }) {
   return TextFormField(
@@ -32,6 +33,7 @@ Widget customTextFormField({
     keyboardType: textinputType,
     style: TextStyle(color: CustomColors.colorForeground),
     decoration: InputDecoration(
+      errorText: errorText,
       labelText: hint,
       fillColor: CustomColors.colorForeground,
       labelStyle: TextStyle(color: CustomColors.colorForeground),

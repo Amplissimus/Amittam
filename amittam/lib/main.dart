@@ -31,6 +31,7 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
+      await Prefs.preferences.clear();
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

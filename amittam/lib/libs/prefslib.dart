@@ -13,29 +13,49 @@ class Prefs {
   static set firstLogin(bool b) => preferences.setBool('key', b);
   static bool get firstLogin => getBool('first_login', true);
 
-  String getDecryptedMasterPassword(String password) {
+  static String getDecryptedMasterPassword(String password) {
     String encryptedPassword =
         preferences.getString('encrypted_master_password');
     if (encryptedPassword == null) return null;
     String decryptedPassword = '';
     try {
-      var key = crypt.Key.fromUtf8(password);
-      crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(key));
+      Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(password));
+      crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
       decryptedPassword = crypter.decrypt(
           crypt.Encrypted.fromBase64(encryptedPassword),
           iv: crypt.IV.fromLength(16));
+      print('decryptedPassword: $decryptedPassword');
       return decryptedPassword;
     } catch (e) {
       return errorString(e);
     }
   }
 
-  void setMasterPassword(String password) {
-    var key = crypt.Key.fromUtf8(password);
-    crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(key));
-    String encryptedPassowrd =
+  static void setMasterPassword(String password) {
+    Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(password));
+    crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
+    String encryptedPassword =
         crypter.encrypt(password, iv: crypt.IV.fromLength(16)).base64;
-    preferences.setString('encrypted_master_password', encryptedPassowrd);
+    preferences.setString('encrypted_master_password', encryptedPassword);
+    preferences.setString('encryption_master_pw_validation_test',
+        crypter.encrypt('validationTest', iv: crypt.IV.fromLength(16)).base64);
+    print('encryptedPassword: $encryptedPassword');
+  }
+
+  static bool masterPasswordIsValid(String password) {
+    try {
+      Password.key = crypt.Key.fromUtf8(password);
+      crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
+      String encryptedValidationTest =
+          preferences.getString('encryption_master_pw_validation_test');
+      if (crypter
+              .decrypt(crypt.Encrypted.fromBase64(encryptedValidationTest))
+              .trim() !=
+          'validationTest') return false;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   static List<Password> getPasswords() {

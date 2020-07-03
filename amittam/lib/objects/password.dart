@@ -5,28 +5,27 @@ import 'package:encrypt/encrypt.dart' as crypt;
 
 class Password {
   Password(String password) {
-    var key = crypt.Key.fromSecureRandom(32);
+    key = crypt.Key.fromUtf8(password);
     crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(key));
-    this.encryptionKey = key.base64;
     this.encryptedPassword =
         crypter.encrypt(password, iv: crypt.IV.fromLength(16)).base64;
   }
-  String encryptionKey = '';
+
   String encryptedPassword = '';
 
-  String get password =>
-      crypt.Encrypter(crypt.AES(crypt.Key.fromBase64(encryptionKey))).decrypt(
-          crypt.Encrypted.fromBase64(encryptedPassword),
-          iv: crypt.IV.fromLength(16));
+  static var key;
+
+  String get password => crypt.Encrypter(crypt.AES(key)).decrypt(
+      crypt.Encrypted.fromBase64(encryptedPassword),
+      iv: crypt.IV.fromLength(16));
 
   @override
   String toString() {
-    return 'encryptionKey: $encryptionKey, encryptedPassword: $encryptedPassword';
+    return 'encryptedPassword: $encryptedPassword';
   }
 
   Password.fromMap(Map<String, dynamic> json)
-      : encryptionKey = json['encryptionKey'],
-        encryptedPassword = json['encryptedPassword'];
+      : encryptedPassword = json['encryptedPassword'];
 
   factory Password.fromJson(String jsonString) {
     return Password.fromMap(json.decode(jsonString));
@@ -34,7 +33,6 @@ class Password {
 
   Map toMap() {
     return {
-      'encryptionKey': this.encryptionKey,
       'encryptedPassword': this.encryptedPassword,
     };
   }
@@ -42,4 +40,16 @@ class Password {
   String toJson() {
     return json.encode(toMap());
   }
+}
+
+String expandStringTo32Characters(String string) {
+  String tempString = string;
+  int i = 0;
+  while (tempString.length < 32) {
+    i++;
+    tempString = '$tempString${string.substring(i)}';
+    if (i >= string.length - 1) i = 0;
+  }
+  print(tempString.replaceRange(31, tempString.length - 1, ''));
+  return tempString.replaceRange(31, tempString.length - 1, '');
 }
