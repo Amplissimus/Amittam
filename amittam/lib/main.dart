@@ -34,6 +34,7 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
       Values.passwords = Prefs.getPasswords();
+      print(Values.passwords.length);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -103,17 +104,28 @@ class MainPageState extends State<MainPage> {
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
       appBar: customAppBar(title: Strings.appTitle),
-      body: Center(
+      body: Container(
+        color: Colors.transparent,
+        margin: EdgeInsets.all(10),
         child: ListView.separated(
           itemBuilder: (context, index) {
             Password password = Values.passwords[index];
             return ListTile(
-              title: Text(password.platform),
-              subtitle: Text(password.username),
+              title: Text(
+                password.platform,
+                style: TextStyle(color: CustomColors.colorForeground),
+              ),
+              subtitle: Text(
+                password.username,
+                style: TextStyle(color: CustomColors.colorForeground),
+              ),
+              onTap: () {},
             );
           },
-          separatorBuilder: (context, index) =>
-              Divider(color: CustomColors.colorForeground),
+          separatorBuilder: (context, index) => Divider(
+            color: CustomColors.colorForeground,
+            thickness: 2,
+          ),
           itemCount: Values.passwords.length,
         ),
       ),

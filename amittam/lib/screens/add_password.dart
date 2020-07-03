@@ -9,6 +9,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:password_strength/password_strength.dart';
 
 class AddPassword extends StatelessWidget {
+  AddPassword({this.password});
+  Password password;
   @override
   Widget build(BuildContext context) {
     updateBrightness();
@@ -26,13 +28,15 @@ class AddPassword extends StatelessWidget {
         builder: (context, child) {
           return ScrollConfiguration(behavior: MainBehavior(), child: child);
         },
-        home: AddPasswordPage(),
+        home: AddPasswordPage(password),
       ),
     );
   }
 }
 
 class AddPasswordPage extends StatefulWidget {
+  AddPasswordPage(this.password);
+  final Password password;
   @override
   State<StatefulWidget> createState() => AddPasswordPageState();
 }
@@ -78,6 +82,7 @@ class AddPasswordPageState extends State<AddPasswordPage> {
                 ),
                 Padding(padding: EdgeInsets.all(8)),
                 customTextFormField(
+                  textinputType: TextInputType.emailAddress,
                   hint: 'Username',
                   key: usernameTextFieldKey,
                   controller: usernameTextFieldController,
@@ -163,6 +168,7 @@ class AddPasswordPageState extends State<AddPasswordPage> {
           );
           Values.passwords.add(password);
           Prefs.savePasswords(Values.passwords);
+          print(Values.passwords.length);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
