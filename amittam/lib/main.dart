@@ -8,6 +8,8 @@ import 'package:Amittam/screens/login.dart';
 import 'package:Amittam/values.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 void main() {
   runApp(SplashScreen());
@@ -82,6 +84,9 @@ class MainApp extends StatelessWidget {
         return ScrollConfiguration(behavior: MainBehavior(), child: child);
       },
       theme: ThemeData(
+        canvasColor: CustomColors.isDarkMode
+            ? materialColor(0xFFFFFFFF)
+            : materialColor(0xFF000000),
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
@@ -129,16 +134,26 @@ class MainPageState extends State<MainPage> {
           itemCount: Values.passwords.length,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddPassword(),
+      floatingActionButton: SpeedDial(
+        overlayOpacity: 0,
+        animatedIcon: AnimatedIcons.menu_close,
+        children: [
+          SpeedDialChild(
+            label: 'Add password',
+            child: Icon(Icons.add),
+            onTap: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddPassword(),
+              ),
             ),
-          );
-        },
-        child: Icon(Icons.add),
+          ),
+          SpeedDialChild(
+            label: 'Settings',
+            child: Icon(Icons.settings),
+            onTap: () => {},
+          ),
+        ],
       ),
     );
   }

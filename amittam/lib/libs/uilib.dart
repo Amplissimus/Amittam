@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 Widget customAppBar({
   @required String title,
   bool centerTitle = true,
+  List<Widget> actions,
   double fontSize = 25,
 }) {
   return AppBar(
+    actions: actions,
     elevation: 0,
     backgroundColor: Colors.transparent,
     centerTitle: centerTitle,
@@ -99,4 +101,20 @@ class MainBehavior extends ScrollBehavior {
   Widget buildViewportChrome(
           BuildContext context, Widget child, AxisDirection axisDirection) =>
       child;
+}
+
+MaterialColor materialColor(int code) {
+  Color c = Color(code);
+  return MaterialColor(code, {
+    50: c,
+    100: c,
+    200: c,
+    300: c,
+    400: c,
+    500: c,
+    600: c,
+    700: c,
+    800: c,
+    900: c
+  });
 }

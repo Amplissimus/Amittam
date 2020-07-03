@@ -13,3 +13,10 @@ String errorString(dynamic e) {
   if (e is Error) return '$e\n${e.stackTrace}';
   return e.toString();
 }
+
+class Choice {
+  const Choice({this.title, this.icon});
+
+  final String title;
+  final IconData icon;
+}
