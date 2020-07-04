@@ -9,8 +9,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:password_strength/password_strength.dart';
 
 class AddPassword extends StatelessWidget {
-  AddPassword({this.password});
-  Password password;
   @override
   Widget build(BuildContext context) {
     updateBrightness();
@@ -28,15 +26,13 @@ class AddPassword extends StatelessWidget {
         builder: (context, child) {
           return ScrollConfiguration(behavior: MainBehavior(), child: child);
         },
-        home: AddPasswordPage(password),
+        home: AddPasswordPage(),
       ),
     );
   }
 }
 
 class AddPasswordPage extends StatefulWidget {
-  AddPasswordPage(this.password);
-  final Password password;
   @override
   State<StatefulWidget> createState() => AddPasswordPageState();
 }
@@ -57,7 +53,7 @@ class AddPasswordPageState extends State<AddPasswordPage> {
   String notesTextFieldErrorString;
 
   Color passwordStrengthColor = Colors.grey;
-  bool masterPWTextFieldInputHidden = true;
+  bool passwordTextFieldInputHidden = true;
 
   @override
   Widget build(BuildContext context) {
@@ -95,16 +91,16 @@ class AddPasswordPageState extends State<AddPasswordPage> {
                     hoverColor: Colors.transparent,
                     focusColor: Colors.transparent,
                     highlightColor: Colors.transparent,
-                    icon: masterPWTextFieldInputHidden
+                    icon: passwordTextFieldInputHidden
                         ? Icon(Icons.visibility,
                             color: CustomColors.colorForeground)
                         : Icon(Icons.visibility_off,
                             color: CustomColors.colorForeground),
                     onPressed: () => setState(() =>
-                        masterPWTextFieldInputHidden =
-                            !masterPWTextFieldInputHidden),
+                        passwordTextFieldInputHidden =
+                            !passwordTextFieldInputHidden),
                   ),
-                  obscureText: masterPWTextFieldInputHidden,
+                  obscureText: passwordTextFieldInputHidden,
                   enableInteractiveSelection: false,
                   textinputType: TextInputType.visiblePassword,
                   errorText: passwordTextFieldErrorString,

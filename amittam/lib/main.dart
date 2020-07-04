@@ -36,7 +36,6 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
-      print(Values.passwords.length);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -128,7 +127,7 @@ class MainPageState extends State<MainPage> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DisplayPassword(),
+                    builder: (context) => DisplayPassword(password),
                   ),
                 );
               },

@@ -29,8 +29,10 @@ Widget customTextFormField({
   bool enableInteractiveSelection = true,
   Widget suffixIcon,
   bool obscureText = false,
+  FocusNode focusNode,
 }) {
   return TextFormField(
+    focusNode: focusNode,
     obscureText: obscureText,
     enableInteractiveSelection: enableInteractiveSelection,
     onChanged: onChanged,
@@ -103,7 +105,7 @@ Widget displayValueWidget({
   void Function() onTap,
 }) {
   TextStyle style =
-      TextStyle(color: CustomColors.colorForeground, fontSize: 24);
+      TextStyle(color: CustomColors.colorForeground, fontSize: 18);
   return Container(
     decoration: BoxDecoration(
       border: Border.all(color: CustomColors.colorForeground),
@@ -112,7 +114,7 @@ Widget displayValueWidget({
     child: InkWell(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.all(16),
+        margin: EdgeInsets.all(18),
         child: Text('$value ($valueType)', style: style),
       ),
     ),
