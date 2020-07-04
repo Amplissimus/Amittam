@@ -6,6 +6,7 @@ import 'package:Amittam/screens/add_password.dart';
 import 'package:Amittam/screens/display_password.dart';
 import 'package:Amittam/screens/first_login.dart';
 import 'package:Amittam/screens/login.dart';
+import 'package:Amittam/screens/settings.dart';
 import 'package:Amittam/values.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,7 @@ class MainApp extends StatelessWidget {
         canvasColor: CustomColors.isDarkMode
             ? materialColor(0xFFFFFFFF)
             : materialColor(0xFF000000),
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MainPage(title: 'Flutter Demo Home Page'),
@@ -157,7 +158,12 @@ class MainPageState extends State<MainPage> {
           SpeedDialChild(
             label: 'Settings',
             child: Icon(Icons.settings),
-            onTap: () => {},
+            onTap: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Settings(),
+              ),
+            ),
           ),
         ],
       ),

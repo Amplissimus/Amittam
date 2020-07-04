@@ -6,8 +6,10 @@ Widget customAppBar({
   bool centerTitle = true,
   List<Widget> actions,
   double fontSize = 25,
+  Widget leading,
 }) {
   return AppBar(
+    leading: leading,
     actions: actions,
     elevation: 0,
     backgroundColor: Colors.transparent,
@@ -117,7 +119,10 @@ Widget displayValueWidget({
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.all(18),
-        child: Text('$value ($valueType)', style: style),
+        child: Text(
+          value.toString().isEmpty ? '$valueType' : '$value ($valueType)',
+          style: style,
+        ),
       ),
     ),
   );

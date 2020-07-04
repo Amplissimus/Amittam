@@ -13,6 +13,8 @@ class Prefs {
 
   static set firstLogin(bool b) => preferences.setBool('first_login', b);
   static bool get firstLogin => getBool('first_login', true);
+  static set fastLogin(bool b) => preferences.setBool('fast_login', b);
+  static bool get fastLogin => getBool('fast_login', true);
 
   static void setMasterPassword(String password) {
     Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(password));

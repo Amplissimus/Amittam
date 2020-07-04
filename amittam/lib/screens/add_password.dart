@@ -59,7 +59,21 @@ class AddPasswordPageState extends State<AddPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
-      appBar: customAppBar(title: Strings.appTitle),
+      appBar: customAppBar(
+        title: Strings.appTitle,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainPage(),
+            ),
+          ),
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+      ),
       body: InkWell(
         child: Container(
           height: double.infinity,

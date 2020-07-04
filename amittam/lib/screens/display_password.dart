@@ -88,7 +88,21 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
-      appBar: customAppBar(title: 'Amittam'),
+      appBar: customAppBar(
+        title: 'Amittam',
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainPage(),
+            ),
+          ),
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+      ),
       body: InkWell(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -98,7 +112,7 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
           margin: EdgeInsets.all(16),
           child: ListView(
             children: [
-              Padding(padding: EdgeInsets.all(8)),
+              Padding(padding: EdgeInsets.all(2)),
               isEditingPlatform
                   ? customTextFormField(
                       hint: 'Platform',
