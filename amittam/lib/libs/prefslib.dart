@@ -48,6 +48,7 @@ class Prefs {
   static List<Password> getPasswords() {
     List<Password> tempPasswords = [];
     List<String> tempStringList = getStringList('passwords', []);
+    print(tempStringList);
     for (String tempString in tempStringList) {
       tempPasswords.add(Password.fromJson(tempString));
     }
@@ -59,6 +60,7 @@ class Prefs {
     for (Password password in passwords) {
       tempStringList.add(password.toJson());
     }
+    print(tempStringList);
     preferences.setStringList('passwords', tempStringList);
     Values.passwords = passwords;
   }
@@ -72,6 +74,6 @@ class Prefs {
   static List<String> getStringList(String key, List<String> standardValue) {
     List<String> tempStringList = preferences.getStringList(key);
     if (tempStringList == null) return standardValue;
-    return standardValue;
+    return tempStringList;
   }
 }

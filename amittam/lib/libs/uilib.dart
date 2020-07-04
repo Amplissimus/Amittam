@@ -96,6 +96,29 @@ Widget switchWithText({
   );
 }
 
+Widget displayValueWidget({
+  Object value = '',
+  String valueType = '',
+  bool editable = true,
+  void Function() onTap,
+}) {
+  TextStyle style =
+      TextStyle(color: CustomColors.colorForeground, fontSize: 24);
+  return Container(
+    decoration: BoxDecoration(
+      border: Border.all(color: CustomColors.colorForeground),
+      borderRadius: BorderRadius.circular(5),
+    ),
+    child: InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.all(16),
+        child: Text('$value ($valueType)', style: style),
+      ),
+    ),
+  );
+}
+
 class MainBehavior extends ScrollBehavior {
   @override
   Widget buildViewportChrome(

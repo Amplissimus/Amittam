@@ -3,6 +3,7 @@ import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
 import 'package:Amittam/objects/password.dart';
 import 'package:Amittam/screens/add_password.dart';
+import 'package:Amittam/screens/display_password.dart';
 import 'package:Amittam/screens/first_login.dart';
 import 'package:Amittam/screens/login.dart';
 import 'package:Amittam/values.dart';
@@ -35,7 +36,6 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
-      Values.passwords = Prefs.getPasswords();
       print(Values.passwords.length);
       Navigator.pushReplacement(
         context,
@@ -111,7 +111,7 @@ class MainPageState extends State<MainPage> {
       appBar: customAppBar(title: Strings.appTitle),
       body: Container(
         color: Colors.transparent,
-        margin: EdgeInsets.all(10),
+        margin: EdgeInsets.all(16),
         child: ListView.separated(
           itemBuilder: (context, index) {
             Password password = Values.passwords[index];
@@ -124,7 +124,14 @@ class MainPageState extends State<MainPage> {
                 password.username,
                 style: TextStyle(color: CustomColors.colorForeground),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DisplayPassword(),
+                  ),
+                );
+              },
             );
           },
           separatorBuilder: (context, index) => Divider(
