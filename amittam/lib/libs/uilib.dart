@@ -29,9 +29,11 @@ Widget customTextFormField({
   bool enableInteractiveSelection = true,
   Widget suffixIcon,
   bool obscureText = false,
+  bool autofocus = false,
   FocusNode focusNode,
 }) {
   return TextFormField(
+    autofocus: autofocus,
     focusNode: focusNode,
     obscureText: obscureText,
     enableInteractiveSelection: enableInteractiveSelection,

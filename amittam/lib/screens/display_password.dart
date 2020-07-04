@@ -51,10 +51,10 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
   TextEditingController notesTextFieldController =
       TextEditingController(text: DisplayPasswordValues.password.notes);
 
-  FocusNode platformTextFieldFocusNode;
-  FocusNode usernameTextFieldFocusNode;
-  FocusNode passwordTextFieldFocusNode;
-  FocusNode notesTextFieldFocusNode;
+  FocusNode platformTextFieldFocusNode = FocusNode();
+  FocusNode usernameTextFieldFocusNode = FocusNode();
+  FocusNode passwordTextFieldFocusNode = FocusNode();
+  FocusNode notesTextFieldFocusNode = FocusNode();
 
   String platformTextFieldErrorString;
   String usernameTextFieldErrorString;
@@ -95,6 +95,7 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
                       valueType: 'Platform',
                       onTap: () {
                         setState(() => isEditingPlatform = true);
+                        platformTextFieldFocusNode.requestFocus();
                       },
                     ),
               Padding(padding: EdgeInsets.all(8)),
@@ -111,6 +112,7 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
                       valueType: 'Username',
                       onTap: () {
                         setState(() => isEditingUsername = true);
+                        usernameTextFieldFocusNode.requestFocus();
                       },
                     ),
               Padding(padding: EdgeInsets.all(8)),
@@ -142,6 +144,7 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
                       valueType: 'Password',
                       onTap: () {
                         setState(() => isEditingPassword = true);
+                        passwordTextFieldFocusNode.requestFocus();
                       },
                     ),
               Padding(padding: EdgeInsets.all(8)),
@@ -158,6 +161,7 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
                       valueType: 'Notes',
                       onTap: () {
                         setState(() => isEditingNotes = true);
+                        notesTextFieldFocusNode.requestFocus();
                       },
                     ),
             ],
