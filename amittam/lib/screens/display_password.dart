@@ -1,9 +1,11 @@
 import 'package:Amittam/libs/lib.dart';
+import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
 import 'package:Amittam/objects/password.dart';
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 import 'package:Amittam/main.dart';
+import 'package:password_strength/password_strength.dart';
 
 class DisplayPassword extends StatelessWidget {
   DisplayPassword(Password password) {
@@ -67,6 +69,20 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
   bool isEditingNotes = false;
 
   bool passwordTextFieldInputHidden = false;
+  Color passwordStrengthColor = Colors.grey;
+
+  @override
+  void initState() {
+    String value = passwordTextFieldController.text.trim();
+    double strength = estimatePasswordStrength(value);
+    if (strength < 0.3)
+      setState(() => passwordStrengthColor = Colors.grey);
+    else if (strength < 0.7)
+      setState(() => passwordStrengthColor = Colors.orange);
+    else
+      setState(() => passwordStrengthColor = Colors.green);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +98,7 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
           margin: EdgeInsets.all(16),
           child: ListView(
             children: [
+              Padding(padding: EdgeInsets.all(8)),
               isEditingPlatform
                   ? customTextFormField(
                       hint: 'Platform',
@@ -89,6 +106,12 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
                       controller: platformTextFieldController,
                       errorText: platformTextFieldErrorString,
                       focusNode: platformTextFieldFocusNode,
+                      onChanged: (text) {
+                        setState(() => platformTextFieldErrorString = null);
+                        if (platformTextFieldController.text.trim().isEmpty)
+                          setState(() => platformTextFieldErrorString =
+                              'Field cannot be empty!');
+                      },
                     )
                   : displayValueWidget(
                       value: DisplayPasswordValues.password.platform,
@@ -102,10 +125,17 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
               isEditingUsername
                   ? customTextFormField(
                       hint: 'Username',
+                      textinputType: TextInputType.emailAddress,
                       key: usernameTextFieldKey,
                       controller: usernameTextFieldController,
                       errorText: usernameTextFieldErrorString,
                       focusNode: usernameTextFieldFocusNode,
+                      onChanged: (text) {
+                        setState(() => usernameTextFieldErrorString = null);
+                        if (usernameTextFieldController.text.isEmpty)
+                          setState(() => usernameTextFieldErrorString =
+                              'Field cannot be empty!');
+                      },
                     )
                   : displayValueWidget(
                       value: DisplayPasswordValues.password.username,
@@ -124,6 +154,21 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
                       errorText: passwordTextFieldErrorString,
                       obscureText: passwordTextFieldInputHidden,
                       focusNode: passwordTextFieldFocusNode,
+                      onChanged: (text) {
+                        setState(() => passwordTextFieldErrorString = null);
+                        if (passwordTextFieldController.text.isEmpty)
+                          setState(() => passwordTextFieldErrorString =
+                              'Field cannot be empty!');
+                        String value = passwordTextFieldController.text.trim();
+                        double strength = estimatePasswordStrength(value);
+
+                        if (strength < 0.3)
+                          setState(() => passwordStrengthColor = Colors.grey);
+                        else if (strength < 0.7)
+                          setState(() => passwordStrengthColor = Colors.orange);
+                        else
+                          setState(() => passwordStrengthColor = Colors.green);
+                      },
                       suffixIcon: IconButton(
                         splashColor: Colors.transparent,
                         hoverColor: Colors.transparent,
@@ -147,6 +192,22 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
                         passwordTextFieldFocusNode.requestFocus();
                       },
                     ),
+              isEditingPassword
+                  ? Column(
+                      children: <Widget>[
+                        Padding(padding: EdgeInsets.all(8)),
+                        AnimatedContainer(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: passwordStrengthColor,
+                            border: Border(),
+                          ),
+                          height: 10,
+                          duration: Duration(milliseconds: 250),
+                        ),
+                      ],
+                    )
+                  : Container(height: 0, width: 0),
               Padding(padding: EdgeInsets.all(8)),
               isEditingNotes
                   ? customTextFormField(
@@ -176,7 +237,29 @@ class DisplayPasswordPageState extends State<DisplayPasswordPage> {
               isEditingPlatform ||
               isEditingUsername)
           ? extendedFab(
-              onPressed: () {},
+              onPressed: () {
+                if (platformTextFieldController.text.trimRight().trimLeft().isEmpty ||
+                    usernameTextFieldController.text
+                        .trimRight()
+                        .trimLeft()
+                        .isEmpty ||
+                    passwordTextFieldController.text.isEmpty) return;
+                setState(() {
+                  DisplayPasswordValues.password.password =
+                      passwordTextFieldController.text;
+                  DisplayPasswordValues.password.platform =
+                      platformTextFieldController.text.trimRight().trimLeft();
+                  DisplayPasswordValues.password.notes =
+                      notesTextFieldController.text.trimRight().trimLeft();
+                  DisplayPasswordValues.password.username =
+                      usernameTextFieldController.text.trimRight().trimLeft();
+                  Prefs.savePasswords(Values.passwords);
+                  isEditingNotes = false;
+                  isEditingPassword = false;
+                  isEditingPlatform = false;
+                  isEditingUsername = false;
+                });
+              },
               label: Text('Save'),
               icon: Icon(Icons.save),
             )

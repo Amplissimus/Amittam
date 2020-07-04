@@ -19,6 +19,10 @@ class Password {
   String notes;
   String encryptedPassword = '';
 
+  set password(String s) => encryptedPassword = crypt.Encrypter(crypt.AES(key))
+      .encrypt(s, iv: crypt.IV.fromLength(16))
+      .base64;
+
   static var key;
 
   String get password => crypt.Encrypter(crypt.AES(key)).decrypt(
