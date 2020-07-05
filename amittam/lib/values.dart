@@ -31,6 +31,5 @@ class Strings {
 }
 
 class Values {
-  static String masterPassword;
   static List<Password> passwords = [];
 }

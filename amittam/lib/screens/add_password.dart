@@ -75,6 +75,7 @@ class AddPasswordPageState extends State<AddPasswordPage> {
         ),
       ),
       body: InkWell(
+        focusColor: Colors.transparent,
         child: Container(
           height: double.infinity,
           width: double.infinity,
@@ -115,12 +116,11 @@ class AddPasswordPageState extends State<AddPasswordPage> {
                             !passwordTextFieldInputHidden),
                   ),
                   obscureText: passwordTextFieldInputHidden,
-                  enableInteractiveSelection: false,
                   textinputType: TextInputType.visiblePassword,
                   errorText: passwordTextFieldErrorString,
                   controller: passwordTextFieldController,
                   key: passwordTextFieldKey,
-                  hint: 'Enter Password',
+                  hint: 'Password',
                   onChanged: (text) {
                     setState(() => passwordTextFieldErrorString = null);
                     String value = passwordTextFieldController.text.trim();
@@ -178,7 +178,6 @@ class AddPasswordPageState extends State<AddPasswordPage> {
           );
           Values.passwords.add(password);
           Prefs.savePasswords(Values.passwords);
-          print(Values.passwords.length);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

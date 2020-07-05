@@ -2,6 +2,7 @@ import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
 import 'package:Amittam/main.dart';
+import 'package:Amittam/objects/password.dart';
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

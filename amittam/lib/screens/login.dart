@@ -25,10 +25,19 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   Color passwordStrengthColor = Colors.grey;
-  GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
-  TextEditingController masterPWTextFieldController = TextEditingController();
+  GlobalKey<FormFieldState> masterPWTextFieldKey = new GlobalKey();
+  TextEditingController masterPWTextFieldController =
+      new TextEditingController();
+  FocusNode masterPwTextFieldFocusNode = FocusNode();
   String masterPWTextFieldErrorString;
   bool masterPWTextFieldInputHidden = true;
+
+  @override
+  void initState() {
+    masterPWTextFieldController.text = '';
+    super.initState();
+    masterPwTextFieldFocusNode.requestFocus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +55,7 @@ class LoginPageState extends State<LoginPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 customTextFormField(
+                  focusNode: masterPwTextFieldFocusNode,
                   suffixIcon: IconButton(
                     splashColor: Colors.transparent,
                     hoverColor: Colors.transparent,
@@ -69,6 +79,7 @@ class LoginPageState extends State<LoginPage> {
                   hint: 'Enter Masterpassword',
                   onChanged: (value) {
                     setState(() => masterPWTextFieldErrorString = null);
+                    if (!Prefs.fastLogin) return;
                     String text = masterPWTextFieldController.text.trim();
                     if (estimatePasswordStrength(text) < 0.3) {
                       return;

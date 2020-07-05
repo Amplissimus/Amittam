@@ -150,3 +150,17 @@ MaterialColor materialColor(int code) {
     900: c
   });
 }
+
+Widget standardDialog({
+  String title = '',
+  List<Widget> actions,
+  Widget content,
+}) {
+  return AlertDialog(
+    title: Text(title, style: TextStyle(color: CustomColors.colorForeground)),
+    content: content,
+    actions: actions,
+    backgroundColor: CustomColors.colorBackground,
+    elevation: 0,
+  );
+}

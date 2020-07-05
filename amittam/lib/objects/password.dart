@@ -5,39 +5,74 @@ import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as crypt;
 
 class Password {
-  Password(String password, {this.username, this.platform, this.notes}) {
-    if (Values.masterPassword == null || Values.masterPassword.isEmpty)
+  Password(
+    String password, {
+    @required String username,
+    @required String platform,
+    String notes = '',
+  }) {
+    if (key == null)
       throw 'Masterpassword not defined! Password could not be initialized!';
-    key = crypt.Key.fromUtf8(expandStringTo32Characters(Values.masterPassword));
-    crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(key));
-    this.encryptedPassword =
-        crypter.encrypt(password, iv: crypt.IV.fromLength(16)).base64;
+    this.password = password;
+    this.platform = platform;
+    this.notes = notes;
+    this.username = username;
   }
-
-  String platform;
-  String username;
-  String notes;
-  String encryptedPassword = '';
-
-  set password(String s) => encryptedPassword = crypt.Encrypter(crypt.AES(key))
-      .encrypt(s, iv: crypt.IV.fromLength(16))
-      .base64;
 
   static var key;
 
-  String get password => crypt.Encrypter(crypt.AES(key)).decrypt(
-      crypt.Encrypted.fromBase64(encryptedPassword),
-      iv: crypt.IV.fromLength(16));
+  static set masterPassword(String s) =>
+      key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
+
+  String encryptedPlatform = '';
+  String encryptedUsername = '';
+  String encryptedNotes = '';
+  String encryptedPassword = '';
+
+  set platform(String s) => encryptedPlatform = encryptWithMasterPWToBase64(s);
+  String get platform => decryptWithMasterPWFromBase64(encryptedPlatform);
+
+  set username(String s) => encryptedPlatform = encryptWithMasterPWToBase64(s);
+  String get username => decryptWithMasterPWFromBase64(encryptedUsername);
+
+  set notes(String s) => encryptedPlatform = encryptWithMasterPWToBase64(s);
+  String get notes => decryptWithMasterPWFromBase64(encryptedNotes);
+
+  set password(String s) => encryptedPassword = encryptWithMasterPWToBase64(s);
+  String get password => decryptWithMasterPWFromBase64(encryptedPassword);
+
+  String encryptWithMasterPWToBase64(Object obj) {
+    try {
+      return crypt.Encrypter(crypt.AES(key))
+          .encrypt(obj.toString(), iv: crypt.IV.fromLength(16))
+          .base64;
+    } catch (e) {
+      throw 'Incorrect data decryption behavior!';
+    }
+  }
+
+  String decryptWithMasterPWFromBase64(String encrypted) {
+    try {
+      return crypt.Encrypter(crypt.AES(key)).decrypt(
+          crypt.Encrypted.fromBase64(encrypted),
+          iv: crypt.IV.fromLength(16));
+    } catch (e) {
+      throw 'Incorrect Masterpassword or incorrect data decryption behavior!';
+    }
+  }
 
   @override
   String toString() {
-    return 'encryptedPassword: $encryptedPassword';
+    return 'encryptedPlatform: $encryptedPlatform, '
+        'encryptedUsername: $encryptedUsername, '
+        'encryptedPassword: $encryptedPassword, '
+        'encryptedNotes: $encryptedNotes';
   }
 
   Password.fromMap(Map<String, dynamic> json)
-      : platform = json['platform'],
-        username = json['username'],
-        notes = json['notes'],
+      : encryptedPlatform = json['encryptedPlatform'],
+        encryptedUsername = json['encryptedUsername'],
+        encryptedNotes = json['encryptedNotes'],
         encryptedPassword = json['encryptedPassword'];
 
   factory Password.fromJson(String jsonString) {
@@ -46,9 +81,9 @@ class Password {
 
   Map toMap() {
     return {
-      'platform': this.platform,
-      'username': this.username,
-      'notes': this.notes,
+      'encryptedPlatform': this.encryptedPlatform,
+      'encryptedUsername': this.encryptedUsername,
+      'encryptedNotes': this.encryptedNotes,
       'encryptedPassword': this.encryptedPassword,
     };
   }
