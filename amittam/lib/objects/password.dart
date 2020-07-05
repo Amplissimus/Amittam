@@ -97,6 +97,17 @@ class Password {
   String toJson() {
     return json.encode(toMap());
   }
+
+  static String exportPasswordsToEncryptedString(List<Password> passwords) {
+    List<String> tempStringList = [];
+    print(passwords);
+    for (Password password in passwords) {
+      tempStringList.add(password.toJson());
+    }
+    String jsonDecrypted = jsonEncode(tempStringList);
+    crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
+    return crypter.encrypt(jsonDecrypted, iv: crypt.IV.fromLength(16)).base64;
+  }
 }
 
 String expandStringTo32Characters(String string) {
