@@ -166,24 +166,37 @@ class AddPasswordPageState extends State<AddPasswordPage> {
       ),
       floatingActionButton: extendedFab(
         onPressed: () {
+          bool processWillCancel = false;
           if (passwordTextFieldController.text.trim().isEmpty) {
             setState(
                 () => passwordTextFieldErrorString = 'Field cannot be empty!');
+            processWillCancel = true;
           }
+          if (usernameTextFieldController.text.trim().isEmpty) {
+            setState(
+                () => usernameTextFieldErrorString = 'Field cannot be empty!');
+            processWillCancel = true;
+          }
+          if (platformTextFieldController.text.trim().isEmpty) {
+            setState(
+                () => platformTextFieldErrorString = 'Field cannot be empty!');
+            processWillCancel = true;
+          }
+          if (processWillCancel) return;
           Password password = Password(
             passwordTextFieldController.text,
-            username: usernameTextFieldController.text,
-            notes: notesTextFieldController.text,
-            platform: platformTextFieldController.text,
+            usernameParam: usernameTextFieldController.text,
+            notesParam: notesTextFieldController.text,
+            platformParam: platformTextFieldController.text,
           );
           Values.passwords.add(password);
           Prefs.savePasswords(Values.passwords);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => new MainApp(),
-            ),
-          );
+          //Navigator.pushReplacement(
+          //context,
+          //MaterialPageRoute(
+          //builder: (context) => new MainApp(),
+          //),
+          //);
         },
         label: Text('Save'),
         icon: Icon(Icons.save),

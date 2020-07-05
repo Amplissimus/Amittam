@@ -39,7 +39,6 @@ class Prefs {
               .trim() !=
           'validationTest') return false;
       print('Entered Masterpassword is valid!');
-      Password.masterPassword = password;
       return true;
     } catch (e) {
       print('Entered Masterpassword is not valid!');
@@ -50,6 +49,7 @@ class Prefs {
   static List<Password> getPasswords() {
     List<Password> tempPasswords = [];
     List<String> tempStringList = getStringList('passwords', []);
+    print(tempStringList);
     for (String tempString in tempStringList) {
       tempPasswords.add(Password.fromJson(tempString));
     }
@@ -58,9 +58,11 @@ class Prefs {
 
   static void savePasswords(List<Password> passwords) {
     List<String> tempStringList = [];
+    print(passwords);
     for (Password password in passwords) {
       tempStringList.add(password.toJson());
     }
+    print(tempStringList);
     preferences.setStringList('passwords', tempStringList);
     Values.passwords = passwords;
   }

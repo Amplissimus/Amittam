@@ -4,6 +4,7 @@ import 'package:Amittam/libs/uilib.dart';
 import 'package:Amittam/main.dart';
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class Settings extends StatelessWidget {
@@ -87,8 +88,33 @@ class SettingsPageState extends State<SettingsPage> {
                         title: 'Delete App-Data',
                         actions: [
                           FlatButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Cancel')),
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              'CANCEL',
+                              style: TextStyle(
+                                color: CustomColors.colorForeground,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              if (confirmTextFieldController.text ==
+                                      'CONFIRM' &&
+                                  Prefs.masterPasswordIsValid(
+                                      passwordTextFieldController.text)) {
+                                Prefs.preferences.clear();
+                                SystemNavigator.pop();
+                              }
+                            },
+                            child: Text(
+                              'CONFIRM',
+                              style: TextStyle(
+                                color: CustomColors.colorForeground,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
                         ],
                         content: InkWell(
                           onTap: () {
@@ -97,53 +123,49 @@ class SettingsPageState extends State<SettingsPage> {
                             if (!currentFocus.hasPrimaryFocus)
                               currentFocus.unfocus();
                           },
-                          child: MaterialApp(
-                            builder: (context, child) => ScrollConfiguration(
-                                behavior: MainBehavior(), child: child),
-                            home: SingleChildScrollView(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Please type "CONFIRM" in the Textbox below and '
-                                    'then confirm deleting the App-Data '
-                                    'using your master password.',
-                                    style: TextStyle(
-                                      color: CustomColors.colorForeground,
-                                      fontSize: 16,
-                                    ),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Please type "CONFIRM" in the Textbox below and '
+                                  'then confirm deleting the App-Data '
+                                  'using your master password.',
+                                  style: TextStyle(
+                                    color: CustomColors.colorForeground,
+                                    fontSize: 16,
                                   ),
-                                  Padding(padding: EdgeInsets.all(8)),
-                                  customTextFormField(
-                                      hint: 'Requested text',
-                                      controller: confirmTextFieldController,
-                                      key: confirmTextFieldKey,
-                                      errorText: confirmTextFieldErrorText,
-                                      onChanged: (value) {
-                                        setAlState(() =>
-                                            confirmTextFieldErrorText = null);
-                                        if (value.trim().isEmpty)
-                                          setAlState(() =>
-                                              confirmTextFieldErrorText =
-                                                  'Field cannot be empty!');
-                                      }),
-                                  Padding(padding: EdgeInsets.all(8)),
-                                  customTextFormField(
-                                    hint: 'Enter Masterpassword',
-                                    controller: passwordTextFieldController,
-                                    key: passwordTextFieldKey,
-                                    errorText: passwordTextFieldErrorText,
+                                ),
+                                Padding(padding: EdgeInsets.all(8)),
+                                customTextFormField(
+                                    hint: 'Requested text',
+                                    controller: confirmTextFieldController,
+                                    key: confirmTextFieldKey,
+                                    errorText: confirmTextFieldErrorText,
                                     onChanged: (value) {
                                       setAlState(() =>
-                                          passwordTextFieldErrorText = null);
+                                          confirmTextFieldErrorText = null);
                                       if (value.trim().isEmpty)
                                         setAlState(() =>
-                                            passwordTextFieldErrorText =
+                                            confirmTextFieldErrorText =
                                                 'Field cannot be empty!');
-                                    },
-                                  ),
-                                ],
-                              ),
+                                    }),
+                                Padding(padding: EdgeInsets.all(8)),
+                                customTextFormField(
+                                  hint: 'Enter Masterpassword',
+                                  controller: passwordTextFieldController,
+                                  key: passwordTextFieldKey,
+                                  errorText: passwordTextFieldErrorText,
+                                  onChanged: (value) {
+                                    setAlState(() =>
+                                        passwordTextFieldErrorText = null);
+                                    if (value.trim().isEmpty)
+                                      setAlState(() =>
+                                          passwordTextFieldErrorText =
+                                              'Field cannot be empty!');
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                           hoverColor: Colors.transparent,

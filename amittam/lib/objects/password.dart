@@ -6,23 +6,27 @@ import 'package:encrypt/encrypt.dart' as crypt;
 
 class Password {
   Password(
-    String password, {
-    @required String username,
-    @required String platform,
-    String notes = '',
+    String passwordParam, {
+    @required String usernameParam,
+    @required String platformParam,
+    String notesParam,
   }) {
+    if (notesParam == null) notesParam = '';
+    if (usernameParam == null) usernameParam = '';
+    if (platformParam == null) platformParam = '';
+    if (passwordParam == null) passwordParam = '';
     if (key == null)
       throw 'Masterpassword not defined! Password could not be initialized!';
-    this.password = password;
-    this.platform = platform;
-    this.notes = notes;
-    this.username = username;
+    this.password = passwordParam;
+    this.platform = platformParam;
+    this.notes = notesParam;
+    this.username = usernameParam;
   }
 
   static var key;
 
   static set masterPassword(String s) =>
-      key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
+      Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
 
   String encryptedPlatform = '';
   String encryptedUsername = '';
@@ -32,26 +36,28 @@ class Password {
   set platform(String s) => encryptedPlatform = encryptWithMasterPWToBase64(s);
   String get platform => decryptWithMasterPWFromBase64(encryptedPlatform);
 
-  set username(String s) => encryptedPlatform = encryptWithMasterPWToBase64(s);
+  set username(String s) => encryptedUsername = encryptWithMasterPWToBase64(s);
   String get username => decryptWithMasterPWFromBase64(encryptedUsername);
 
-  set notes(String s) => encryptedPlatform = encryptWithMasterPWToBase64(s);
+  set notes(String s) => encryptedNotes = encryptWithMasterPWToBase64(s);
   String get notes => decryptWithMasterPWFromBase64(encryptedNotes);
 
   set password(String s) => encryptedPassword = encryptWithMasterPWToBase64(s);
   String get password => decryptWithMasterPWFromBase64(encryptedPassword);
 
-  String encryptWithMasterPWToBase64(Object obj) {
+  String encryptWithMasterPWToBase64(String decrypted) {
+    if (decrypted.isEmpty) return '';
     try {
       return crypt.Encrypter(crypt.AES(key))
-          .encrypt(obj.toString(), iv: crypt.IV.fromLength(16))
+          .encrypt(decrypted, iv: crypt.IV.fromLength(16))
           .base64;
     } catch (e) {
-      throw 'Incorrect data decryption behavior!';
+      throw 'Incorrect data encryption behavior!';
     }
   }
 
   String decryptWithMasterPWFromBase64(String encrypted) {
+    if (encrypted.isEmpty) return '';
     try {
       return crypt.Encrypter(crypt.AES(key)).decrypt(
           crypt.Encrypted.fromBase64(encrypted),
