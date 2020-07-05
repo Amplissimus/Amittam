@@ -106,6 +106,8 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
+    Values.passwords.sort(
+        (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
       appBar: customAppBar(title: Strings.appTitle),

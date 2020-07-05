@@ -191,12 +191,12 @@ class AddPasswordPageState extends State<AddPasswordPage> {
           );
           Values.passwords.add(password);
           Prefs.savePasswords(Values.passwords);
-          //Navigator.pushReplacement(
-          //context,
-          //MaterialPageRoute(
-          //builder: (context) => new MainApp(),
-          //),
-          //);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => new MainApp(),
+            ),
+          );
         },
         label: Text('Save'),
         icon: Icon(Icons.save),
