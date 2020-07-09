@@ -110,6 +110,8 @@ class GeneratePasswordValues {
       if (randomNumber < 34) {
         int _randomNumber = new Random().nextInt(25);
         String s = standardLetters[_randomNumber];
+        int __randomNumber = new Random().nextInt(2);
+        if (__randomNumber == 1) s = s.toUpperCase();
         tempString = '$tempString$s';
       } else if (randomNumber < 67) {
         if (usingNumbers) {
@@ -119,6 +121,8 @@ class GeneratePasswordValues {
         } else {
           int _randomNumber = new Random().nextInt(25);
           String s = standardLetters[_randomNumber];
+          int __randomNumber = new Random().nextInt(2);
+          if (__randomNumber == 1) s = s.toUpperCase();
           tempString = '$tempString$s';
         }
       } else {
@@ -129,6 +133,8 @@ class GeneratePasswordValues {
         } else {
           int _randomNumber = new Random().nextInt(25);
           String s = standardLetters[_randomNumber];
+          int __randomNumber = new Random().nextInt(2);
+          if (__randomNumber == 1) s = s.toUpperCase();
           tempString = '$tempString$s';
         }
       }
