@@ -104,6 +104,10 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
+  void rebuild() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Values.passwords.sort(
@@ -117,9 +121,47 @@ class MainPageState extends State<MainPage> {
         child: ListView.separated(
           itemBuilder: (context, index) {
             Password password = Values.passwords[index];
+            String titleText;
+            int pwTypeIndex =
+                PasswordType.values.indexOf(password.passwordType);
+            Icon leadingIcon;
+            switch (pwTypeIndex) {
+              case 0:
+                titleText = password.platform;
+                leadingIcon = Icon(
+                  MdiIcons.accountCircle,
+                  color: Colors.green,
+                  size: 40,
+                );
+                break;
+              case 1:
+                titleText = 'Mail Address';
+                leadingIcon = Icon(
+                  MdiIcons.email,
+                  color: Colors.green,
+                  size: 40,
+                );
+                break;
+              case 2:
+                titleText = 'WLAN';
+                leadingIcon = Icon(
+                  MdiIcons.wifi,
+                  color: Colors.green,
+                  size: 40,
+                );
+                break;
+              default:
+                titleText = 'Error';
+                leadingIcon = Icon(
+                  MdiIcons.accountCircle,
+                  color: Colors.green,
+                  size: 40,
+                );
+            }
             return ListTile(
+              leading: leadingIcon,
               title: Text(
-                password.platform,
+                titleText,
                 style: TextStyle(color: CustomColors.colorForeground),
               ),
               subtitle: Text(
@@ -127,7 +169,7 @@ class MainPageState extends State<MainPage> {
                 style: TextStyle(color: CustomColors.colorForeground),
               ),
               onTap: () {
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => DisplayPassword(password),
@@ -153,7 +195,7 @@ class MainPageState extends State<MainPage> {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AddPassword(),
+                builder: (context) => AddPassword(functionAfterSave: rebuild),
               ),
             ),
           ),

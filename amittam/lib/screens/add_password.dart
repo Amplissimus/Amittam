@@ -9,6 +9,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:password_strength/password_strength.dart';
 
 class AddPassword extends StatelessWidget {
+  AddPassword({this.functionAfterSave});
+  final void Function() functionAfterSave;
   final GlobalKey<FormFieldState> platformTextFieldKey = GlobalKey();
   final TextEditingController platformTextFieldController =
       TextEditingController();
@@ -31,6 +33,7 @@ class AddPassword extends StatelessWidget {
     AddPasswordValues.passwordStrengthColor = Colors.grey;
     AddPasswordValues.passwordTextFieldInputHidden = true;
     AddPasswordValues.currentPWType = AddPasswordValues.passwordTypes[0];
+    AddPasswordValues.passwordType = PasswordType.onlineAccount;
     AddPasswordValues.updateUsernameText();
     return StatefulBuilder(
       builder: (context, setState) {
@@ -69,6 +72,8 @@ class AddPassword extends StatelessWidget {
                         AddPasswordValues.updateUsernameText(
                           functionAfterFinish: () => setState(
                             () {
+                              AddPasswordValues.passwordType = PasswordType
+                                  .values[AddPasswordValues.pwTypeIndex];
                               AddPasswordValues.platformTextFieldErrorString =
                                   null;
                             },
@@ -193,7 +198,9 @@ class AddPassword extends StatelessWidget {
                     'Field cannot be empty!');
                 processWillCancel = true;
               }
-              if (platformTextFieldController.text.trim().isEmpty) {
+              if (platformTextFieldController.text.trim().isEmpty &&
+                  AddPasswordValues.passwordType ==
+                      PasswordType.onlineAccount) {
                 setState(() => AddPasswordValues.platformTextFieldErrorString =
                     'Field cannot be empty!');
                 processWillCancel = true;
@@ -204,9 +211,11 @@ class AddPassword extends StatelessWidget {
                 usernameParam: usernameTextFieldController.text,
                 notesParam: notesTextFieldController.text,
                 platformParam: platformTextFieldController.text,
+                passwordType: AddPasswordValues.passwordType,
               );
               Values.passwords.add(password);
               Prefs.savePasswords(Values.passwords);
+              if (functionAfterSave != null) functionAfterSave();
               Navigator.pop(context);
             },
             label: Text('Save'),
@@ -229,6 +238,7 @@ class AddPasswordValues {
 
   static String usernameText;
   static String currentPWType;
+  static PasswordType passwordType = PasswordType.onlineAccount;
   static final List<String> passwordTypes = [
     'Online Account',
     'E-Mail Account',

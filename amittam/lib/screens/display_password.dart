@@ -10,278 +10,282 @@ import 'package:password_strength/password_strength.dart';
 class DisplayPassword extends StatelessWidget {
   DisplayPassword(Password password) {
     DisplayPasswordValues.password = password;
+    DisplayPasswordValues.passwordTextFieldController =
+        TextEditingController(text: password.password);
+    DisplayPasswordValues.platformTextFieldController =
+        TextEditingController(text: password.platform);
+    DisplayPasswordValues.usernameTextFieldController =
+        TextEditingController(text: password.username);
+    DisplayPasswordValues.notesTextFieldController =
+        TextEditingController(text: password.notes);
   }
-  @override
-  Widget build(BuildContext context) {
-    updateBrightness();
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainApp(),
-          ),
-        );
-        return false;
-      },
-      child: MaterialApp(
-        builder: (context, child) {
-          return ScrollConfiguration(behavior: MainBehavior(), child: child);
-        },
-        home: DisplayPasswordPage(),
-      ),
-    );
-  }
-}
 
-class DisplayPasswordPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => DisplayPasswordPageState();
-}
-
-class DisplayPasswordPageState extends State<DisplayPasswordPage> {
-  GlobalKey<FormFieldState> platformTextFieldKey = GlobalKey();
-  TextEditingController platformTextFieldController =
-      TextEditingController(text: DisplayPasswordValues.password.platform);
-  GlobalKey<FormFieldState> usernameTextFieldKey = GlobalKey();
-  TextEditingController usernameTextFieldController =
-      TextEditingController(text: DisplayPasswordValues.password.username);
-  GlobalKey<FormFieldState> passwordTextFieldKey = GlobalKey();
-  TextEditingController passwordTextFieldController =
-      TextEditingController(text: DisplayPasswordValues.password.password);
-  GlobalKey<FormFieldState> notesTextFieldKey = GlobalKey();
-  TextEditingController notesTextFieldController =
-      TextEditingController(text: DisplayPasswordValues.password.notes);
-
-  FocusNode platformTextFieldFocusNode = FocusNode();
-  FocusNode usernameTextFieldFocusNode = FocusNode();
-  FocusNode passwordTextFieldFocusNode = FocusNode();
-  FocusNode notesTextFieldFocusNode = FocusNode();
-
-  String platformTextFieldErrorString;
-  String usernameTextFieldErrorString;
-  String passwordTextFieldErrorString;
-  String notesTextFieldErrorString;
-
-  bool isEditingPlatform = false;
-  bool isEditingUsername = false;
-  bool isEditingPassword = false;
-  bool isEditingNotes = false;
-
-  bool passwordTextFieldInputHidden = false;
-  Color passwordStrengthColor = Colors.grey;
-
-  @override
-  void initState() {
-    String value = passwordTextFieldController.text.trim();
-    double strength = estimatePasswordStrength(value);
-    if (strength < 0.3)
-      setState(() => passwordStrengthColor = Colors.grey);
-    else if (strength < 0.7)
-      setState(() => passwordStrengthColor = Colors.orange);
-    else
-      setState(() => passwordStrengthColor = Colors.green);
-    super.initState();
-  }
+  final FocusNode platformTextFieldFocusNode = FocusNode();
+  final FocusNode usernameTextFieldFocusNode = FocusNode();
+  final FocusNode passwordTextFieldFocusNode = FocusNode();
+  final FocusNode notesTextFieldFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomColors.colorBackground,
-      appBar: customAppBar(
-        title: 'Amittam',
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainPage(),
+    return StatefulBuilder(builder: (context, setState) {
+      String value =
+          DisplayPasswordValues.passwordTextFieldController.text.trim();
+      double strength = estimatePasswordStrength(value);
+      if (strength < 0.3)
+        setState(
+            () => DisplayPasswordValues.passwordStrengthColor = Colors.grey);
+      else if (strength < 0.7)
+        setState(
+            () => DisplayPasswordValues.passwordStrengthColor = Colors.orange);
+      else
+        setState(
+            () => DisplayPasswordValues.passwordStrengthColor = Colors.green);
+      return Scaffold(
+        backgroundColor: CustomColors.colorBackground,
+        appBar: customAppBar(
+          title: 'Amittam',
+        ),
+        body: InkWell(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+          },
+          child: Container(
+            margin: EdgeInsets.all(16),
+            child: ListView(
+              children: [
+                Padding(padding: EdgeInsets.all(2)),
+                DisplayPasswordValues.isEditingPlatform
+                    ? customTextFormField(
+                        hint: 'Platform',
+                        key: DisplayPasswordValues.platformTextFieldKey,
+                        controller:
+                            DisplayPasswordValues.platformTextFieldController,
+                        errorText:
+                            DisplayPasswordValues.platformTextFieldErrorString,
+                        focusNode: platformTextFieldFocusNode,
+                        onChanged: (text) {
+                          setState(() => DisplayPasswordValues
+                              .platformTextFieldErrorString = null);
+                          if (DisplayPasswordValues
+                              .platformTextFieldController.text
+                              .trim()
+                              .isEmpty)
+                            setState(() => DisplayPasswordValues
+                                    .platformTextFieldErrorString =
+                                'Field cannot be empty!');
+                        },
+                      )
+                    : displayValueWidget(
+                        value: DisplayPasswordValues.password.platform,
+                        valueType: 'Platform',
+                        onTap: () {
+                          setState(() =>
+                              DisplayPasswordValues.isEditingPlatform = true);
+                          platformTextFieldFocusNode.requestFocus();
+                        },
+                      ),
+                Padding(padding: EdgeInsets.all(8)),
+                DisplayPasswordValues.isEditingUsername
+                    ? customTextFormField(
+                        hint: 'Username',
+                        textinputType: TextInputType.emailAddress,
+                        key: DisplayPasswordValues.usernameTextFieldKey,
+                        controller:
+                            DisplayPasswordValues.usernameTextFieldController,
+                        errorText:
+                            DisplayPasswordValues.usernameTextFieldErrorString,
+                        focusNode: usernameTextFieldFocusNode,
+                        onChanged: (text) {
+                          setState(() => DisplayPasswordValues
+                              .usernameTextFieldErrorString = null);
+                          if (DisplayPasswordValues
+                              .usernameTextFieldController.text.isEmpty)
+                            setState(() => DisplayPasswordValues
+                                    .usernameTextFieldErrorString =
+                                'Field cannot be empty!');
+                        },
+                      )
+                    : displayValueWidget(
+                        value: DisplayPasswordValues.password.username,
+                        valueType: 'Username',
+                        onTap: () {
+                          setState(() =>
+                              DisplayPasswordValues.isEditingUsername = true);
+                          usernameTextFieldFocusNode.requestFocus();
+                        },
+                      ),
+                Padding(padding: EdgeInsets.all(8)),
+                DisplayPasswordValues.isEditingPassword
+                    ? customTextFormField(
+                        hint: 'Password',
+                        key: DisplayPasswordValues.passwordTextFieldKey,
+                        controller:
+                            DisplayPasswordValues.passwordTextFieldController,
+                        errorText:
+                            DisplayPasswordValues.passwordTextFieldErrorString,
+                        obscureText:
+                            DisplayPasswordValues.passwordTextFieldInputHidden,
+                        focusNode: passwordTextFieldFocusNode,
+                        onChanged: (text) {
+                          setState(() => DisplayPasswordValues
+                              .passwordTextFieldErrorString = null);
+                          if (DisplayPasswordValues
+                              .passwordTextFieldController.text.isEmpty)
+                            setState(() => DisplayPasswordValues
+                                    .passwordTextFieldErrorString =
+                                'Field cannot be empty!');
+                          String value = DisplayPasswordValues
+                              .passwordTextFieldController.text
+                              .trim();
+                          double strength = estimatePasswordStrength(value);
+
+                          if (strength < 0.3)
+                            setState(() => DisplayPasswordValues
+                                .passwordStrengthColor = Colors.grey);
+                          else if (strength < 0.7)
+                            setState(() => DisplayPasswordValues
+                                .passwordStrengthColor = Colors.orange);
+                          else
+                            setState(() => DisplayPasswordValues
+                                .passwordStrengthColor = Colors.green);
+                        },
+                        suffixIcon: IconButton(
+                          splashColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          icon:
+                              DisplayPasswordValues.passwordTextFieldInputHidden
+                                  ? Icon(Icons.visibility,
+                                      color: CustomColors.colorForeground)
+                                  : Icon(Icons.visibility_off,
+                                      color: CustomColors.colorForeground),
+                          onPressed: () => setState(() => DisplayPasswordValues
+                                  .passwordTextFieldInputHidden =
+                              !DisplayPasswordValues
+                                  .passwordTextFieldInputHidden),
+                        ),
+                      )
+                    : displayValueWidget(
+                        value: DisplayPasswordValues.password.password,
+                        valueType: 'Password',
+                        onTap: () {
+                          setState(() =>
+                              DisplayPasswordValues.isEditingPassword = true);
+                          passwordTextFieldFocusNode.requestFocus();
+                        },
+                      ),
+                DisplayPasswordValues.isEditingPassword
+                    ? Column(
+                        children: <Widget>[
+                          Padding(padding: EdgeInsets.all(8)),
+                          AnimatedContainer(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color:
+                                  DisplayPasswordValues.passwordStrengthColor,
+                              border: Border(),
+                            ),
+                            height: 10,
+                            duration: Duration(milliseconds: 250),
+                          ),
+                        ],
+                      )
+                    : Container(height: 0, width: 0),
+                Padding(padding: EdgeInsets.all(8)),
+                DisplayPasswordValues.isEditingNotes
+                    ? customTextFormField(
+                        hint: 'Notes (optional)',
+                        key: DisplayPasswordValues.notesTextFieldKey,
+                        controller:
+                            DisplayPasswordValues.notesTextFieldController,
+                        errorText:
+                            DisplayPasswordValues.notesTextFieldErrorString,
+                        focusNode: notesTextFieldFocusNode,
+                      )
+                    : displayValueWidget(
+                        value: DisplayPasswordValues.password.notes,
+                        valueType: 'Notes',
+                        onTap: () {
+                          setState(() =>
+                              DisplayPasswordValues.isEditingNotes = true);
+                          notesTextFieldFocusNode.requestFocus();
+                        },
+                      ),
+              ],
             ),
           ),
           hoverColor: Colors.transparent,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
         ),
-      ),
-      body: InkWell(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
-        },
-        child: Container(
-          margin: EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              Padding(padding: EdgeInsets.all(2)),
-              isEditingPlatform
-                  ? customTextFormField(
-                      hint: 'Platform',
-                      key: platformTextFieldKey,
-                      controller: platformTextFieldController,
-                      errorText: platformTextFieldErrorString,
-                      focusNode: platformTextFieldFocusNode,
-                      onChanged: (text) {
-                        setState(() => platformTextFieldErrorString = null);
-                        if (platformTextFieldController.text.trim().isEmpty)
-                          setState(() => platformTextFieldErrorString =
-                              'Field cannot be empty!');
-                      },
-                    )
-                  : displayValueWidget(
-                      value: DisplayPasswordValues.password.platform,
-                      valueType: 'Platform',
-                      onTap: () {
-                        setState(() => isEditingPlatform = true);
-                        platformTextFieldFocusNode.requestFocus();
-                      },
-                    ),
-              Padding(padding: EdgeInsets.all(8)),
-              isEditingUsername
-                  ? customTextFormField(
-                      hint: 'Username',
-                      textinputType: TextInputType.emailAddress,
-                      key: usernameTextFieldKey,
-                      controller: usernameTextFieldController,
-                      errorText: usernameTextFieldErrorString,
-                      focusNode: usernameTextFieldFocusNode,
-                      onChanged: (text) {
-                        setState(() => usernameTextFieldErrorString = null);
-                        if (usernameTextFieldController.text.isEmpty)
-                          setState(() => usernameTextFieldErrorString =
-                              'Field cannot be empty!');
-                      },
-                    )
-                  : displayValueWidget(
-                      value: DisplayPasswordValues.password.username,
-                      valueType: 'Username',
-                      onTap: () {
-                        setState(() => isEditingUsername = true);
-                        usernameTextFieldFocusNode.requestFocus();
-                      },
-                    ),
-              Padding(padding: EdgeInsets.all(8)),
-              isEditingPassword
-                  ? customTextFormField(
-                      hint: 'Password',
-                      key: passwordTextFieldKey,
-                      controller: passwordTextFieldController,
-                      errorText: passwordTextFieldErrorString,
-                      obscureText: passwordTextFieldInputHidden,
-                      focusNode: passwordTextFieldFocusNode,
-                      onChanged: (text) {
-                        setState(() => passwordTextFieldErrorString = null);
-                        if (passwordTextFieldController.text.isEmpty)
-                          setState(() => passwordTextFieldErrorString =
-                              'Field cannot be empty!');
-                        String value = passwordTextFieldController.text.trim();
-                        double strength = estimatePasswordStrength(value);
-
-                        if (strength < 0.3)
-                          setState(() => passwordStrengthColor = Colors.grey);
-                        else if (strength < 0.7)
-                          setState(() => passwordStrengthColor = Colors.orange);
-                        else
-                          setState(() => passwordStrengthColor = Colors.green);
-                      },
-                      suffixIcon: IconButton(
-                        splashColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        icon: passwordTextFieldInputHidden
-                            ? Icon(Icons.visibility,
-                                color: CustomColors.colorForeground)
-                            : Icon(Icons.visibility_off,
-                                color: CustomColors.colorForeground),
-                        onPressed: () => setState(() =>
-                            passwordTextFieldInputHidden =
-                                !passwordTextFieldInputHidden),
-                      ),
-                    )
-                  : displayValueWidget(
-                      value: DisplayPasswordValues.password.password,
-                      valueType: 'Password',
-                      onTap: () {
-                        setState(() => isEditingPassword = true);
-                        passwordTextFieldFocusNode.requestFocus();
-                      },
-                    ),
-              isEditingPassword
-                  ? Column(
-                      children: <Widget>[
-                        Padding(padding: EdgeInsets.all(8)),
-                        AnimatedContainer(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: passwordStrengthColor,
-                            border: Border(),
-                          ),
-                          height: 10,
-                          duration: Duration(milliseconds: 250),
-                        ),
-                      ],
-                    )
-                  : Container(height: 0, width: 0),
-              Padding(padding: EdgeInsets.all(8)),
-              isEditingNotes
-                  ? customTextFormField(
-                      hint: 'Notes (optional)',
-                      key: notesTextFieldKey,
-                      controller: notesTextFieldController,
-                      errorText: notesTextFieldErrorString,
-                      focusNode: notesTextFieldFocusNode,
-                    )
-                  : displayValueWidget(
-                      value: DisplayPasswordValues.password.notes,
-                      valueType: 'Notes',
-                      onTap: () {
-                        setState(() => isEditingNotes = true);
-                        notesTextFieldFocusNode.requestFocus();
-                      },
-                    ),
-            ],
-          ),
-        ),
-        hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-      ),
-      floatingActionButton: (isEditingNotes ||
-              isEditingPassword ||
-              isEditingPlatform ||
-              isEditingUsername)
-          ? extendedFab(
-              onPressed: () {
-                if (platformTextFieldController.text.trimRight().trimLeft().isEmpty ||
-                    usernameTextFieldController.text
+        floatingActionButton: (DisplayPasswordValues.isEditingNotes ||
+                DisplayPasswordValues.isEditingPassword ||
+                DisplayPasswordValues.isEditingPlatform ||
+                DisplayPasswordValues.isEditingUsername)
+            ? extendedFab(
+                onPressed: () {
+                  if (DisplayPasswordValues.platformTextFieldController.text.trimRight().trimLeft().isEmpty ||
+                      DisplayPasswordValues.usernameTextFieldController.text
+                          .trimRight()
+                          .trimLeft()
+                          .isEmpty ||
+                      DisplayPasswordValues
+                          .passwordTextFieldController.text.isEmpty) return;
+                  setState(() {
+                    DisplayPasswordValues.password.password =
+                        DisplayPasswordValues.passwordTextFieldController.text;
+                    DisplayPasswordValues.password.platform =
+                        DisplayPasswordValues.platformTextFieldController.text
+                            .trimRight()
+                            .trimLeft();
+                    DisplayPasswordValues.password.notes = DisplayPasswordValues
+                        .notesTextFieldController.text
                         .trimRight()
-                        .trimLeft()
-                        .isEmpty ||
-                    passwordTextFieldController.text.isEmpty) return;
-                setState(() {
-                  DisplayPasswordValues.password.password =
-                      passwordTextFieldController.text;
-                  DisplayPasswordValues.password.platform =
-                      platformTextFieldController.text.trimRight().trimLeft();
-                  DisplayPasswordValues.password.notes =
-                      notesTextFieldController.text.trimRight().trimLeft();
-                  DisplayPasswordValues.password.username =
-                      usernameTextFieldController.text.trimRight().trimLeft();
-                  Prefs.savePasswords(Values.passwords);
-                  isEditingNotes = false;
-                  isEditingPassword = false;
-                  isEditingPlatform = false;
-                  isEditingUsername = false;
-                });
-              },
-              label: Text('Save'),
-              icon: Icon(Icons.save),
-            )
-          : Container(height: 0, width: 0),
-    );
+                        .trimLeft();
+                    DisplayPasswordValues.password.username =
+                        DisplayPasswordValues.usernameTextFieldController.text
+                            .trimRight()
+                            .trimLeft();
+                    Prefs.savePasswords(Values.passwords);
+                    DisplayPasswordValues.isEditingNotes = false;
+                    DisplayPasswordValues.isEditingPassword = false;
+                    DisplayPasswordValues.isEditingPlatform = false;
+                    DisplayPasswordValues.isEditingUsername = false;
+                  });
+                },
+                label: Text('Save'),
+                icon: Icon(Icons.save),
+              )
+            : Container(height: 0, width: 0),
+      );
+    });
   }
 }
 
 class DisplayPasswordValues {
   static Password password;
+
+  static String platformTextFieldErrorString;
+  static String usernameTextFieldErrorString;
+  static String passwordTextFieldErrorString;
+  static String notesTextFieldErrorString;
+
+  static bool isEditingPlatform = false;
+  static bool isEditingUsername = false;
+  static bool isEditingPassword = false;
+  static bool isEditingNotes = false;
+
+  static bool passwordTextFieldInputHidden = false;
+  static Color passwordStrengthColor = Colors.grey;
+
+  static GlobalKey<FormFieldState> platformTextFieldKey = GlobalKey();
+  static TextEditingController platformTextFieldController;
+  static GlobalKey<FormFieldState> usernameTextFieldKey = GlobalKey();
+  static TextEditingController usernameTextFieldController;
+  static GlobalKey<FormFieldState> passwordTextFieldKey = GlobalKey();
+  static TextEditingController passwordTextFieldController;
+  static GlobalKey<FormFieldState> notesTextFieldKey = GlobalKey();
+  static TextEditingController notesTextFieldController;
 }

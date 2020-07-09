@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/values.dart';
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as crypt;
 
@@ -9,6 +11,7 @@ class Password {
     String passwordParam, {
     @required String usernameParam,
     @required String platformParam,
+    @required this.passwordType,
     String notesParam,
   }) {
     if (notesParam == null) notesParam = '';
@@ -27,6 +30,8 @@ class Password {
 
   static set masterPassword(String s) =>
       Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
+
+  PasswordType passwordType;
 
   String encryptedPlatform = '';
   String encryptedUsername = '';
@@ -72,14 +77,17 @@ class Password {
     return 'encryptedPlatform: $encryptedPlatform, '
         'encryptedUsername: $encryptedUsername, '
         'encryptedPassword: $encryptedPassword, '
-        'encryptedNotes: $encryptedNotes';
+        'encryptedNotes: $encryptedNotes'
+        'passwordType: ${EnumToString.parse(passwordType)}';
   }
 
   Password.fromMap(Map<String, dynamic> json)
       : encryptedPlatform = json['encryptedPlatform'],
         encryptedUsername = json['encryptedUsername'],
         encryptedNotes = json['encryptedNotes'],
-        encryptedPassword = json['encryptedPassword'];
+        encryptedPassword = json['encryptedPassword'],
+        passwordType =
+            EnumToString.fromString(PasswordType.values, json['passwordType']);
 
   factory Password.fromJson(String jsonString) {
     return Password.fromMap(json.decode(jsonString));
@@ -91,6 +99,7 @@ class Password {
       'encryptedUsername': this.encryptedUsername,
       'encryptedNotes': this.encryptedNotes,
       'encryptedPassword': this.encryptedPassword,
+      'passwordType': EnumToString.parse(this.passwordType),
     };
   }
 

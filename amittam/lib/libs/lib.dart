@@ -20,3 +20,9 @@ class Choice {
   final String title;
   final IconData icon;
 }
+
+enum PasswordType {
+  onlineAccount,
+  emailAccount,
+  wlanPassword,
+}
