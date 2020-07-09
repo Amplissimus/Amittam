@@ -205,6 +205,11 @@ class AddPassword extends StatelessWidget {
                     'Field cannot be empty!');
                 processWillCancel = true;
               }
+              if (AddPasswordValues.passwordType !=
+                  PasswordType.onlineAccount) {
+                platformTextFieldController.text =
+                    usernameTextFieldController.text;
+              }
               if (processWillCancel) return;
               Password password = Password(
                 passwordTextFieldController.text,

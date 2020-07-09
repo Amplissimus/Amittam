@@ -5,6 +5,7 @@ import 'package:Amittam/main.dart';
 import 'package:Amittam/objects/password.dart';
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
 
@@ -70,8 +71,6 @@ class FirstLoginPageState extends State<FirstLoginPage> {
                   onChanged: (textFieldText) {
                     setState(() => masterPWTextFieldErrorString = null);
                     String value = textFieldText.trim();
-                    if (textFieldText.contains(' '))
-                      masterPWTextFieldController.text = value;
 
                     double strength = estimatePasswordStrength(value);
 

@@ -1,5 +1,6 @@
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Widget customAppBar({
   @required String title,
@@ -33,6 +34,7 @@ Widget customTextFormField({
   bool obscureText = false,
   bool autofocus = false,
   FocusNode focusNode,
+  List<TextInputFormatter> formatters,
 }) {
   return TextFormField(
     autofocus: autofocus,
@@ -42,6 +44,7 @@ Widget customTextFormField({
     onChanged: onChanged,
     cursorColor: CustomColors.colorForeground,
     controller: controller,
+    inputFormatters: formatters,
     key: key,
     keyboardType: textinputType,
     style: TextStyle(color: CustomColors.colorForeground),
