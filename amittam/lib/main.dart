@@ -85,8 +85,8 @@ class MainApp extends StatelessWidget {
       },
       theme: ThemeData(
         canvasColor: CustomColors.isDarkMode
-            ? materialColor(0xFFFFFFFF)
-            : materialColor(0xFF000000),
+            ? materialColor(0xFF000000)
+            : materialColor(0xFFFFFFFF),
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
@@ -150,7 +150,7 @@ class MainPageState extends State<MainPage> {
           SpeedDialChild(
             label: 'Add password',
             child: Icon(Icons.add),
-            onTap: () => Navigator.pushReplacement(
+            onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => AddPassword(),
@@ -160,7 +160,7 @@ class MainPageState extends State<MainPage> {
           SpeedDialChild(
             label: 'Settings',
             child: Icon(Icons.settings),
-            onTap: () => Navigator.pushReplacement(
+            onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => Settings(),
