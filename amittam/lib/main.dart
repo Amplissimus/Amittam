@@ -5,6 +5,7 @@ import 'package:Amittam/objects/password.dart';
 import 'package:Amittam/screens/add_password.dart';
 import 'package:Amittam/screens/display_password.dart';
 import 'package:Amittam/screens/first_login.dart';
+import 'package:Amittam/screens/generate_password.dart';
 import 'package:Amittam/screens/login.dart';
 import 'package:Amittam/screens/settings.dart';
 import 'package:Amittam/values.dart';
@@ -189,6 +190,16 @@ class MainPageState extends State<MainPage> {
         overlayOpacity: 0,
         animatedIcon: AnimatedIcons.menu_close,
         children: [
+          SpeedDialChild(
+            label: 'Generate password',
+            child: Icon(MdiIcons.lockQuestion),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GeneratePassword(),
+              ),
+            ),
+          ),
           SpeedDialChild(
             label: 'Add password',
             child: Icon(Icons.add),
