@@ -1,3 +1,4 @@
+import 'package:Amittam/libs/animationlib.dart';
 import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
@@ -213,12 +214,7 @@ class MainPageState extends State<MainPage> {
           SpeedDialChild(
             label: 'Settings',
             child: Icon(Icons.settings),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Settings(),
-              ),
-            ),
+            onTap: () => Animations.push(context, Settings()),
           ),
         ],
       ),
