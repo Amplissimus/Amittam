@@ -25,7 +25,9 @@ class GeneratePassword extends StatelessWidget {
                 Text(
                   GeneratePasswordValues.currentGenPassword,
                   style: TextStyle(
-                      color: CustomColors.colorForeground, fontSize: 23),
+                    color: CustomColors.colorForeground,
+                    fontSize: GeneratePasswordValues.pwTextSize,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 Divider(color: CustomColors.colorForeground, thickness: 2),
@@ -36,10 +38,12 @@ class GeneratePassword extends StatelessWidget {
                   onChanged: (value) => setState(() {
                     GeneratePasswordValues.currentSliderValue = value;
                     GeneratePasswordValues.regenPassword();
+                    GeneratePasswordValues.updatePwTextSize();
                   }),
                   divisions: 31,
                   label: '${GeneratePasswordValues.currentSliderValue.toInt()}',
                 ),
+                Divider(color: CustomColors.colorForeground),
                 switchWithText(
                   text: 'Use numbers',
                   value: GeneratePasswordValues.usingNumbers,
@@ -99,9 +103,21 @@ class GeneratePasswordValues {
 
   static double currentSliderValue = 1;
   static String currentGenPassword = '0';
+  static double pwTextSize = 23;
 
   static bool usingSpecialCharacters = false;
   static bool usingNumbers = false;
+
+  static void updatePwTextSize() {
+    if (currentSliderValue < 11)
+      pwTextSize = 30;
+    else if (currentSliderValue < 21)
+      pwTextSize = 25;
+    else if (currentSliderValue < 27)
+      pwTextSize = 23;
+    else
+      pwTextSize = 18;
+  }
 
   static void regenPassword() {
     String tempString = '';
