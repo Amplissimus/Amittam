@@ -194,22 +194,13 @@ class MainPageState extends State<MainPage> {
           SpeedDialChild(
             label: 'Generate password',
             child: Icon(MdiIcons.lockQuestion),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => GeneratePassword(),
-              ),
-            ),
+            onTap: () => Animations.push(context, GeneratePassword()),
           ),
           SpeedDialChild(
             label: 'Add password',
             child: Icon(Icons.add),
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddPassword(functionAfterSave: rebuild),
-              ),
-            ),
+            onTap: () => Animations.push(
+                context, AddPassword(functionAfterSave: rebuild)),
           ),
           SpeedDialChild(
             label: 'Settings',
