@@ -86,6 +86,7 @@ packages:
     source: hosted
     version: "4.0.2"
 <<<<<<< HEAD
+<<<<<<< HEAD
   enum_to_string:
     dependency: "direct main"
     description:
@@ -93,6 +94,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.9"
+=======
+>>>>>>> parent of ee5aaf8... LUDWIG WHY U STUPID
 =======
 >>>>>>> parent of ee5aaf8... LUDWIG WHY U STUPID
   flare_dart:
@@ -195,6 +198,7 @@ packages:
     source: hosted
     version: "1.0.2"
 <<<<<<< HEAD
+<<<<<<< HEAD
   qr:
     dependency: transitive
     description:
@@ -209,6 +213,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.2.0"
+=======
+>>>>>>> parent of ee5aaf8... LUDWIG WHY U STUPID
 =======
 >>>>>>> parent of ee5aaf8... LUDWIG WHY U STUPID
   quiver:
