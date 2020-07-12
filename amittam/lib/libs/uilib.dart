@@ -123,7 +123,7 @@ Widget displayValueWidget({
       child: Container(
         margin: EdgeInsets.all(18),
         child: Text(
-          value.toString().isEmpty ? '$valueType' : '$value ($valueType)',
+          value.toString().isEmpty ? '$valueType' : '$value',
           style: style,
         ),
       ),

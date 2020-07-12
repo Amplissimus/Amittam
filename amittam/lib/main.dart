@@ -171,12 +171,7 @@ class MainPageState extends State<MainPage> {
                 style: TextStyle(color: CustomColors.colorForeground),
               ),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DisplayPassword(password),
-                  ),
-                );
+                Animations.push(context, DisplayPassword(password));
               },
             );
           },
