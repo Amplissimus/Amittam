@@ -181,19 +181,11 @@ class MainPageState extends State<MainPage> {
                 break;
               default:
                 titleText = 'Error';
-                if (password.platform.trim().toLowerCase().contains('google')) {
-                  leadingIcon = Icon(
-                    MdiIcons.google,
-                    color: Colors.green,
-                    size: 40,
-                  );
-                } else {
-                  leadingIcon = Icon(
-                    MdiIcons.accountCircle,
-                    color: Colors.green,
-                    size: 40,
-                  );
-                }
+                leadingIcon = Icon(
+                  MdiIcons.accountCircle,
+                  color: Colors.green,
+                  size: 40,
+                );
             }
             return ListTile(
               leading: leadingIcon,
