@@ -54,6 +54,13 @@ class DisplayPassword extends StatelessWidget {
           backgroundColor: CustomColors.colorBackground,
           appBar: customAppBar(
             title: 'Amittam',
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: CustomColors.colorForeground,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
           ),
           body: InkWell(
             onTap: () {
@@ -235,6 +242,7 @@ class DisplayPassword extends StatelessWidget {
                           PasswordType.wlanPassword
                       ? Column(
                           children: [
+                            Padding(padding: EdgeInsets.all(8)),
                             RaisedButton.icon(
                               color: Colors.green,
                               onPressed: () {
@@ -247,11 +255,10 @@ class DisplayPassword extends StatelessWidget {
                               label: Text('Show QR',
                                   style: TextStyle(color: Colors.white)),
                             ),
-                            Padding(padding: EdgeInsets.all(8)),
                           ],
                         )
                       : Container(),
-                  Padding(padding: EdgeInsets.all(8)),
+                  Padding(padding: EdgeInsets.all(2)),
                   RaisedButton.icon(
                     color: Colors.green,
                     onPressed: () {

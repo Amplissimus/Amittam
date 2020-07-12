@@ -106,6 +106,9 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
+  bool isSearching = false;
+  FocusNode searchFieldFocusNode = FocusNode();
+
   void rebuild() {
     setState(() {});
   }
@@ -116,103 +119,138 @@ class MainPageState extends State<MainPage> {
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
-      appBar: customAppBar(title: Strings.appTitle),
-      body: Container(
-        color: Colors.transparent,
-        margin: EdgeInsets.all(16),
-        child: ListView.separated(
-          itemBuilder: (context, index) {
-            Password password = Values.passwords[index];
-            String titleText;
-            int pwTypeIndex =
-                PasswordType.values.indexOf(password.passwordType);
-            Icon leadingIcon;
-            switch (pwTypeIndex) {
-              case 0:
-                titleText = password.platform;
-                String checkText = password.platform.trim().toLowerCase();
-                if (checkText.contains('google')) {
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        title: isSearching
+            ? TextField(
+                focusNode: searchFieldFocusNode,
+                cursorColor: CustomColors.colorForeground,
+                decoration: InputDecoration(
+                  hintText: 'Search...',
+                  hintStyle: TextStyle(color: CustomColors.colorForeground),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
+              )
+            : Text(Strings.appTitle,
+                style: TextStyle(
+                    fontSize: 25, color: CustomColors.colorForeground)),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.search, color: CustomColors.colorForeground),
+              onPressed: () {
+                setState(() => isSearching = !isSearching);
+                searchFieldFocusNode.requestFocus();
+              }),
+        ],
+      ),
+      body: InkWell(
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+        },
+        child: Container(
+          color: Colors.transparent,
+          margin: EdgeInsets.all(16),
+          child: ListView.separated(
+            itemBuilder: (context, index) {
+              Password password = Values.passwords[index];
+              String titleText;
+              int pwTypeIndex =
+                  PasswordType.values.indexOf(password.passwordType);
+              Icon leadingIcon;
+              switch (pwTypeIndex) {
+                case 0:
+                  titleText = password.platform;
+                  String checkText = password.platform.trim().toLowerCase();
+                  if (checkText.contains('google')) {
+                    leadingIcon = Icon(
+                      MdiIcons.google,
+                      color: Colors.green,
+                      size: 40,
+                    );
+                  } else if (checkText.contains('microsoft')) {
+                    leadingIcon = Icon(
+                      MdiIcons.microsoft,
+                      color: Colors.green,
+                      size: 40,
+                    );
+                  } else if (checkText.contains('minecraft')) {
+                    leadingIcon = Icon(
+                      MdiIcons.minecraft,
+                      color: Colors.green,
+                      size: 40,
+                    );
+                  } else if (checkText.contains('playstation')) {
+                    leadingIcon = Icon(
+                      MdiIcons.sonyPlaystation,
+                      color: Colors.green,
+                      size: 40,
+                    );
+                  } else {
+                    leadingIcon = Icon(
+                      MdiIcons.accountCircle,
+                      color: Colors.green,
+                      size: 40,
+                    );
+                  }
+                  break;
+                case 1:
+                  titleText = 'Mail Address';
                   leadingIcon = Icon(
-                    MdiIcons.google,
+                    MdiIcons.email,
                     color: Colors.green,
                     size: 40,
                   );
-                } else if (checkText.contains('microsoft')) {
+                  break;
+                case 2:
+                  titleText = 'WLAN';
                   leadingIcon = Icon(
-                    MdiIcons.microsoft,
+                    MdiIcons.wifi,
                     color: Colors.green,
                     size: 40,
                   );
-                } else if (checkText.contains('minecraft')) {
-                  leadingIcon = Icon(
-                    MdiIcons.minecraft,
-                    color: Colors.green,
-                    size: 40,
-                  );
-                } else if (checkText.contains('playstation')) {
-                  leadingIcon = Icon(
-                    MdiIcons.sonyPlaystation,
-                    color: Colors.green,
-                    size: 40,
-                  );
-                } else {
+                  break;
+                default:
+                  titleText = 'Error';
                   leadingIcon = Icon(
                     MdiIcons.accountCircle,
                     color: Colors.green,
                     size: 40,
                   );
-                }
-                break;
-              case 1:
-                titleText = 'Mail Address';
-                leadingIcon = Icon(
-                  MdiIcons.email,
-                  color: Colors.green,
-                  size: 40,
-                );
-                break;
-              case 2:
-                titleText = 'WLAN';
-                leadingIcon = Icon(
-                  MdiIcons.wifi,
-                  color: Colors.green,
-                  size: 40,
-                );
-                break;
-              default:
-                titleText = 'Error';
-                leadingIcon = Icon(
-                  MdiIcons.accountCircle,
-                  color: Colors.green,
-                  size: 40,
-                );
-            }
-            return Container(
-              color: Colors.transparent,
-              child: ListTile(
-                leading: leadingIcon,
-                title: Text(
-                  titleText,
-                  style: TextStyle(color: CustomColors.colorForeground),
-                ),
-                subtitle: Text(
-                  password.username,
-                  style: TextStyle(
-                    color: CustomColors.colorForeground,
+              }
+              return Container(
+                color: Colors.transparent,
+                child: ListTile(
+                  leading: leadingIcon,
+                  title: Text(
+                    titleText,
+                    style: TextStyle(color: CustomColors.colorForeground),
                   ),
+                  subtitle: Text(
+                    password.username,
+                    style: TextStyle(
+                      color: CustomColors.colorForeground,
+                    ),
+                  ),
+                  onTap: () {
+                    Animations.push(context,
+                        DisplayPassword(password, functionOnPop: rebuild));
+                  },
                 ),
-                onTap: () {
-                  Animations.push(context,
-                      DisplayPassword(password, functionOnPop: rebuild));
-                },
-              ),
-            );
-          },
-          separatorBuilder: (context, index) => Divider(
-            color: CustomColors.colorForeground,
-            thickness: 2,
+              );
+            },
+            separatorBuilder: (context, index) => Divider(
+              color: CustomColors.colorForeground,
+              thickness: 2,
+            ),
+            itemCount: Values.passwords.length,
           ),
-          itemCount: Values.passwords.length,
         ),
       ),
       floatingActionButton: SpeedDial(

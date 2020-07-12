@@ -41,6 +41,13 @@ class AddPassword extends StatelessWidget {
           backgroundColor: CustomColors.colorBackground,
           appBar: customAppBar(
             title: Strings.appTitle,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: CustomColors.colorForeground,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
           ),
           body: InkWell(
             focusColor: Colors.transparent,

@@ -24,6 +24,13 @@ class Settings extends StatelessWidget {
           backgroundColor: CustomColors.colorBackground,
           appBar: customAppBar(
             title: 'Amittam',
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: CustomColors.colorForeground,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
           ),
           body: Container(
             margin: EdgeInsets.all(16),
