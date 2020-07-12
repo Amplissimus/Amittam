@@ -163,6 +163,9 @@ class MainPageState extends State<MainPage> {
           IconButton(
             icon: Icon(isSearching ? MdiIcons.magnifyClose : Icons.search,
                 color: CustomColors.colorForeground),
+            hoverColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
             onPressed: () {
               setState(() => isSearching = !isSearching);
               if (isSearching) searchFieldFocusNode.requestFocus();
