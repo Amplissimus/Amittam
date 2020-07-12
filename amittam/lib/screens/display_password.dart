@@ -1,11 +1,15 @@
+import 'package:Amittam/libs/animationlib.dart';
 import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
 import 'package:Amittam/objects/password.dart';
+import 'package:Amittam/screens/display_qr.dart';
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 import 'package:Amittam/main.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class DisplayPassword extends StatelessWidget {
   DisplayPassword(Password password) {
@@ -226,6 +230,22 @@ class DisplayPassword extends StatelessWidget {
                             notesTextFieldFocusNode.requestFocus();
                           },
                         ),
+                  Padding(padding: EdgeInsets.all(8)),
+                  DisplayPasswordValues.password.passwordType ==
+                          PasswordType.wlanPassword
+                      ? RaisedButton.icon(
+                          color: Colors.green,
+                          onPressed: () {
+                            Animations.push(
+                                context,
+                                DisplayQr(
+                                    'WIFI:T:WPA;S:${DisplayPasswordValues.password.username};P:${DisplayPasswordValues.password.password};;'));
+                          },
+                          icon: Icon(MdiIcons.qrcode, color: Colors.white),
+                          label: Text('Show QR',
+                              style: TextStyle(color: Colors.white)),
+                        )
+                      : Container(),
                 ],
               ),
             ),
