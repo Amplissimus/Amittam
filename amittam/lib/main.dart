@@ -187,22 +187,24 @@ class MainPageState extends State<MainPage> {
                   size: 40,
                 );
             }
-            return ListTile(
-              leading: leadingIcon,
-              title: Text(
-                titleText,
-                style: TextStyle(color: CustomColors.colorForeground),
+            return Container(
+              color: Colors.transparent,
+              child: ListTile(
+                leading: leadingIcon,
+                title: Text(
+                  titleText,
+                  style: TextStyle(color: CustomColors.colorForeground),
+                ),
+                subtitle: Text(
+                  password.username,
+                  style: TextStyle(
+                    color: CustomColors.colorForeground,
+                  ),
+                ),
+                onTap: () {
+                  Animations.push(context, DisplayPassword(password));
+                },
               ),
-              subtitle: Text(
-                password.username,
-                style: TextStyle(color: CustomColors.colorForeground),
-              ),
-              onTap: () {
-                Animations.push(context, DisplayPassword(password));
-              },
-              onLongPress: () {
-                showMenu(context: context, position: null, items: null);
-              },
             );
           },
           separatorBuilder: (context, index) => Divider(
