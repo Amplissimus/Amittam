@@ -130,11 +130,38 @@ class MainPageState extends State<MainPage> {
             switch (pwTypeIndex) {
               case 0:
                 titleText = password.platform;
-                leadingIcon = Icon(
-                  MdiIcons.accountCircle,
-                  color: Colors.green,
-                  size: 40,
-                );
+                String checkText = password.platform.trim().toLowerCase();
+                if (checkText.contains('google')) {
+                  leadingIcon = Icon(
+                    MdiIcons.google,
+                    color: Colors.green,
+                    size: 40,
+                  );
+                } else if (checkText.contains('microsoft')) {
+                  leadingIcon = Icon(
+                    MdiIcons.microsoft,
+                    color: Colors.green,
+                    size: 40,
+                  );
+                } else if (checkText.contains('minecraft')) {
+                  leadingIcon = Icon(
+                    MdiIcons.minecraft,
+                    color: Colors.green,
+                    size: 40,
+                  );
+                } else if (checkText.contains('playstation')) {
+                  leadingIcon = Icon(
+                    MdiIcons.sonyPlaystation,
+                    color: Colors.green,
+                    size: 40,
+                  );
+                } else {
+                  leadingIcon = Icon(
+                    MdiIcons.accountCircle,
+                    color: Colors.green,
+                    size: 40,
+                  );
+                }
                 break;
               case 1:
                 titleText = 'Mail Address';
@@ -154,11 +181,19 @@ class MainPageState extends State<MainPage> {
                 break;
               default:
                 titleText = 'Error';
-                leadingIcon = Icon(
-                  MdiIcons.accountCircle,
-                  color: Colors.green,
-                  size: 40,
-                );
+                if (password.platform.trim().toLowerCase().contains('google')) {
+                  leadingIcon = Icon(
+                    MdiIcons.google,
+                    color: Colors.green,
+                    size: 40,
+                  );
+                } else {
+                  leadingIcon = Icon(
+                    MdiIcons.accountCircle,
+                    color: Colors.green,
+                    size: 40,
+                  );
+                }
             }
             return ListTile(
               leading: leadingIcon,
@@ -172,6 +207,9 @@ class MainPageState extends State<MainPage> {
               ),
               onTap: () {
                 Animations.push(context, DisplayPassword(password));
+              },
+              onLongPress: () {
+                showMenu(context: context, position: null, items: null);
               },
             );
           },
