@@ -12,7 +12,7 @@ import 'package:password_strength/password_strength.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class DisplayPassword extends StatelessWidget {
-  DisplayPassword(Password password) {
+  DisplayPassword(Password password, {this.functionOnPop}) {
     DisplayPasswordValues.password = password;
     DisplayPasswordValues.passwordTextFieldController =
         TextEditingController(text: password.password);
@@ -27,6 +27,7 @@ class DisplayPassword extends StatelessWidget {
     DisplayPasswordValues.isEditingPassword = false;
     DisplayPasswordValues.isEditingNotes = false;
   }
+  void Function() functionOnPop;
 
   final FocusNode platformTextFieldFocusNode = FocusNode();
   final FocusNode usernameTextFieldFocusNode = FocusNode();
@@ -230,22 +231,40 @@ class DisplayPassword extends StatelessWidget {
                             notesTextFieldFocusNode.requestFocus();
                           },
                         ),
-                  Padding(padding: EdgeInsets.all(8)),
                   DisplayPasswordValues.password.passwordType ==
                           PasswordType.wlanPassword
-                      ? RaisedButton.icon(
-                          color: Colors.green,
-                          onPressed: () {
-                            Animations.push(
-                                context,
-                                DisplayQr(
-                                    'WIFI:T:WPA;S:${DisplayPasswordValues.password.username};P:${DisplayPasswordValues.password.password};;'));
-                          },
-                          icon: Icon(MdiIcons.qrcode, color: Colors.white),
-                          label: Text('Show QR',
-                              style: TextStyle(color: Colors.white)),
+                      ? Column(
+                          children: [
+                            RaisedButton.icon(
+                              color: Colors.green,
+                              onPressed: () {
+                                Animations.push(
+                                    context,
+                                    DisplayQr(
+                                        'WIFI:T:WPA;S:${DisplayPasswordValues.password.username};P:${DisplayPasswordValues.password.password};;'));
+                              },
+                              icon: Icon(MdiIcons.qrcode, color: Colors.white),
+                              label: Text('Show QR',
+                                  style: TextStyle(color: Colors.white)),
+                            ),
+                            Padding(padding: EdgeInsets.all(8)),
+                          ],
                         )
                       : Container(),
+                  Padding(padding: EdgeInsets.all(8)),
+                  RaisedButton.icon(
+                    color: Colors.green,
+                    onPressed: () {
+                      Values.passwords.removeAt(Values.passwords
+                          .indexOf(DisplayPasswordValues.password));
+                      Prefs.savePasswords(Values.passwords);
+                      if (functionOnPop != null) functionOnPop();
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(MdiIcons.delete, color: Colors.white),
+                    label: Text('Delete password',
+                        style: TextStyle(color: Colors.white)),
+                  )
                 ],
               ),
             ),
@@ -288,6 +307,7 @@ class DisplayPassword extends StatelessWidget {
                               .trimRight()
                               .trimLeft();
                       Prefs.savePasswords(Values.passwords);
+                      if (functionOnPop != null) functionOnPop();
                       DisplayPasswordValues.isEditingNotes = false;
                       DisplayPasswordValues.isEditingPassword = false;
                       DisplayPasswordValues.isEditingPlatform = false;

@@ -202,7 +202,8 @@ class MainPageState extends State<MainPage> {
                   ),
                 ),
                 onTap: () {
-                  Animations.push(context, DisplayPassword(password));
+                  Animations.push(context,
+                      DisplayPassword(password, functionOnPop: rebuild));
                 },
               ),
             );
