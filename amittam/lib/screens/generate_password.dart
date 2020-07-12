@@ -22,13 +22,18 @@ class GeneratePassword extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Divider(color: CustomColors.colorForeground, thickness: 2),
-                Text(
-                  GeneratePasswordValues.currentGenPassword,
-                  style: TextStyle(
-                    color: CustomColors.colorForeground,
-                    fontSize: GeneratePasswordValues.pwTextSize,
+                Container(
+                  height: 40,
+                  child: Center(
+                    child: Text(
+                      GeneratePasswordValues.currentGenPassword,
+                      style: TextStyle(
+                        color: CustomColors.colorForeground,
+                        fontSize: GeneratePasswordValues.pwTextSize,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
                 ),
                 Divider(color: CustomColors.colorForeground, thickness: 2),
                 Slider(
@@ -109,12 +114,18 @@ class GeneratePasswordValues {
   static bool usingNumbers = false;
 
   static void updatePwTextSize() {
-    if (currentSliderValue < 11)
+    if (currentSliderValue < 9)
       pwTextSize = 30;
-    else if (currentSliderValue < 21)
-      pwTextSize = 25;
-    else if (currentSliderValue < 27)
+    else if (currentSliderValue < 13)
+      pwTextSize = 28;
+    else if (currentSliderValue < 17)
+      pwTextSize = 26;
+    else if (currentSliderValue < 20)
+      pwTextSize = 24;
+    else if (currentSliderValue < 23)
       pwTextSize = 23;
+    else if (currentSliderValue < 27)
+      pwTextSize = 22;
     else
       pwTextSize = 18;
   }
