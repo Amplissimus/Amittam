@@ -124,33 +124,37 @@ class MainPageState extends State<MainPage> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         title: isSearching
-            ? TextField(
-                style: TextStyle(color: CustomColors.colorForeground),
-                focusNode: searchFieldFocusNode,
-                cursorColor: CustomColors.colorForeground,
-                decoration: InputDecoration(
-                  hintText: 'Search...',
-                  hintStyle: TextStyle(color: CustomColors.colorForeground),
-                  filled: true,
-                  fillColor: CustomColors.lightBackground,
-                ),
-                onChanged: (value) {
-                  Values.passwords = Prefs.getPasswords();
-                  String stringToCheck = value.trim().toLowerCase();
-                  List<Password> tempPasswords = [];
-                  for (Password pw in Values.passwords) {
-                    if (pw.username.toLowerCase().contains(stringToCheck) ||
-                        pw.platform.toLowerCase().contains(stringToCheck) ||
-                        pw.notes.toLowerCase().contains(stringToCheck)) {
-                      tempPasswords.add(pw);
+            ? AnimatedContainer(
+                duration: Duration(milliseconds: 150),
+                height: 50,
+                child: TextField(
+                  style: TextStyle(color: CustomColors.colorForeground),
+                  focusNode: searchFieldFocusNode,
+                  cursorColor: CustomColors.colorForeground,
+                  decoration: InputDecoration(
+                    hintText: 'Search...',
+                    hintStyle: TextStyle(color: CustomColors.colorForeground),
+                    filled: true,
+                    fillColor: CustomColors.lightBackground,
+                  ),
+                  onChanged: (value) {
+                    Values.passwords = Prefs.getPasswords();
+                    String stringToCheck = value.trim().toLowerCase();
+                    List<Password> tempPasswords = [];
+                    for (Password pw in Values.passwords) {
+                      if (pw.username.toLowerCase().contains(stringToCheck) ||
+                          pw.platform.toLowerCase().contains(stringToCheck) ||
+                          pw.notes.toLowerCase().contains(stringToCheck)) {
+                        tempPasswords.add(pw);
+                      }
                     }
-                  }
-                  tempPasswords.sort((a, b) => a.platform
-                      .toLowerCase()
-                      .compareTo(b.platform.toLowerCase()));
-                  Values.passwords = tempPasswords;
-                  rebuild();
-                },
+                    tempPasswords.sort((a, b) => a.platform
+                        .toLowerCase()
+                        .compareTo(b.platform.toLowerCase()));
+                    Values.passwords = tempPasswords;
+                    rebuild();
+                  },
+                ),
               )
             : Text(Strings.appTitle,
                 style: TextStyle(
