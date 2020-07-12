@@ -125,25 +125,45 @@ class MainPageState extends State<MainPage> {
         backgroundColor: Colors.transparent,
         title: isSearching
             ? TextField(
+                style: TextStyle(color: CustomColors.colorForeground),
                 focusNode: searchFieldFocusNode,
                 cursorColor: CustomColors.colorForeground,
                 decoration: InputDecoration(
                   hintText: 'Search...',
                   hintStyle: TextStyle(color: CustomColors.colorForeground),
                   filled: true,
-                  fillColor: Colors.grey[200],
+                  fillColor: CustomColors.lightBackground,
                 ),
+                onChanged: (value) {
+                  Values.passwords = Prefs.getPasswords();
+                  String stringToCheck = value.trim().toLowerCase();
+                  List<Password> tempPasswords = [];
+                  for (Password pw in Values.passwords) {
+                    if (pw.username.toLowerCase().contains(stringToCheck) ||
+                        pw.platform.toLowerCase().contains(stringToCheck) ||
+                        pw.notes.toLowerCase().contains(stringToCheck)) {
+                      tempPasswords.add(pw);
+                    }
+                  }
+                  tempPasswords.sort((a, b) => a.platform
+                      .toLowerCase()
+                      .compareTo(b.platform.toLowerCase()));
+                  Values.passwords = tempPasswords;
+                  rebuild();
+                },
               )
             : Text(Strings.appTitle,
                 style: TextStyle(
                     fontSize: 25, color: CustomColors.colorForeground)),
         actions: [
           IconButton(
-              icon: Icon(Icons.search, color: CustomColors.colorForeground),
-              onPressed: () {
-                setState(() => isSearching = !isSearching);
-                searchFieldFocusNode.requestFocus();
-              }),
+            icon: Icon(isSearching ? MdiIcons.magnifyClose : Icons.search,
+                color: CustomColors.colorForeground),
+            onPressed: () {
+              setState(() => isSearching = !isSearching);
+              if (isSearching) searchFieldFocusNode.requestFocus();
+            },
+          ),
         ],
       ),
       body: InkWell(
@@ -151,6 +171,10 @@ class MainPageState extends State<MainPage> {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () {
+          setState(() => Values.passwords = Prefs.getPasswords());
+          if (isSearching) {
+            setState(() => isSearching = false);
+          }
           FocusScopeNode currentFocus = FocusScope.of(context);
           if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
         },
