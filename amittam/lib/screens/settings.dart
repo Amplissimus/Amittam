@@ -49,7 +49,7 @@ class Settings extends StatelessWidget {
                     onTap: () => showAboutDialog(
                       context: context,
                       applicationName: 'Amittam',
-                      applicationVersion: '1.0.0',
+                      applicationVersion: '1.0.1',
                       applicationIcon: ColorFiltered(
                         colorFilter: ColorFilter.srgbToLinearGamma(),
                         child:
