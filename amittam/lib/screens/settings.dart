@@ -41,6 +41,30 @@ class Settings extends StatelessWidget {
                   value: Prefs.fastLogin,
                   onChanged: (value) => setState(() => Prefs.fastLogin = value),
                 ),
+                Card(
+                  color: CustomColors.lightBackground,
+                  child: ListTile(
+                    title: Text('Show App information',
+                        style: TextStyle(color: CustomColors.colorForeground)),
+                    onTap: () => showAboutDialog(
+                      context: context,
+                      applicationName: 'Amittam',
+                      applicationVersion: '1.0.0',
+                      applicationIcon: ColorFiltered(
+                        colorFilter: ColorFilter.srgbToLinearGamma(),
+                        child:
+                            Image.asset('assets/images/logo.png', height: 40),
+                      ),
+                      children: [
+                        Text('Amittam is an open source password '
+                            'manager which stores all data locally, which is '
+                            'encrypted by using a master password which means '
+                            'that it should only be possible to decrypt the '
+                            'data by knowing the master password.'),
+                      ],
+                    ),
+                  ),
+                ),
                 RaisedButton.icon(
                   color: Colors.green,
                   onPressed: () {
