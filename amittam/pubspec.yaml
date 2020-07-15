@@ -38,6 +38,8 @@ dev_dependencies:
   flutter_launcher_icons: ^0.7.5
   flutter_test:
     sdk: flutter
+  autofill_service:
+    path: autofill_service/
 
 flutter_icons:
   ios: true
