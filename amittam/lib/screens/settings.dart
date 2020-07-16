@@ -5,6 +5,7 @@ import 'package:Amittam/main.dart';
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:autofill_service/autofill_service.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class Settings extends StatelessWidget {
@@ -50,11 +51,13 @@ class Settings extends StatelessWidget {
                       context: context,
                       applicationName: 'Amittam',
                       applicationVersion: '1.0.1',
-                      applicationIcon: ColorFiltered(
-                        colorFilter: ColorFilter.srgbToLinearGamma(),
-                        child:
-                            Image.asset('assets/images/logo.png', height: 40),
-                      ),
+                      applicationIcon: CustomColors.isDarkMode
+                          ? ColorFiltered(
+                              colorFilter: ColorFilter.srgbToLinearGamma(),
+                              child: Image.asset('assets/images/logo.png',
+                                  height: 40),
+                            )
+                          : Image.asset('assets/images/logo.png', height: 40),
                       children: [
                         Text('Amittam is an open source password '
                             'manager which stores all data locally, which is '
@@ -63,6 +66,16 @@ class Settings extends StatelessWidget {
                             'data by knowing the master password.'),
                       ],
                     ),
+                  ),
+                ),
+                Card(
+                  color: CustomColors.lightBackground,
+                  child: ListTile(
+                    title: Text('Switch Autofill Service',
+                        style: TextStyle(color: CustomColors.colorForeground)),
+                    onTap: () async {
+                      AutofillService().requestSetAutofillService();
+                    },
                   ),
                 ),
                 RaisedButton.icon(

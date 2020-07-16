@@ -13,7 +13,7 @@ enum AutofillServiceStatus {
 }
 
 class AutofillPreferences {
-  AutofillPreferences({this.enableDebug});
+  AutofillPreferences({this.enableDebug = false});
 
   factory AutofillPreferences.fromJson(Map<dynamic, dynamic> json) =>
       AutofillPreferences(enableDebug: json['enableDebug'] as bool);

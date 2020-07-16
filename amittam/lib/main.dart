@@ -12,8 +12,10 @@ import 'package:Amittam/screens/settings.dart';
 import 'package:Amittam/values.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:autofill_service/autofill_service.dart';
 
 void main() {
   runApp(SplashScreen());
@@ -36,8 +38,16 @@ class SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     updateBrightness();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
+      print(await AutofillService().resultWithDataset(
+          label: 'm.facebook.com',
+          username: 'HolgerFurzi',
+          password: '200000'));
       await Prefs.initialize();
       Navigator.pushReplacement(
         context,
