@@ -44,10 +44,6 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     ]);
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
-      print(await AutofillService().resultWithDataset(
-          label: 'm.facebook.com',
-          username: 'HolgerFurzi',
-          password: '200000'));
       await Prefs.initialize();
       Navigator.pushReplacement(
         context,
