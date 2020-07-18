@@ -5,7 +5,6 @@ import 'package:Amittam/main.dart';
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:autofill_service/autofill_service.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class Settings extends StatelessWidget {
@@ -66,16 +65,6 @@ class Settings extends StatelessWidget {
                             'data by knowing the master password.'),
                       ],
                     ),
-                  ),
-                ),
-                Card(
-                  color: CustomColors.lightBackground,
-                  child: ListTile(
-                    title: Text('Switch Autofill Service',
-                        style: TextStyle(color: CustomColors.colorForeground)),
-                    onTap: () async {
-                      AutofillService().requestSetAutofillService();
-                    },
                   ),
                 ),
                 RaisedButton.icon(
