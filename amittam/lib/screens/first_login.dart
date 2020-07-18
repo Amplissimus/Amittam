@@ -142,6 +142,7 @@ class FirstLoginPageState extends State<FirstLoginPage> {
                 );
               },
             );
+            return;
           }
           try {
             Prefs.setMasterPassword(masterPWTextFieldController.text.trim());
