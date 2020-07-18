@@ -2,14 +2,11 @@ import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/libs/prefslib.dart';
 import 'package:Amittam/libs/uilib.dart';
 import 'package:Amittam/main.dart';
-import 'package:Amittam/objects/password.dart';
 import 'package:Amittam/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
-
-import 'package:encrypt/encrypt.dart' as crypt;
 
 class FirstLogin extends StatelessWidget {
   @override
@@ -29,7 +26,8 @@ class FirstLoginPageState extends State<FirstLoginPage> {
   GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
   TextEditingController masterPWTextFieldController = TextEditingController();
   String masterPWTextFieldErrorString;
-  bool masterPWTextFieldInputHidden = true;
+  bool masterPWTextFieldInputHidden = false;
+  bool masterPWConfirmed = false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +69,7 @@ class FirstLoginPageState extends State<FirstLoginPage> {
                   onChanged: (textFieldText) {
                     setState(() => masterPWTextFieldErrorString = null);
                     String value = textFieldText.trim();
-
                     double strength = estimatePasswordStrength(value);
-
                     if (strength < 0.3)
                       setState(() => passwordStrengthColor = Colors.grey);
                     else if (strength < 0.7)
@@ -100,6 +96,7 @@ class FirstLoginPageState extends State<FirstLoginPage> {
         hoverColor: Colors.transparent,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
+        focusColor: Colors.transparent,
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
           if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
@@ -114,6 +111,37 @@ class FirstLoginPageState extends State<FirstLoginPage> {
             setState(() =>
                 masterPWTextFieldErrorString = 'Password not strong enough!');
             return;
+          }
+          if (!masterPWConfirmed) {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  backgroundColor: CustomColors.colorBackground,
+                  title: Text('Confirm Master Password',
+                      style: TextStyle(color: CustomColors.colorForeground)),
+                  content: Text(
+                      'Please confirm that "${masterPWTextFieldController.text.trim()}"'
+                      'is your correct password!',
+                      style: TextStyle(color: CustomColors.colorForeground)),
+                  actions: [
+                    FlatButton(
+                      splashColor: CustomColors.lightForeground,
+                      onPressed: () {
+                        masterPWConfirmed = true;
+                        Navigator.pop(context);
+                      },
+                      child: Text('CONFRIM'),
+                    ),
+                    FlatButton(
+                      splashColor: CustomColors.lightForeground,
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('CANCEL'),
+                    ),
+                  ],
+                );
+              },
+            );
           }
           try {
             Prefs.setMasterPassword(masterPWTextFieldController.text.trim());
