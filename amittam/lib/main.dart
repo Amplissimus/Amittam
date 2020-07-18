@@ -310,6 +310,15 @@ class MainPageState extends State<MainPage> {
             child: Icon(Icons.settings),
             onTap: () => Animations.push(context, Settings()),
           ),
+          SpeedDialChild(
+            label: 'Log out',
+            child: Icon(MdiIcons.logout),
+            onTap: () {
+              Values.passwords = [];
+              Password.key = null;
+              Animations.pushReplacement(context, LoginPage());
+            },
+          ),
         ],
       ),
     );
