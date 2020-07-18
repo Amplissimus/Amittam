@@ -14,6 +14,7 @@ class GeneratePassword extends StatelessWidget {
       GeneratePasswordValues.regenPassword();
     return StatefulBuilder(
       builder: (context, setState) {
+        Values.afterBrightnessUpdate = () => setState(() {});
         return Scaffold(
           key: GeneratePasswordValues.scaffoldKey,
           backgroundColor: CustomColors.colorBackground,
@@ -28,7 +29,8 @@ class GeneratePassword extends StatelessWidget {
             ),
           ),
           body: Container(
-            child: Column(
+            margin: EdgeInsets.all(10),
+            child: ListView(
               children: <Widget>[
                 Divider(color: CustomColors.colorForeground, thickness: 2),
                 Container(
@@ -80,29 +82,30 @@ class GeneratePassword extends StatelessWidget {
                   },
                 ),
                 Divider(color: CustomColors.colorForeground, thickness: 2),
-                RaisedButton.icon(
-                  color: Colors.green,
-                  onPressed: () {
-                    Clipboard.setData(ClipboardData(
-                        text: GeneratePasswordValues.currentGenPassword));
-                    GeneratePasswordValues.scaffoldKey.currentState
-                        ?.showSnackBar(
-                      SnackBar(
-                        backgroundColor: CustomColors.colorBackground,
-                        content: Text(
-                          'Copied password to clipboard!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: CustomColors.colorForeground),
+                Card(
+                  color: CustomColors.lightBackground,
+                  child: ListTile(
+                    leading: Icon(MdiIcons.contentCopy, color: Colors.green),
+                    title: Text('Copy password to clipboard',
+                        style: TextStyle(color: CustomColors.colorForeground)),
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(
+                          text: GeneratePasswordValues.currentGenPassword));
+                      GeneratePasswordValues.scaffoldKey.currentState
+                          ?.showSnackBar(
+                        SnackBar(
+                          backgroundColor: CustomColors.colorBackground,
+                          content: Text(
+                            'Copied password to clipboard!',
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(color: CustomColors.colorForeground),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  icon: Icon(MdiIcons.contentCopy, color: Colors.white),
-                  label: Text(
-                    'Copy password to clipboard',
-                    style: TextStyle(color: Colors.white),
+                      );
+                    },
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -115,7 +118,7 @@ class GeneratePassword extends StatelessWidget {
 class GeneratePasswordValues {
   static final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
-  static double currentSliderValue = 1;
+  static double currentSliderValue = 16;
   static String currentGenPassword = '0';
   static double pwTextSize = 23;
 

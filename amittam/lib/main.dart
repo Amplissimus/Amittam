@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:Amittam/libs/animationlib.dart';
 import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/libs/prefslib.dart';
@@ -36,11 +38,12 @@ class SplashScreenPage extends StatefulWidget {
 class SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
-    updateBrightness();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    Values.updateBrigtnessTimer =
+        Timer.periodic(Duration(seconds: 30), (timer) => updateBrightness());
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
@@ -119,7 +122,15 @@ class MainPageState extends State<MainPage> {
   }
 
   @override
+  void dispose() {
+    if (Values.updateBrigtnessTimer != null)
+      Values.updateBrigtnessTimer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Values.afterBrightnessUpdate = rebuild;
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     return Scaffold(
@@ -275,6 +286,7 @@ class MainPageState extends State<MainPage> {
                     ),
                   ),
                   onTap: () {
+                    Values.afterBrightnessUpdate = null;
                     Animations.push(context,
                         DisplayPassword(password, functionOnPop: rebuild));
                   },
@@ -296,18 +308,26 @@ class MainPageState extends State<MainPage> {
           SpeedDialChild(
             label: 'Generate password',
             child: Icon(MdiIcons.lockQuestion),
-            onTap: () => Animations.push(context, GeneratePassword()),
+            onTap: () {
+              Values.afterBrightnessUpdate = null;
+              Animations.push(context, GeneratePassword());
+            },
           ),
           SpeedDialChild(
             label: 'Add password',
             child: Icon(Icons.add),
-            onTap: () => Animations.push(
-                context, AddPassword(functionAfterSave: rebuild)),
+            onTap: () {
+              Values.afterBrightnessUpdate = null;
+              Animations.push(context, AddPassword());
+            },
           ),
           SpeedDialChild(
             label: 'Settings',
             child: Icon(Icons.settings),
-            onTap: () => Animations.push(context, Settings()),
+            onTap: () {
+              Values.afterBrightnessUpdate = null;
+              Animations.push(context, Settings());
+            },
           ),
           SpeedDialChild(
             label: 'Log out',

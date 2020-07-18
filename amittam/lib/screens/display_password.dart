@@ -38,6 +38,7 @@ class DisplayPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return StatefulBuilder(
       builder: (context, setState) {
+        Values.afterBrightnessUpdate = () => setState(() {});
         String value =
             DisplayPasswordValues.passwordTextFieldController.text.trim();
         double strength = estimatePasswordStrength(value);

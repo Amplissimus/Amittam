@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:Amittam/objects/password.dart';
 import 'package:flutter/material.dart';
 
@@ -32,4 +34,6 @@ class Strings {
 
 class Values {
   static List<Password> passwords = [];
+  static void Function() afterBrightnessUpdate;
+  static Timer updateBrigtnessTimer;
 }

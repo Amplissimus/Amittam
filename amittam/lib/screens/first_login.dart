@@ -45,6 +45,7 @@ class FirstLoginPageState extends State<FirstLoginPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 customTextFormField(
+                  formatters: [BlacklistingTextInputFormatter(' ')],
                   suffixIcon: IconButton(
                     splashColor: Colors.transparent,
                     hoverColor: Colors.transparent,
@@ -122,21 +123,27 @@ class FirstLoginPageState extends State<FirstLoginPage> {
                       style: TextStyle(color: CustomColors.colorForeground)),
                   content: Text(
                       'Please confirm that "${masterPWTextFieldController.text.trim()}"'
-                      'is your correct password!',
+                      ' is your correct password!',
                       style: TextStyle(color: CustomColors.colorForeground)),
                   actions: [
+                    FlatButton(
+                      splashColor: CustomColors.lightForeground,
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        'CANCEL',
+                        style: TextStyle(color: CustomColors.colorForeground),
+                      ),
+                    ),
                     FlatButton(
                       splashColor: CustomColors.lightForeground,
                       onPressed: () {
                         masterPWConfirmed = true;
                         Navigator.pop(context);
                       },
-                      child: Text('CONFRIM'),
-                    ),
-                    FlatButton(
-                      splashColor: CustomColors.lightForeground,
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('CANCEL'),
+                      child: Text(
+                        'CONFRIM',
+                        style: TextStyle(color: CustomColors.colorForeground),
+                      ),
                     ),
                   ],
                 );

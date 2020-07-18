@@ -20,6 +20,7 @@ class Settings extends StatelessWidget {
     updateBrightness();
     return StatefulBuilder(
       builder: (context, setState) {
+        Values.afterBrightnessUpdate = () => setState(() {});
         return Scaffold(
           backgroundColor: CustomColors.colorBackground,
           appBar: customAppBar(
@@ -44,6 +45,7 @@ class Settings extends StatelessWidget {
                 Card(
                   color: CustomColors.lightBackground,
                   child: ListTile(
+                    leading: Icon(Icons.info_outline, color: Colors.green),
                     title: Text('Show App information',
                         style: TextStyle(color: CustomColors.colorForeground)),
                     onTap: () => showAboutDialog(
@@ -67,120 +69,123 @@ class Settings extends StatelessWidget {
                     ),
                   ),
                 ),
-                RaisedButton.icon(
-                  color: Colors.green,
-                  onPressed: () {
-                    confirmTextFieldController.text = '';
-                    passwordTextFieldController.text = '';
-                    SettingsValues.confirmTextFieldErrorText = null;
-                    SettingsValues.passwordTextFieldErrorText = null;
-                    showDialog(
-                      barrierDismissible: true,
-                      context: context,
-                      builder: (context) => StatefulBuilder(
-                        builder: (context, setAlState) {
-                          return standardDialog(
-                            title: 'Delete App-Data',
-                            actions: [
-                              FlatButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text(
-                                  'CANCEL',
-                                  style: TextStyle(
-                                    color: CustomColors.colorForeground,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                              FlatButton(
-                                onPressed: () {
-                                  if (confirmTextFieldController.text ==
-                                          'CONFIRM' &&
-                                      Prefs.masterPasswordIsValid(
-                                          passwordTextFieldController.text)) {
-                                    Prefs.preferences.clear();
-                                    SystemNavigator.pop();
-                                  }
-                                },
-                                child: Text(
-                                  'CONFIRM',
-                                  style: TextStyle(
-                                    color: CustomColors.colorForeground,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                            ],
-                            content: InkWell(
-                              onTap: () {
-                                FocusScopeNode currentFocus =
-                                    FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus)
-                                  currentFocus.unfocus();
-                              },
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Please type "CONFIRM" in the Textbox below and '
-                                      'then confirm deleting the App-Data '
-                                      'using your master password.',
-                                      style: TextStyle(
-                                        color: CustomColors.colorForeground,
-                                        fontSize: 16,
-                                      ),
+                Card(
+                  color: CustomColors.lightBackground,
+                  child: ListTile(
+                    leading: Icon(Icons.delete, color: Colors.green),
+                    title: Text('Delete app data',
+                        style: TextStyle(color: CustomColors.colorForeground)),
+                    onTap: () {
+                      confirmTextFieldController.text = '';
+                      passwordTextFieldController.text = '';
+                      SettingsValues.confirmTextFieldErrorText = null;
+                      SettingsValues.passwordTextFieldErrorText = null;
+                      showDialog(
+                        barrierDismissible: true,
+                        context: context,
+                        builder: (context) => StatefulBuilder(
+                          builder: (context, setAlState) {
+                            return standardDialog(
+                              title: 'Delete App-Data',
+                              actions: [
+                                FlatButton(
+                                  splashColor: CustomColors.colorForeground,
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text(
+                                    'CANCEL',
+                                    style: TextStyle(
+                                      color: CustomColors.colorForeground,
                                     ),
-                                    Padding(padding: EdgeInsets.all(8)),
-                                    customTextFormField(
-                                      hint: 'Requested text',
-                                      controller: confirmTextFieldController,
-                                      key: confirmTextFieldKey,
-                                      errorText: SettingsValues
-                                          .confirmTextFieldErrorText,
-                                      onChanged: (value) {
-                                        setAlState(() => SettingsValues
-                                            .confirmTextFieldErrorText = null);
-                                        if (value.trim().isEmpty)
+                                  ),
+                                ),
+                                FlatButton(
+                                  splashColor: CustomColors.colorForeground,
+                                  onPressed: () {
+                                    if (confirmTextFieldController.text ==
+                                            'CONFIRM' &&
+                                        Prefs.masterPasswordIsValid(
+                                            passwordTextFieldController.text)) {
+                                      Prefs.preferences.clear();
+                                      SystemNavigator.pop();
+                                    }
+                                  },
+                                  child: Text(
+                                    'CONFIRM',
+                                    style: TextStyle(
+                                      color: CustomColors.colorForeground,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              content: InkWell(
+                                onTap: () {
+                                  FocusScopeNode currentFocus =
+                                      FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus)
+                                    currentFocus.unfocus();
+                                },
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        'Please type "CONFIRM" in the Textbox below and '
+                                        'then confirm deleting the App-Data '
+                                        'using your master password.',
+                                        style: TextStyle(
+                                          color: CustomColors.colorForeground,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Padding(padding: EdgeInsets.all(8)),
+                                      customTextFormField(
+                                        hint: 'Requested text',
+                                        controller: confirmTextFieldController,
+                                        key: confirmTextFieldKey,
+                                        errorText: SettingsValues
+                                            .confirmTextFieldErrorText,
+                                        onChanged: (value) {
                                           setAlState(() => SettingsValues
                                                   .confirmTextFieldErrorText =
-                                              'Field cannot be empty!');
-                                      },
-                                    ),
-                                    Padding(padding: EdgeInsets.all(8)),
-                                    customTextFormField(
-                                      hint: 'Enter Masterpassword',
-                                      controller: passwordTextFieldController,
-                                      key: passwordTextFieldKey,
-                                      errorText: SettingsValues
-                                          .passwordTextFieldErrorText,
-                                      onChanged: (value) {
-                                        setAlState(() => SettingsValues
-                                            .passwordTextFieldErrorText = null);
-                                        if (value.trim().isEmpty)
+                                              null);
+                                          if (value.trim().isEmpty)
+                                            setAlState(() => SettingsValues
+                                                    .confirmTextFieldErrorText =
+                                                'Field cannot be empty!');
+                                        },
+                                      ),
+                                      Padding(padding: EdgeInsets.all(8)),
+                                      customTextFormField(
+                                        hint: 'Enter Masterpassword',
+                                        controller: passwordTextFieldController,
+                                        key: passwordTextFieldKey,
+                                        errorText: SettingsValues
+                                            .passwordTextFieldErrorText,
+                                        onChanged: (value) {
                                           setAlState(() => SettingsValues
                                                   .passwordTextFieldErrorText =
-                                              'Field cannot be empty!');
-                                      },
-                                    ),
-                                  ],
+                                              null);
+                                          if (value.trim().isEmpty)
+                                            setAlState(() => SettingsValues
+                                                    .passwordTextFieldErrorText =
+                                                'Field cannot be empty!');
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                                hoverColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                focusColor: Colors.transparent,
                               ),
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  icon: Icon(MdiIcons.delete, color: Colors.white),
-                  label: Text(
-                    'Delete App-Data',
-                    style: TextStyle(color: Colors.white),
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
-                )
+                ),
               ],
             ),
           ),

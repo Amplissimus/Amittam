@@ -8,12 +8,13 @@ Widget customAppBar({
   List<Widget> actions,
   double fontSize = 25,
   Widget leading,
+  Color backgroundColor = Colors.transparent,
 }) {
   return AppBar(
     leading: leading,
     actions: actions,
     elevation: 0,
-    backgroundColor: Colors.transparent,
+    backgroundColor: backgroundColor,
     centerTitle: centerTitle,
     title: Text(
       title,

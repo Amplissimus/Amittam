@@ -37,6 +37,7 @@ class AddPassword extends StatelessWidget {
     AddPasswordValues.updateUsernameText();
     return StatefulBuilder(
       builder: (context, setState) {
+        Values.afterBrightnessUpdate = () => setState(() {});
         return Scaffold(
           backgroundColor: CustomColors.colorBackground,
           appBar: customAppBar(
@@ -255,6 +256,7 @@ class AddPasswordValues {
     'Online Account',
     'E-Mail Account',
     'WLAN Password',
+    'Other',
   ];
   static int get pwTypeIndex {
     if (!passwordTypes.contains(currentPWType)) return -1;
@@ -272,6 +274,9 @@ class AddPasswordValues {
         break;
       case 2:
         usernameText = 'SSID';
+        break;
+      case 3:
+        usernameText = 'Context';
         break;
       default:
         usernameText = 'Username';
