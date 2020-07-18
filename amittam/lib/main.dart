@@ -42,8 +42,6 @@ class SplashScreenPageState extends State<SplashScreenPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    Values.updateBrigtnessTimer =
-        Timer.periodic(Duration(seconds: 30), (timer) => updateBrightness());
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
@@ -130,6 +128,8 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    Values.updateBrigtnessTimer =
+        Timer.periodic(Duration(seconds: 30), (timer) => updateBrightness());
     Values.afterBrightnessUpdate = rebuild;
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
