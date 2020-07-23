@@ -1,6 +1,7 @@
 import 'package:Amittam/libs/lib.dart';
 import 'package:Amittam/objects/password.dart';
 import 'package:Amittam/values.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:encrypt/encrypt.dart' as crypt;
 
@@ -15,6 +16,10 @@ class Prefs {
   static bool get firstLogin => getBool('first_login', true);
   static set fastLogin(bool b) => preferences.setBool('fast_login', b);
   static bool get fastLogin => getBool('fast_login', true);
+  static set accentColorString(String s) =>
+      preferences.setString('accent_color', s);
+  static String get accentColorString => getString('accent_color', 'green');
+  static Color get accentColor => Colors.green;
 
   static void setMasterPassword(String password) {
     Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(password));
@@ -67,8 +72,14 @@ class Prefs {
     Values.passwords = passwords;
   }
 
-  static getBool(String key, bool standardValue) {
+  static bool getBool(String key, bool standardValue) {
     bool returnValue = preferences.getBool(key);
+    if (returnValue == null) return standardValue;
+    return returnValue;
+  }
+
+  static String getString(String key, String standardValue) {
+    String returnValue = preferences.getString(key);
     if (returnValue == null) return standardValue;
     return returnValue;
   }

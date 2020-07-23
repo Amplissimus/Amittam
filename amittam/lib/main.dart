@@ -14,6 +14,7 @@ import 'package:Amittam/screens/settings.dart';
 import 'package:Amittam/values.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -25,7 +26,6 @@ void main() {
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    updateBrightness();
     return MaterialApp(home: SplashScreenPage());
   }
 }
@@ -42,6 +42,8 @@ class SplashScreenPageState extends State<SplashScreenPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    SchedulerBinding.instance.window.onPlatformBrightnessChanged =
+        updateBrightness;
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
@@ -86,7 +88,6 @@ class SplashScreenPageState extends State<SplashScreenPage> {
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    updateBrightness();
     return MaterialApp(
       builder: (context, child) {
         return ScrollConfiguration(behavior: MainBehavior(), child: child);
@@ -120,16 +121,7 @@ class MainPageState extends State<MainPage> {
   }
 
   @override
-  void dispose() {
-    if (Values.updateBrigtnessTimer != null)
-      Values.updateBrigtnessTimer.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    Values.updateBrigtnessTimer =
-        Timer.periodic(Duration(seconds: 30), (timer) => updateBrightness());
     Values.afterBrightnessUpdate = rebuild;
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
@@ -302,10 +294,12 @@ class MainPageState extends State<MainPage> {
         ),
       ),
       floatingActionButton: SpeedDial(
+        backgroundColor: Colors.green,
         overlayOpacity: 0,
         animatedIcon: AnimatedIcons.menu_close,
         children: [
           SpeedDialChild(
+            backgroundColor: Colors.green,
             label: 'Generate password',
             child: Icon(MdiIcons.lockQuestion),
             onTap: () {
@@ -314,6 +308,7 @@ class MainPageState extends State<MainPage> {
             },
           ),
           SpeedDialChild(
+            backgroundColor: Colors.green,
             label: 'Add password',
             child: Icon(Icons.add),
             onTap: () {
@@ -322,6 +317,7 @@ class MainPageState extends State<MainPage> {
             },
           ),
           SpeedDialChild(
+            backgroundColor: Colors.green,
             label: 'Settings',
             child: Icon(Icons.settings),
             onTap: () {
@@ -330,6 +326,7 @@ class MainPageState extends State<MainPage> {
             },
           ),
           SpeedDialChild(
+            backgroundColor: Colors.green,
             label: 'Log out',
             child: Icon(MdiIcons.logout),
             onTap: () {

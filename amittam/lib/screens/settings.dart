@@ -17,7 +17,6 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    updateBrightness();
     return StatefulBuilder(
       builder: (context, setState) {
         Values.afterBrightnessUpdate = () => setState(() {});
@@ -182,6 +181,22 @@ class Settings extends StatelessWidget {
                             );
                           },
                         ),
+                      );
+                    },
+                  ),
+                ),
+                Card(
+                  color: CustomColors.lightBackground,
+                  child: ListTile(
+                    leading: Icon(MdiIcons.palette, color: Colors.green),
+                    title: Text('Select new accent color',
+                        style: TextStyle(color: CustomColors.colorForeground)),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog();
+                        },
                       );
                     },
                   ),

@@ -6,24 +6,16 @@ import 'package:flutter/material.dart';
 class CustomColors {
   static bool isDarkMode = false;
 
-  static Color colorForeground = Colors.black;
-  static Color colorBackground = Colors.white;
-  static Color lightBackground = Color.fromRGBO(220, 220, 220, 1);
-  static Color lightForeground = Color.fromRGBO(45, 45, 45, 1);
+  static Color get colorForeground => isDarkMode ? Colors.white : Colors.black;
+  static Color get colorBackground => isDarkMode ? Colors.black : Colors.white;
+  static Color get lightBackground => isDarkMode
+      ? Color.fromRGBO(45, 45, 45, 1)
+      : Color.fromRGBO(220, 220, 220, 1);
+  static Color get lightForeground => isDarkMode
+      ? Color.fromRGBO(220, 220, 220, 1)
+      : Color.fromRGBO(45, 45, 45, 1);
 
   static void setMode({@required bool darkMode}) {
-    if (darkMode == isDarkMode) return;
-    if (darkMode) {
-      colorBackground = Colors.black;
-      colorForeground = Colors.white;
-      lightBackground = Color.fromRGBO(45, 45, 45, 1);
-      lightForeground = Color.fromRGBO(220, 220, 220, 1);
-    } else {
-      colorForeground = Colors.black;
-      colorBackground = Colors.white;
-      lightBackground = Color.fromRGBO(220, 220, 220, 1);
-      lightForeground = Color.fromRGBO(45, 45, 45, 1);
-    }
     isDarkMode = darkMode;
   }
 }
@@ -35,5 +27,4 @@ class Strings {
 class Values {
   static List<Password> passwords = [];
   static void Function() afterBrightnessUpdate;
-  static Timer updateBrigtnessTimer;
 }

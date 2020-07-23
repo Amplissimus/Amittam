@@ -13,7 +13,6 @@ import 'package:password_strength/password_strength.dart';
 class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    updateBrightness();
     return MaterialApp(home: LoginPage());
   }
 }
@@ -35,6 +34,7 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     masterPWTextFieldController.text = '';
+    Values.afterBrightnessUpdate = () => setState(() {});
     super.initState();
     masterPwTextFieldFocusNode.requestFocus();
   }
@@ -85,6 +85,7 @@ class LoginPageState extends State<LoginPage> {
                       return;
                     } else if (Prefs.masterPasswordIsValid(text)) {
                       Values.passwords = Prefs.getPasswords();
+                      Values.afterBrightnessUpdate = null;
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

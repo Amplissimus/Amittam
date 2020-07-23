@@ -16,6 +16,44 @@ String errorString(dynamic e) {
   return e.toString();
 }
 
+Color stringToColor(String string, {Color defaultValue = Colors.green}) {
+  Color returnValue;
+  string = string.toLowerCase();
+  switch (string) {
+    case 'green':
+      returnValue = Colors.green;
+      break;
+    case 'red':
+      returnValue = Colors.red;
+      break;
+    case 'blue':
+      returnValue = Colors.blue;
+      break;
+    case 'orange':
+      returnValue = Colors.orange;
+      break;
+    case 'yellow':
+      returnValue = Colors.yellow;
+      break;
+    case 'brown':
+      returnValue = Colors.brown;
+      break;
+    case 'cyan':
+      returnValue = Colors.cyan;
+      break;
+    case 'pink':
+      returnValue = Colors.pink;
+      break;
+    case 'grey':
+      returnValue = Colors.grey;
+      break;
+    default:
+      returnValue = defaultValue;
+      break;
+  }
+  return returnValue;
+}
+
 class Choice {
   const Choice({this.title, this.icon});
 

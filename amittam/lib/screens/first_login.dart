@@ -11,7 +11,6 @@ import 'package:password_strength/password_strength.dart';
 class FirstLogin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    updateBrightness();
     return MaterialApp(home: FirstLoginPage());
   }
 }
@@ -28,6 +27,12 @@ class FirstLoginPageState extends State<FirstLoginPage> {
   String masterPWTextFieldErrorString;
   bool masterPWTextFieldInputHidden = false;
   bool masterPWConfirmed = false;
+
+  @override
+  void initState() {
+    Values.afterBrightnessUpdate = () => setState(() {});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +164,7 @@ class FirstLoginPageState extends State<FirstLoginPage> {
             return;
           }
           Prefs.firstLogin = false;
+          Values.afterBrightnessUpdate = null;
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
