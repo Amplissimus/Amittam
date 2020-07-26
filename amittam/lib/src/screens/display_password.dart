@@ -1,10 +1,10 @@
-import 'package:Amittam/libs/animationlib.dart';
-import 'package:Amittam/libs/lib.dart';
-import 'package:Amittam/libs/prefslib.dart';
-import 'package:Amittam/libs/uilib.dart';
-import 'package:Amittam/objects/password.dart';
-import 'package:Amittam/screens/display_qr.dart';
-import 'package:Amittam/values.dart';
+import 'package:Amittam/src/libs/animationlib.dart';
+import 'package:Amittam/src/libs/lib.dart';
+import 'package:Amittam/src/libs/prefslib.dart';
+import 'package:Amittam/src/libs/uilib.dart';
+import 'package:Amittam/src/objects/password.dart';
+import 'package:Amittam/src/screens/display_qr.dart';
+import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:Amittam/main.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -27,7 +27,7 @@ class DisplayPassword extends StatelessWidget {
     DisplayPasswordValues.isEditingPassword = false;
     DisplayPasswordValues.isEditingNotes = false;
   }
-  void Function() functionOnPop;
+  final void Function() functionOnPop;
 
   final FocusNode platformTextFieldFocusNode = FocusNode();
   final FocusNode usernameTextFieldFocusNode = FocusNode();

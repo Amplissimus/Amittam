@@ -1,6 +1,6 @@
-import 'package:Amittam/libs/lib.dart';
-import 'package:Amittam/objects/password.dart';
-import 'package:Amittam/values.dart';
+import 'package:Amittam/src/libs/lib.dart';
+import 'package:Amittam/src/objects/password.dart';
+import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:encrypt/encrypt.dart' as crypt;

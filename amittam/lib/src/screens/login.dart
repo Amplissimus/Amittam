@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:Amittam/libs/lib.dart';
-import 'package:Amittam/libs/prefslib.dart';
-import 'package:Amittam/libs/uilib.dart';
-import 'package:Amittam/values.dart';
+import 'package:Amittam/src/libs/lib.dart';
+import 'package:Amittam/src/libs/prefslib.dart';
+import 'package:Amittam/src/libs/uilib.dart';
+import 'package:Amittam/src/values.dart';
 import 'package:Amittam/main.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

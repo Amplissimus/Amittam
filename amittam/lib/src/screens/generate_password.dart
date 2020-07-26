@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:Amittam/libs/uilib.dart';
-import 'package:Amittam/values.dart';
+import 'package:Amittam/src/libs/uilib.dart';
+import 'package:Amittam/src/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

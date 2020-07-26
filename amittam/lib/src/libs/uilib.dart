@@ -1,4 +1,4 @@
-import 'package:Amittam/values.dart';
+import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
