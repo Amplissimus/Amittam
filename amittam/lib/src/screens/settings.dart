@@ -192,12 +192,8 @@ class Settings extends StatelessWidget {
                     title: Text('Select new accent color',
                         style: TextStyle(color: CustomColors.colorForeground)),
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog();
-                        },
-                      );
+                      Scaffold.of(context).showSnackBar(
+                          SnackBar(content: Text('Not implemented yet!')));
                     },
                   ),
                 ),

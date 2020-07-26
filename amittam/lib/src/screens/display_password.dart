@@ -244,35 +244,40 @@ class DisplayPassword extends StatelessWidget {
                       ? Column(
                           children: [
                             Padding(padding: EdgeInsets.all(8)),
-                            RaisedButton.icon(
-                              color: Colors.green,
-                              onPressed: () {
-                                Animations.push(
-                                    context,
-                                    DisplayQr(
-                                        'WIFI:T:WPA;S:${DisplayPasswordValues.password.username};P:${DisplayPasswordValues.password.password};;'));
-                              },
-                              icon: Icon(MdiIcons.qrcode, color: Colors.white),
-                              label: Text('Show QR',
-                                  style: TextStyle(color: Colors.white)),
+                            Card(
+                              color: CustomColors.lightBackground,
+                              child: ListTile(
+                                leading:
+                                    Icon(MdiIcons.qrcode, color: Colors.green),
+                                title: Text('Show QR',
+                                    style: TextStyle(color: Colors.white)),
+                                onTap: () {
+                                  Animations.push(
+                                      context,
+                                      DisplayQr(
+                                          'WIFI:T:WPA;S:${DisplayPasswordValues.password.username};P:${DisplayPasswordValues.password.password};;'));
+                                },
+                              ),
                             ),
                           ],
                         )
                       : Container(),
                   Padding(padding: EdgeInsets.all(2)),
-                  RaisedButton.icon(
-                    color: Colors.green,
-                    onPressed: () {
-                      Values.passwords.removeAt(Values.passwords
-                          .indexOf(DisplayPasswordValues.password));
-                      Prefs.savePasswords(Values.passwords);
-                      if (functionOnPop != null) functionOnPop();
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(MdiIcons.delete, color: Colors.white),
-                    label: Text('Delete password',
-                        style: TextStyle(color: Colors.white)),
-                  )
+                  Card(
+                    color: CustomColors.lightBackground,
+                    child: ListTile(
+                      leading: Icon(MdiIcons.delete, color: Colors.green),
+                      title: Text('Delete password',
+                          style: TextStyle(color: Colors.white)),
+                      onTap: () {
+                        Values.passwords.removeAt(Values.passwords
+                            .indexOf(DisplayPasswordValues.password));
+                        Prefs.savePasswords(Values.passwords);
+                        if (functionOnPop != null) functionOnPop();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
