@@ -6,10 +6,8 @@ import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/screens/display_qr.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
-import 'package:Amittam/main.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class DisplayPassword extends StatelessWidget {
   DisplayPassword(Password password, {this.functionOnPop}) {

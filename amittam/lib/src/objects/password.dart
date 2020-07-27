@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:Amittam/src/libs/lib.dart';
-import 'package:Amittam/src/values.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as crypt;

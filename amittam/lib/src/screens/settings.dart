@@ -1,7 +1,5 @@
-import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
-import 'package:Amittam/main.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

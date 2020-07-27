@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:Amittam/src/objects/password.dart';
 import 'package:flutter/material.dart';
 

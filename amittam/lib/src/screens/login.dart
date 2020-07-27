@@ -1,11 +1,7 @@
-import 'dart:math';
-
-import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:Amittam/main.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
