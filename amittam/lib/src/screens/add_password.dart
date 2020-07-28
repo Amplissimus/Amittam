@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:password_strength/password_strength.dart';
 
 class AddPassword extends StatelessWidget {
-  AddPassword({this.functionAfterSave});
+  AddPassword({@required this.functionAfterSave});
   final void Function() functionAfterSave;
   final GlobalKey<FormFieldState> platformTextFieldKey = GlobalKey();
   final TextEditingController platformTextFieldController =
@@ -253,7 +253,7 @@ class AddPasswordValues {
   static final List<String> passwordTypes = [
     'Online Account',
     'E-Mail Account',
-    'WLAN Password',
+    'WiFi Password',
     'Other',
   ];
   static int get pwTypeIndex {

@@ -1,3 +1,4 @@
+import 'package:Amittam/src/objects/displayable_password.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,10 @@ class Strings {
 }
 
 class Values {
+  static List<DisplayablePassword> displayablePasswords = [];
   static List<Password> passwords = [];
   static void Function() afterBrightnessUpdate;
+  static void Function() tempRebuildFunction = () {};
+
+  static const green15 = Color.fromRGBO(0, 255, 0, 0.15);
 }
