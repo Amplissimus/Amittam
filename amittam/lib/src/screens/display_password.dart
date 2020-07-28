@@ -260,7 +260,12 @@ class DisplayPassword extends StatelessWidget {
                           ],
                         )
                       : Container(),
-                  Padding(padding: EdgeInsets.all(2)),
+                  Padding(
+                      padding: EdgeInsets.all(
+                          DisplayPasswordValues.password.passwordType ==
+                                  PasswordType.wlanPassword
+                              ? 2
+                              : 4)),
                   Card(
                     color: CustomColors.lightBackground,
                     child: ListTile(
@@ -268,11 +273,48 @@ class DisplayPassword extends StatelessWidget {
                       title: Text('Delete password',
                           style: TextStyle(color: Colors.white)),
                       onTap: () {
-                        Values.passwords.removeAt(Values.passwords
-                            .indexOf(DisplayPasswordValues.password));
-                        Prefs.savePasswords(Values.passwords);
-                        if (functionOnPop != null) functionOnPop();
-                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            backgroundColor: CustomColors.colorBackground,
+                            title: Text(
+                              'Deletion',
+                              style: TextStyle(
+                                  color: CustomColors.colorForeground),
+                            ),
+                            content: Text(
+                              'Do you really want to delete the selected passwords?',
+                              style: TextStyle(
+                                  color: CustomColors.colorForeground),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                splashColor: CustomColors.colorForeground,
+                                child: Text(
+                                  'CANCEL',
+                                  style: TextStyle(
+                                      color: CustomColors.colorForeground),
+                                ),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                              FlatButton(
+                                splashColor: CustomColors.colorForeground,
+                                child: Text(
+                                  'CONFIRM',
+                                  style: TextStyle(
+                                      color: CustomColors.colorForeground),
+                                ),
+                                onPressed: () {
+                                  Values.passwords.removeAt(Values.passwords
+                                      .indexOf(DisplayPasswordValues.password));
+                                  Prefs.savePasswords(Values.passwords);
+                                  if (functionOnPop != null) functionOnPop();
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
                       },
                     ),
                   ),

@@ -209,8 +209,49 @@ class MainPageState extends State<MainPage> {
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   onPressed: () {
-                    setState(() => isSearching = !isSearching);
-                    if (isSearching) searchFieldFocusNode.requestFocus();
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor: CustomColors.colorBackground,
+                        title: Text(
+                          'Deletion',
+                          style: TextStyle(color: CustomColors.colorForeground),
+                        ),
+                        content: Text(
+                          'Do you really want to delete the selected passwords?',
+                          style: TextStyle(color: CustomColors.colorForeground),
+                        ),
+                        actions: <Widget>[
+                          FlatButton(
+                            splashColor: CustomColors.colorForeground,
+                            child: Text(
+                              'CANCEL',
+                              style: TextStyle(
+                                  color: CustomColors.colorForeground),
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          FlatButton(
+                            splashColor: CustomColors.colorForeground,
+                            child: Text(
+                              'CONFIRM',
+                              style: TextStyle(
+                                  color: CustomColors.colorForeground),
+                            ),
+                            onPressed: () {
+                              for (var pw in Values.displayablePasswords) {
+                                if (pw.isSelected)
+                                  Values.passwords.remove(pw.password);
+                              }
+                              Prefs.savePasswords(Values.passwords);
+                              isSelecting = false;
+                              fullyRebuild();
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
                   },
                 ),
               ]
@@ -233,6 +274,13 @@ class MainPageState extends State<MainPage> {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () {
+          if (isSelecting) {
+            for (var pw in Values.displayablePasswords) {
+              pw.isSelected = false;
+            }
+            isSelecting = false;
+            rebuild();
+          }
           setState(() => Values.passwords = Prefs.getPasswords());
           if (isSearching) {
             setState(() => isSearching = false);
