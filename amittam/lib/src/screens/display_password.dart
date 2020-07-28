@@ -283,7 +283,7 @@ class DisplayPassword extends StatelessWidget {
                                   color: CustomColors.colorForeground),
                             ),
                             content: Text(
-                              'Do you really want to delete the selected passwords?',
+                              'Do you really want to delete this password?',
                               style: TextStyle(
                                   color: CustomColors.colorForeground),
                             ),
