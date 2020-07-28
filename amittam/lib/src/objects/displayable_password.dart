@@ -35,79 +35,46 @@ class DisplayablePassword {
       case PasswordType.onlineAccount:
         titleText = password.platform;
         String checkText = password.platform.trim().toLowerCase();
-        if (checkText.contains('google') || checkText.contains('gmail')) {
-          return Icon(
-            MdiIcons.google,
-            color: isSelected ? CustomColors.colorForeground : Colors.green,
-            size: 40,
-          );
-        } else if (checkText.contains('microsoft')) {
-          return Icon(
-            MdiIcons.microsoft,
-            color: isSelected ? CustomColors.colorForeground : Colors.green,
-            size: 40,
-          );
-        } else if (checkText.contains('windows')) {
-          return Icon(
-            MdiIcons.microsoftWindows,
-            color: isSelected ? CustomColors.colorForeground : Colors.green,
-            size: 40,
-          );
-        } else if (checkText.contains('minecraft') ||
-            checkText.contains('mojang')) {
-          return Icon(
-            MdiIcons.minecraft,
-            color: isSelected ? CustomColors.colorForeground : Colors.green,
-            size: 40,
-          );
-        } else if (checkText.contains('playstation') ||
+        if (checkText.contains('google') || checkText.contains('gmail'))
+          return getleadingIcon(MdiIcons.google);
+        else if (checkText.contains('microsoft'))
+          return getleadingIcon(MdiIcons.microsoft);
+        else if (checkText.contains('windows'))
+          return getleadingIcon(MdiIcons.microsoftWindows);
+        else if (checkText.contains('minecraft') ||
+            checkText.contains('mojang'))
+          return getleadingIcon(MdiIcons.minecraft);
+        else if (checkText.contains('playstation') ||
             checkText.contains('ps3') ||
             checkText.contains('ps4') ||
-            checkText.contains('ps5')) {
-          return Icon(
-            MdiIcons.sonyPlaystation,
-            color: isSelected ? CustomColors.colorForeground : Colors.green,
-            size: 40,
-          );
-        } else {
-          return Icon(
-            MdiIcons.accountCircle,
-            color: isSelected ? CustomColors.colorForeground : Colors.green,
-            size: 40,
-          );
-        }
+            checkText.contains('ps5'))
+          return getleadingIcon(MdiIcons.sonyPlaystation);
+        else
+          return getleadingIcon(MdiIcons.accountCircle);
         break;
       case PasswordType.emailAccount:
         titleText = 'Mail Address';
-        return Icon(
-          MdiIcons.email,
-          color: isSelected ? CustomColors.colorForeground : Colors.green,
-          size: 40,
-        );
+        return getleadingIcon(MdiIcons.email);
         break;
       case PasswordType.wlanPassword:
         titleText = 'WiFi';
-        return Icon(
-          MdiIcons.wifiStrength3Lock,
-          color: isSelected ? CustomColors.colorForeground : Colors.green,
-          size: 40,
-        );
+        return getleadingIcon(MdiIcons.wifiStrength3Lock);
         break;
       default:
-        return Icon(
-          MdiIcons.accountCircle,
-          color: isSelected ? CustomColors.colorForeground : Colors.green,
-          size: 40,
-        );
+        return getleadingIcon(MdiIcons.accountCircle);
     }
   }
+
+  Icon getleadingIcon(IconData data) => Icon(
+        data,
+        color: isSelected ? CustomColors.colorForeground : Colors.green,
+        size: 40,
+      );
 }
 
 List<DisplayablePassword> passwordsToDisplayable(List<Password> pws) {
   if (pws == null) return [];
   List<DisplayablePassword> dpws = [];
-  for (Password password in pws) {
-    dpws.add(DisplayablePassword(password));
-  }
+  for (Password password in pws) dpws.add(DisplayablePassword(password));
   return dpws;
 }

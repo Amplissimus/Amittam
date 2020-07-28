@@ -14,9 +14,7 @@ class CustomColors {
       ? Color.fromRGBO(220, 220, 220, 1)
       : Color.fromRGBO(45, 45, 45, 1);
 
-  static void setMode({@required bool darkMode}) {
-    isDarkMode = darkMode;
-  }
+  static void setMode({@required bool darkMode}) => isDarkMode = darkMode;
 }
 
 class Strings {
