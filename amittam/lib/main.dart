@@ -42,6 +42,7 @@ class SplashScreenPageState extends State<SplashScreenPage> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    updateBrightness();
     SchedulerBinding.instance.window.onPlatformBrightnessChanged =
         updateBrightness;
     super.initState();
@@ -313,7 +314,7 @@ class MainPageState extends State<MainPage> {
             child: Icon(Icons.add),
             onTap: () {
               Values.afterBrightnessUpdate = null;
-              Animations.push(context, AddPassword());
+              Animations.push(context, AddPassword(functionAfterSave: rebuild));
             },
           ),
           SpeedDialChild(
