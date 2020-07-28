@@ -15,13 +15,9 @@ class Prefs {
   static bool get firstLogin => getBool('first_login', true);
   static set fastLogin(bool b) => preferences.setBool('fast_login', b);
   static bool get fastLogin => getBool('fast_login', true);
-  static set accentColorString(String s) =>
-      preferences.setString('accent_color', s);
-  static String get accentColorString => getString('accent_color', 'green');
-  static Color get accentColor => Colors.green;
 
   static void setMasterPassword(String password) {
-    Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(password));
+    Password.updateKey(password);
     crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
     String encryptedPassword =
         crypter.encrypt(password, iv: crypt.IV.fromLength(16)).base64;
@@ -33,7 +29,7 @@ class Prefs {
 
   static bool masterPasswordIsValid(String password) {
     try {
-      Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(password));
+      Password.updateKey(password);
       crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
       String encryptedValidationTest =
           preferences.getString('encryption_master_pw_validation_test');
@@ -50,7 +46,7 @@ class Prefs {
     }
   }
 
-  static List<Password> getPasswords() {
+  static List<Password> get passwords {
     List<Password> tempPasswords = [];
     List<String> tempStringList = getStringList('passwords', []);
     print(tempStringList);
@@ -60,7 +56,7 @@ class Prefs {
     return tempPasswords;
   }
 
-  static void savePasswords(List<Password> passwords) {
+  static set passwords(List<Password> passwords) {
     List<String> tempStringList = [];
     print(passwords);
     for (Password password in passwords) {

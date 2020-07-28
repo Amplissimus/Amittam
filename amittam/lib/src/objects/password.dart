@@ -27,6 +27,10 @@ class Password {
 
   static var key;
 
+  static void updateKey(String s) {
+    key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
+  }
+
   static set masterPassword(String s) =>
       Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
 

@@ -225,7 +225,7 @@ class AddPassword extends StatelessWidget {
                 passwordType: AddPasswordValues.passwordType,
               );
               Values.passwords.add(password);
-              Prefs.savePasswords(Values.passwords);
+              Prefs.passwords = Values.passwords;
               if (functionAfterSave != null) functionAfterSave();
               Navigator.pop(context);
             },

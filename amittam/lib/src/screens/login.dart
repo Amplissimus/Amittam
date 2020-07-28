@@ -80,7 +80,7 @@ class LoginPageState extends State<LoginPage> {
                     if (estimatePasswordStrength(text) < 0.3) {
                       return;
                     } else if (Prefs.masterPasswordIsValid(text)) {
-                      Values.passwords = Prefs.getPasswords();
+                      Values.passwords = Prefs.passwords;
                       Values.afterBrightnessUpdate = null;
                       Navigator.pushReplacement(
                         context,
@@ -113,7 +113,7 @@ class LoginPageState extends State<LoginPage> {
           else if (!Prefs.masterPasswordIsValid(text))
             setState(() => masterPWTextFieldErrorString = 'Invalid input!');
           else {
-            Values.passwords = Prefs.getPasswords();
+            Values.passwords = Prefs.passwords;
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(

@@ -178,7 +178,7 @@ class MainPageState extends State<MainPage> {
                     fillColor: CustomColors.lightBackground,
                   ),
                   onChanged: (value) {
-                    Values.passwords = Prefs.getPasswords();
+                    Values.passwords = Prefs.passwords;
                     String stringToCheck = value.trim().toLowerCase();
                     List<Password> tempPasswords = [];
                     for (Password pw in Values.passwords) {
@@ -243,7 +243,7 @@ class MainPageState extends State<MainPage> {
                                 if (pw.isSelected)
                                   Values.passwords.remove(pw.password);
                               }
-                              Prefs.savePasswords(Values.passwords);
+                              Prefs.passwords = Values.passwords;
                               isSelecting = false;
                               fullyRebuild();
                               Navigator.pop(context);
@@ -275,16 +275,12 @@ class MainPageState extends State<MainPage> {
         highlightColor: Colors.transparent,
         onTap: () {
           if (isSelecting) {
-            for (var pw in Values.displayablePasswords) {
-              pw.isSelected = false;
-            }
+            for (var pw in Values.displayablePasswords) pw.isSelected = false;
             isSelecting = false;
             rebuild();
           }
-          setState(() => Values.passwords = Prefs.getPasswords());
-          if (isSearching) {
-            setState(() => isSearching = false);
-          }
+          setState(() => Values.passwords = Prefs.passwords);
+          if (isSearching) setState(() => isSearching = false);
           FocusScopeNode currentFocus = FocusScope.of(context);
           if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
         },

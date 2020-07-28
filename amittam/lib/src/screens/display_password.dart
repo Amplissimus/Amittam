@@ -307,7 +307,7 @@ class DisplayPassword extends StatelessWidget {
                                 onPressed: () {
                                   Values.passwords.removeAt(Values.passwords
                                       .indexOf(DisplayPasswordValues.password));
-                                  Prefs.savePasswords(Values.passwords);
+                                  Prefs.passwords = Values.passwords;
                                   if (functionOnPop != null) functionOnPop();
                                   Navigator.pop(context);
                                 },
@@ -359,7 +359,7 @@ class DisplayPassword extends StatelessWidget {
                           DisplayPasswordValues.usernameTextFieldController.text
                               .trimRight()
                               .trimLeft();
-                      Prefs.savePasswords(Values.passwords);
+                      Prefs.passwords = Values.passwords;
                       if (functionOnPop != null) functionOnPop();
                       DisplayPasswordValues.isEditingNotes = false;
                       DisplayPasswordValues.isEditingPassword = false;
