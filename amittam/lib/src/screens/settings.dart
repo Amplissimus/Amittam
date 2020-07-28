@@ -183,18 +183,6 @@ class Settings extends StatelessWidget {
                     },
                   ),
                 ),
-                Card(
-                  color: CustomColors.lightBackground,
-                  child: ListTile(
-                    leading: Icon(MdiIcons.palette, color: Colors.green),
-                    title: Text('Select new accent color',
-                        style: TextStyle(color: CustomColors.colorForeground)),
-                    onTap: () {
-                      Scaffold.of(context).showSnackBar(
-                          SnackBar(content: Text('Not implemented yet!')));
-                    },
-                  ),
-                ),
               ],
             ),
           ),

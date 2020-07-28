@@ -140,7 +140,7 @@ class MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    Values.afterBrightnessUpdate = rebuild;
+    Values.afterBrightnessUpdate = fullyRebuild;
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     if (isSearching)
@@ -151,9 +151,8 @@ class MainPageState extends State<MainPage> {
         leading: isSelecting
             ? IconButton(
                 onPressed: () {
-                  for (var pw in Values.displayablePasswords) {
+                  for (var pw in Values.displayablePasswords)
                     pw.isSelected = false;
-                  }
                   isSelecting = false;
                   rebuild();
                 },
@@ -287,51 +286,58 @@ class MainPageState extends State<MainPage> {
         child: Container(
           color: Colors.transparent,
           margin: EdgeInsets.all(16),
-          child: ListView.separated(
-            itemBuilder: (context, index) {
-              DisplayablePassword displayablePassword =
-                  Values.displayablePasswords[index];
-              Password password = displayablePassword.password;
-              displayablePassword.onTap = () {
-                if (isSelecting) {
-                  setState(() => displayablePassword.isSelected =
-                      !displayablePassword.isSelected);
-                  bool atLeastOneSelected = false;
-                  for (var pw in Values.displayablePasswords) {
-                    if (!atLeastOneSelected && pw.isSelected) {
-                      atLeastOneSelected = true;
-                      break;
-                    }
-                  }
-                  setState(() => isSelecting = atLeastOneSelected);
-                  return;
-                }
-                Values.afterBrightnessUpdate = null;
-                Animations.push(context,
-                    DisplayPassword(password, functionOnPop: fullyRebuild));
-              };
-              displayablePassword.onLongPress = () {
-                if (isSearching) return;
-                setState(() => displayablePassword.isSelected =
-                    !displayablePassword.isSelected);
-                bool atLeastOneSelected = false;
-                for (var pw in Values.displayablePasswords) {
-                  if (!atLeastOneSelected && pw.isSelected) {
-                    atLeastOneSelected = true;
-                    break;
-                  }
-                }
-                setState(() => isSelecting = atLeastOneSelected);
-              };
-              return displayablePassword.asWidget;
-            },
-            separatorBuilder: (context, index) => Divider(
-              color: CustomColors.colorForeground,
-              thickness: 2,
-              height: 0,
-            ),
-            itemCount: Values.displayablePasswords.length,
-          ),
+          child: Values.displayablePasswords.isEmpty
+              ? Center(
+                  child: Text('No passwords registered!',
+                      style: TextStyle(
+                          color: CustomColors.colorForeground, fontSize: 20)))
+              : ListView.separated(
+                  itemBuilder: (context, index) {
+                    DisplayablePassword displayablePassword =
+                        Values.displayablePasswords[index];
+                    Password password = displayablePassword.password;
+                    displayablePassword.onTap = () {
+                      if (isSelecting) {
+                        setState(() => displayablePassword.isSelected =
+                            !displayablePassword.isSelected);
+                        bool atLeastOneSelected = false;
+                        for (var pw in Values.displayablePasswords) {
+                          if (!atLeastOneSelected && pw.isSelected) {
+                            atLeastOneSelected = true;
+                            break;
+                          }
+                        }
+                        setState(() => isSelecting = atLeastOneSelected);
+                        return;
+                      }
+                      Values.afterBrightnessUpdate = null;
+                      Animations.push(
+                          context,
+                          DisplayPassword(password,
+                              functionOnPop: fullyRebuild));
+                    };
+                    displayablePassword.onLongPress = () {
+                      if (isSearching) return;
+                      setState(() => displayablePassword.isSelected =
+                          !displayablePassword.isSelected);
+                      bool atLeastOneSelected = false;
+                      for (var pw in Values.displayablePasswords) {
+                        if (!atLeastOneSelected && pw.isSelected) {
+                          atLeastOneSelected = true;
+                          break;
+                        }
+                      }
+                      setState(() => isSelecting = atLeastOneSelected);
+                    };
+                    return displayablePassword.asWidget;
+                  },
+                  separatorBuilder: (context, index) => Divider(
+                    color: CustomColors.colorForeground,
+                    thickness: 2,
+                    height: 0,
+                  ),
+                  itemCount: Values.displayablePasswords.length,
+                ),
         ),
       ),
       floatingActionButton: SpeedDial(
