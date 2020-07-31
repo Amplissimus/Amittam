@@ -123,6 +123,7 @@ class MainPageState extends State<MainPage> {
   }
 
   void fullyRebuild() {
+    Values.passwords = Prefs.passwords;
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     Values.displayablePasswords = passwordsToDisplayable(Values.passwords);
@@ -170,6 +171,9 @@ class MainPageState extends State<MainPage> {
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   onPressed: () {
+                    int amountSelected = 0;
+                    for (var pw in Values.displayablePasswords)
+                      if (pw.isSelected) amountSelected++;
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -179,7 +183,9 @@ class MainPageState extends State<MainPage> {
                           style: TextStyle(color: CustomColors.colorForeground),
                         ),
                         content: Text(
-                          'Do you really want to delete the selected passwords?',
+                          'Do you really want to delete the selected password' +
+                              (amountSelected > 1 ? 's' : '') +
+                              '?',
                           style: TextStyle(color: CustomColors.colorForeground),
                         ),
                         actions: <Widget>[
