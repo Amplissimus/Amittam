@@ -34,7 +34,7 @@ class Settings extends StatelessWidget {
             margin: EdgeInsets.all(16),
             child: ListView(
               children: [
-                switchWithText(
+                SwitchWithText(
                   text: 'Fast Login',
                   value: Prefs.fastLogin,
                   onChanged: (value) => setState(() => Prefs.fastLogin = value),
@@ -70,8 +70,7 @@ class Settings extends StatelessWidget {
                   color: CustomColors.lightBackground,
                   child: ListTile(
                     leading: Icon(Icons.delete, color: Colors.green),
-                    title: Text('Delete app data',
-                        style: TextStyle(color: CustomColors.colorForeground)),
+                    title: StandardText('Delete app data'),
                     onTap: () {
                       confirmTextFieldController.text = '';
                       passwordTextFieldController.text = '';
@@ -82,18 +81,14 @@ class Settings extends StatelessWidget {
                         context: context,
                         builder: (context) => StatefulBuilder(
                           builder: (context, setAlState) {
-                            return standardDialog(
-                              title: 'Delete App-Data',
+                            return AlertDialog(
+                              backgroundColor: CustomColors.colorBackground,
+                              title: StandardText('Delete App-Data'),
                               actions: [
                                 FlatButton(
                                   splashColor: CustomColors.colorForeground,
                                   onPressed: () => Navigator.pop(context),
-                                  child: Text(
-                                    'CANCEL',
-                                    style: TextStyle(
-                                      color: CustomColors.colorForeground,
-                                    ),
-                                  ),
+                                  child: StandardText('CANCEL'),
                                 ),
                                 FlatButton(
                                   splashColor: CustomColors.colorForeground,
@@ -106,12 +101,7 @@ class Settings extends StatelessWidget {
                                       SystemNavigator.pop();
                                     }
                                   },
-                                  child: Text(
-                                    'CONFIRM',
-                                    style: TextStyle(
-                                      color: CustomColors.colorForeground,
-                                    ),
-                                  ),
+                                  child: StandardText('CONFIRM'),
                                 ),
                               ],
                               content: InkWell(
@@ -125,14 +115,11 @@ class Settings extends StatelessWidget {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text(
+                                      StandardText(
                                         'Please type "CONFIRM" in the Textbox below and '
                                         'then confirm deleting the App-Data '
                                         'using your master password.',
-                                        style: TextStyle(
-                                          color: CustomColors.colorForeground,
-                                          fontSize: 16,
-                                        ),
+                                        fontSize: 16,
                                       ),
                                       Padding(padding: EdgeInsets.all(8)),
                                       customTextFormField(

@@ -16,10 +16,7 @@ Widget customAppBar({
     elevation: 0,
     backgroundColor: backgroundColor,
     centerTitle: centerTitle,
-    title: Text(
-      title,
-      style: TextStyle(fontSize: fontSize, color: CustomColors.colorForeground),
-    ),
+    title: StandardText(title, fontSize: fontSize),
   );
 }
 
@@ -89,21 +86,29 @@ Widget extendedFab({
   );
 }
 
-Widget switchWithText({
-  @required String text,
-  @required bool value,
-  void Function(bool) onChanged,
-}) {
-  return ListTile(
-    title: Text(text, style: TextStyle(color: CustomColors.colorForeground)),
-    trailing: Switch(
-      inactiveTrackColor: Colors.grey,
-      inactiveThumbColor: CustomColors.colorForeground,
-      value: value,
-      onChanged: onChanged,
-      activeColor: Colors.green,
-    ),
-  );
+class SwitchWithText extends StatelessWidget {
+  SwitchWithText({
+    @required this.text,
+    @required this.value,
+    @required this.onChanged,
+  });
+  final String text;
+  final bool value;
+  final void Function(bool) onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: StandardText(text),
+      trailing: Switch(
+        inactiveTrackColor: Colors.grey,
+        inactiveThumbColor: CustomColors.colorForeground,
+        value: value,
+        onChanged: onChanged,
+        activeColor: Colors.green,
+      ),
+    );
+  }
 }
 
 Widget displayValueWidget({
@@ -155,16 +160,31 @@ MaterialColor materialColor(int code) {
   });
 }
 
-Widget standardDialog({
+void showStandardDialog({
+  @required BuildContext context,
   String title = '',
   List<Widget> actions,
   Widget content,
 }) {
-  return AlertDialog(
-    title: Text(title, style: TextStyle(color: CustomColors.colorForeground)),
-    content: content,
-    actions: actions,
-    backgroundColor: CustomColors.colorBackground,
-    elevation: 0,
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: StandardText(title),
+      content: content,
+      actions: actions,
+      backgroundColor: CustomColors.colorBackground,
+      elevation: 0,
+    ),
   );
+}
+
+class StandardText extends StatelessWidget {
+  StandardText(this.text, {this.fontSize});
+  final String text;
+  final double fontSize;
+
+  @override
+  Widget build(BuildContext context) => Text(text,
+      style:
+          TextStyle(color: CustomColors.colorForeground, fontSize: fontSize));
 }

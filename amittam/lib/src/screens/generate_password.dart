@@ -60,7 +60,7 @@ class GeneratePassword extends StatelessWidget {
                   label: '${GeneratePasswordValues.currentSliderValue.toInt()}',
                 ),
                 Divider(color: CustomColors.colorForeground),
-                switchWithText(
+                SwitchWithText(
                   text: 'Use numbers',
                   value: GeneratePasswordValues.usingNumbers,
                   onChanged: (value) {
@@ -70,7 +70,7 @@ class GeneratePassword extends StatelessWidget {
                     });
                   },
                 ),
-                switchWithText(
+                SwitchWithText(
                   text: 'Use special characters',
                   value: GeneratePasswordValues.usingSpecialCharacters,
                   onChanged: (value) {

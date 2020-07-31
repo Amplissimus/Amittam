@@ -290,20 +290,12 @@ class DisplayPassword extends StatelessWidget {
                             actions: <Widget>[
                               FlatButton(
                                 splashColor: CustomColors.colorForeground,
-                                child: Text(
-                                  'CANCEL',
-                                  style: TextStyle(
-                                      color: CustomColors.colorForeground),
-                                ),
+                                child: StandardText('CANCEL'),
                                 onPressed: () => Navigator.pop(context),
                               ),
                               FlatButton(
                                 splashColor: CustomColors.colorForeground,
-                                child: Text(
-                                  'CONFIRM',
-                                  style: TextStyle(
-                                      color: CustomColors.colorForeground),
-                                ),
+                                child: StandardText('CONFIRM'),
                                 onPressed: () {
                                   Values.passwords.removeAt(Values.passwords
                                       .indexOf(DisplayPasswordValues.password));

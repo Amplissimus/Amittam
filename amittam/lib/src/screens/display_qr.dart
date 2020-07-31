@@ -1,3 +1,4 @@
+import 'package:Amittam/src/libs/uilib.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -15,10 +16,7 @@ class DisplayQr extends StatelessWidget {
             ),
             onPressed: () => Navigator.pop(context)),
         elevation: 0,
-        title: Text(
-          'Display QR',
-          style: TextStyle(color: Colors.black, fontSize: 25),
-        ),
+        title: StandardText('Display QR', fontSize: 25),
         centerTitle: true,
         backgroundColor: Colors.transparent,
       ),

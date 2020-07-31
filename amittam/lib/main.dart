@@ -160,9 +160,7 @@ class MainPageState extends State<MainPage> {
         elevation: 0,
         centerTitle: true,
         backgroundColor: Colors.transparent,
-        title: Text(Strings.appTitle,
-            style:
-                TextStyle(fontSize: 25, color: CustomColors.colorForeground)),
+        title: StandardText(Strings.appTitle, fontSize: 25),
         actions: isSelecting
             ? [
                 IconButton(
@@ -174,50 +172,33 @@ class MainPageState extends State<MainPage> {
                     int amountSelected = 0;
                     for (var pw in Values.displayablePasswords)
                       if (pw.isSelected) amountSelected++;
-                    showDialog(
+                    showStandardDialog(
                       context: context,
-                      builder: (context) => AlertDialog(
-                        backgroundColor: CustomColors.colorBackground,
-                        title: Text(
-                          'Deletion',
-                          style: TextStyle(color: CustomColors.colorForeground),
-                        ),
-                        content: Text(
+                      title: 'Deletion',
+                      content: StandardText(
                           'Do you really want to delete the selected password' +
                               (amountSelected > 1 ? 's' : '') +
-                              '?',
-                          style: TextStyle(color: CustomColors.colorForeground),
+                              '?'),
+                      actions: <Widget>[
+                        FlatButton(
+                          splashColor: CustomColors.colorForeground,
+                          child: StandardText('CANCEL'),
+                          onPressed: () => Navigator.pop(context),
                         ),
-                        actions: <Widget>[
-                          FlatButton(
-                            splashColor: CustomColors.colorForeground,
-                            child: Text(
-                              'CANCEL',
-                              style: TextStyle(
-                                  color: CustomColors.colorForeground),
-                            ),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                          FlatButton(
-                            splashColor: CustomColors.colorForeground,
-                            child: Text(
-                              'CONFIRM',
-                              style: TextStyle(
-                                  color: CustomColors.colorForeground),
-                            ),
-                            onPressed: () {
-                              for (var pw in Values.displayablePasswords) {
-                                if (pw.isSelected)
-                                  Values.passwords.remove(pw.password);
-                              }
-                              Prefs.passwords = Values.passwords;
-                              isSelecting = false;
-                              fullyRebuild();
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      ),
+                        FlatButton(
+                          splashColor: CustomColors.colorForeground,
+                          child: StandardText('CONFIRM'),
+                          onPressed: () {
+                            for (var pw in Values.displayablePasswords)
+                              if (pw.isSelected)
+                                Values.passwords.remove(pw.password);
+                            Prefs.passwords = Values.passwords;
+                            isSelecting = false;
+                            fullyRebuild();
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -230,12 +211,13 @@ class MainPageState extends State<MainPage> {
                   highlightColor: Colors.transparent,
                   onPressed: () {
                     showSearch(
-                        context: context,
-                        delegate: PasswordSearchDelegate(
-                          Values.displayablePasswords,
-                          fullyRebuild,
-                          initialScrollOffset: _scrollController.offset,
-                        ));
+                      context: context,
+                      delegate: PasswordSearchDelegate(
+                        Values.displayablePasswords,
+                        fullyRebuild,
+                        initialScrollOffset: _scrollController.offset,
+                      ),
+                    );
                   },
                 ),
               ],
@@ -257,9 +239,7 @@ class MainPageState extends State<MainPage> {
           margin: EdgeInsets.all(16),
           child: Values.displayablePasswords.isEmpty
               ? Center(
-                  child: Text('No passwords registered!',
-                      style: TextStyle(
-                          color: CustomColors.colorForeground, fontSize: 20)))
+                  child: StandardText('No passwords registered!', fontSize: 20))
               : ListView.separated(
                   controller: _scrollController,
                   cacheExtent: 5,
