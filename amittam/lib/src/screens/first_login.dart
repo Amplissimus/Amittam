@@ -26,7 +26,6 @@ class FirstLoginPageState extends State<FirstLoginPage> {
   TextEditingController masterPWTextFieldController = TextEditingController();
   String masterPWTextFieldErrorString;
   bool masterPWTextFieldInputHidden = false;
-  bool masterPWConfirmed = false;
 
   @override
   void initState() {
@@ -118,59 +117,57 @@ class FirstLoginPageState extends State<FirstLoginPage> {
                 masterPWTextFieldErrorString = 'Password not strong enough!');
             return;
           }
-          if (!masterPWConfirmed) {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  backgroundColor: CustomColors.colorBackground,
-                  title: Text('Confirm Master Password',
-                      style: TextStyle(color: CustomColors.colorForeground)),
-                  content: Text(
-                      'Please confirm that "${masterPWTextFieldController.text.trim()}"'
-                      ' is your correct password!',
-                      style: TextStyle(color: CustomColors.colorForeground)),
-                  actions: [
-                    FlatButton(
-                      splashColor: CustomColors.lightForeground,
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'CANCEL',
-                        style: TextStyle(color: CustomColors.colorForeground),
-                      ),
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                backgroundColor: CustomColors.colorBackground,
+                title: Text('Confirm Master Password',
+                    style: TextStyle(color: CustomColors.colorForeground)),
+                content: Text(
+                    'Please confirm that "${masterPWTextFieldController.text.trim()}"'
+                    ' is your correct password!',
+                    style: TextStyle(color: CustomColors.colorForeground)),
+                actions: [
+                  FlatButton(
+                    splashColor: CustomColors.lightForeground,
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      'CANCEL',
+                      style: TextStyle(color: CustomColors.colorForeground),
                     ),
-                    FlatButton(
-                      splashColor: CustomColors.lightForeground,
-                      onPressed: () {
-                        masterPWConfirmed = true;
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'CONFRIM',
-                        style: TextStyle(color: CustomColors.colorForeground),
-                      ),
+                  ),
+                  FlatButton(
+                    splashColor: CustomColors.lightForeground,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      try {
+                        Prefs.setMasterPassword(
+                            masterPWTextFieldController.text.trim());
+                      } catch (e) {
+                        print(errorString(e));
+                        masterPWTextFieldErrorString = 'Error!';
+                        return;
+                      }
+                      Prefs.firstLogin = false;
+                      Values.afterBrightnessUpdate = null;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MainApp(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'CONFRIM',
+                      style: TextStyle(color: CustomColors.colorForeground),
                     ),
-                  ],
-                );
-              },
-            );
-            return;
-          }
-          try {
-            Prefs.setMasterPassword(masterPWTextFieldController.text.trim());
-          } catch (e) {
-            print(errorString(e));
-            print('something failed');
-            return;
-          }
-          Prefs.firstLogin = false;
-          Values.afterBrightnessUpdate = null;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MainApp(),
-            ),
+                  ),
+                ],
+              );
+            },
           );
+          return;
         },
         icon: Icon(MdiIcons.formTextboxPassword),
       ),

@@ -6,6 +6,7 @@ import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/displayable_password.dart';
 import 'package:Amittam/src/objects/password.dart';
+import 'package:Amittam/src/objects/search_delegates.dart';
 import 'package:Amittam/src/screens/add_password.dart';
 import 'package:Amittam/src/screens/display_password.dart';
 import 'package:Amittam/src/screens/first_login.dart';
@@ -101,23 +102,21 @@ class MainApp extends StatelessWidget {
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MainPage(title: 'Flutter Demo Home Page'),
+      home: MainPage(),
     );
   }
 }
 
 class MainPage extends StatefulWidget {
-  MainPage({Key key, this.title}) : super(key: key);
-  final String title;
+  MainPage({Key key}) : super(key: key);
 
   @override
   MainPageState createState() => MainPageState();
 }
 
 class MainPageState extends State<MainPage> {
-  bool isSearching = false;
   bool isSelecting = false;
-  FocusNode searchFieldFocusNode = FocusNode();
+  var _scrollController = ScrollController();
 
   void rebuild() {
     setState(() {});
@@ -143,8 +142,6 @@ class MainPageState extends State<MainPage> {
     Values.afterBrightnessUpdate = fullyRebuild;
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
-    if (isSearching)
-      Values.displayablePasswords = passwordsToDisplayable(Values.passwords);
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
       appBar: AppBar(
@@ -162,44 +159,9 @@ class MainPageState extends State<MainPage> {
         elevation: 0,
         centerTitle: true,
         backgroundColor: Colors.transparent,
-        title: isSearching
-            ? AnimatedContainer(
-                duration: Duration(milliseconds: 150),
-                height: 50,
-                child: TextField(
-                  style: TextStyle(color: CustomColors.colorForeground),
-                  focusNode: searchFieldFocusNode,
-                  cursorColor: CustomColors.colorForeground,
-                  decoration: InputDecoration(
-                    hintText: 'Search...',
-                    hintStyle: TextStyle(color: CustomColors.colorForeground),
-                    filled: true,
-                    fillColor: CustomColors.lightBackground,
-                  ),
-                  onChanged: (value) {
-                    Values.passwords = Prefs.passwords;
-                    String stringToCheck = value.trim().toLowerCase();
-                    List<Password> tempPasswords = [];
-                    for (Password pw in Values.passwords) {
-                      if (pw.username.toLowerCase().contains(stringToCheck) ||
-                          pw.platform.toLowerCase().contains(stringToCheck) ||
-                          pw.notes.toLowerCase().contains(stringToCheck)) {
-                        tempPasswords.add(pw);
-                      }
-                    }
-                    tempPasswords.sort((a, b) => a.platform
-                        .toLowerCase()
-                        .compareTo(b.platform.toLowerCase()));
-                    Values.passwords = tempPasswords;
-                    rebuild();
-                  },
-                ),
-              )
-            : isSelecting
-                ? Container()
-                : Text(Strings.appTitle,
-                    style: TextStyle(
-                        fontSize: 25, color: CustomColors.colorForeground)),
+        title: Text(Strings.appTitle,
+            style:
+                TextStyle(fontSize: 25, color: CustomColors.colorForeground)),
         actions: isSelecting
             ? [
                 IconButton(
@@ -256,14 +218,18 @@ class MainPageState extends State<MainPage> {
               ]
             : [
                 IconButton(
-                  icon: Icon(isSearching ? MdiIcons.magnifyClose : Icons.search,
-                      color: CustomColors.colorForeground),
+                  icon: Icon(Icons.search, color: CustomColors.colorForeground),
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   onPressed: () {
-                    setState(() => isSearching = !isSearching);
-                    if (isSearching) searchFieldFocusNode.requestFocus();
+                    showSearch(
+                        context: context,
+                        delegate: PasswordSearchDelegate(
+                          Values.displayablePasswords,
+                          fullyRebuild,
+                          initialScrollOffset: _scrollController.offset,
+                        ));
                   },
                 ),
               ],
@@ -272,16 +238,13 @@ class MainPageState extends State<MainPage> {
         hoverColor: Colors.transparent,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
+        focusColor: Colors.transparent,
         onTap: () {
           if (isSelecting) {
             for (var pw in Values.displayablePasswords) pw.isSelected = false;
             isSelecting = false;
             rebuild();
           }
-          setState(() => Values.passwords = Prefs.passwords);
-          if (isSearching) setState(() => isSearching = false);
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
         },
         child: Container(
           color: Colors.transparent,
@@ -292,6 +255,8 @@ class MainPageState extends State<MainPage> {
                       style: TextStyle(
                           color: CustomColors.colorForeground, fontSize: 20)))
               : ListView.separated(
+                  controller: _scrollController,
+                  cacheExtent: 5,
                   itemBuilder: (context, index) {
                     DisplayablePassword displayablePassword =
                         Values.displayablePasswords[index];
@@ -317,7 +282,6 @@ class MainPageState extends State<MainPage> {
                               functionOnPop: fullyRebuild));
                     };
                     displayablePassword.onLongPress = () {
-                      if (isSearching) return;
                       setState(() => displayablePassword.isSelected =
                           !displayablePassword.isSelected);
                       bool atLeastOneSelected = false;
