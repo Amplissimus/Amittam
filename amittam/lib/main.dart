@@ -278,41 +278,38 @@ class MainPageState extends State<MainPage> {
         overlayOpacity: 0,
         animatedIcon: AnimatedIcons.menu_close,
         children: [
-          SpeedDialChild(
-            backgroundColor: Colors.green,
+          StandardSpeedDialChild(
             label: 'Generate password',
-            child: Icon(MdiIcons.lockQuestion),
+            icon: Icon(MdiIcons.lockQuestion),
             onTap: () {
               Values.afterBrightnessUpdate = null;
               Animations.push(context, GeneratePassword());
             },
           ),
-          SpeedDialChild(
-            backgroundColor: Colors.green,
+          StandardSpeedDialChild(
             label: 'Add password',
-            child: Icon(Icons.add),
+            icon: Icon(Icons.add),
             onTap: () {
               Values.afterBrightnessUpdate = null;
               Animations.push(
                   context, AddPassword(functionAfterSave: fullyRebuild));
             },
           ),
-          SpeedDialChild(
-            backgroundColor: Colors.green,
+          StandardSpeedDialChild(
             label: 'Settings',
-            child: Icon(Icons.settings),
+            icon: Icon(Icons.settings),
             onTap: () {
               Values.afterBrightnessUpdate = null;
               Animations.push(context, Settings());
             },
           ),
-          SpeedDialChild(
-            backgroundColor: Colors.green,
+          StandardSpeedDialChild(
             label: 'Log out',
-            child: Icon(MdiIcons.logout),
+            icon: Icon(MdiIcons.logout),
             onTap: () {
               Values.passwords = [];
               Password.key = null;
+              Values.afterBrightnessUpdate = null;
               Animations.pushReplacement(context, LoginPage());
             },
           ),

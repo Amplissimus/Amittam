@@ -32,7 +32,7 @@ class GeneratePassword extends StatelessWidget {
             margin: EdgeInsets.all(10),
             child: ListView(
               children: <Widget>[
-                StandardDivider(),
+                StandardDivider(height: null),
                 Container(
                   height: 40,
                   child: Center(
@@ -46,7 +46,7 @@ class GeneratePassword extends StatelessWidget {
                     ),
                   ),
                 ),
-                StandardDivider(),
+                StandardDivider(height: null),
                 Slider(
                   min: 1,
                   max: 32,
@@ -81,7 +81,7 @@ class GeneratePassword extends StatelessWidget {
                     });
                   },
                 ),
-                StandardDivider(),
+                StandardDivider(height: null),
                 Card(
                   color: CustomColors.lightBackground,
                   child: ListTile(

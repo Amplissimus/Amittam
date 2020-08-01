@@ -1,6 +1,7 @@
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class StandardAppBar extends AppBar {
   StandardAppBar({
@@ -188,10 +189,18 @@ class StandardText extends Text {
 }
 
 class StandardDivider extends Divider {
-  StandardDivider()
+  StandardDivider({double height = 0})
       : super(
           color: CustomColors.colorForeground,
           thickness: 2,
-          height: 0,
+          height: height,
         );
+}
+
+class StandardSpeedDialChild extends SpeedDialChild {
+  StandardSpeedDialChild({
+    String label,
+    @required Icon icon,
+    void Function() onTap,
+  }) : super(label: label, child: icon, onTap: onTap);
 }
