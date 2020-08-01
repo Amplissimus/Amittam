@@ -4,6 +4,7 @@ import 'package:Amittam/src/objects/displayable_password.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/screens/display_password.dart';
 import 'package:Amittam/src/values.dart';
+import 'package:Amittam/src/libs/uilib.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -85,11 +86,7 @@ class PasswordSearchDelegate extends SearchDelegate<DisplayablePassword> {
               displayablePassword.onLongPress = () {};
               return displayablePassword.asWidget;
             },
-            separatorBuilder: (context, index) => Divider(
-              color: CustomColors.colorForeground,
-              thickness: 2,
-              height: 0,
-            ),
+            separatorBuilder: (context, index) => StandardDivider(),
             itemCount: tempPasswords.length,
           ),
         ),

@@ -186,3 +186,12 @@ class StandardText extends Text {
             style: TextStyle(
                 color: CustomColors.colorForeground, fontSize: fontSize));
 }
+
+class StandardDivider extends Divider {
+  StandardDivider()
+      : super(
+          color: CustomColors.colorForeground,
+          thickness: 2,
+          height: 0,
+        );
+}

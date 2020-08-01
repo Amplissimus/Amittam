@@ -268,11 +268,7 @@ class MainPageState extends State<MainPage> {
                     };
                     return displayablePassword.asWidget;
                   },
-                  separatorBuilder: (context, index) => Divider(
-                    color: CustomColors.colorForeground,
-                    thickness: 2,
-                    height: 0,
-                  ),
+                  separatorBuilder: (context, index) => StandardDivider(),
                   itemCount: Values.displayablePasswords.length,
                 ),
         ),
