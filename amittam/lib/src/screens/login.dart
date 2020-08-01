@@ -105,7 +105,7 @@ class LoginPageState extends State<LoginPage> {
           if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
         },
       ),
-      floatingActionButton: extendedFab(
+      floatingActionButton: ExtendedFab(
         onPressed: () {
           String text = masterPWTextFieldController.text.trim();
           if (estimatePasswordStrength(text) < 0.3)

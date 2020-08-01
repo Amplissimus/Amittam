@@ -107,7 +107,7 @@ class FirstLoginPageState extends State<FirstLoginPage> {
           if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
         },
       ),
-      floatingActionButton: extendedFab(
+      floatingActionButton: ExtendedFab(
         label: Text('Set Password'),
         onPressed: () {
           double strength =

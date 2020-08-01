@@ -93,12 +93,13 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       builder: (context, child) {
-        return ScrollConfiguration(behavior: MainBehavior(), child: child);
+        return ScrollConfiguration(
+            behavior: MainScrollBehavior(), child: child);
       },
       theme: ThemeData(
         canvasColor: CustomColors.isDarkMode
-            ? materialColor(0xFF000000)
-            : materialColor(0xFFFFFFFF),
+            ? CustomMaterialColor(0xFF000000)
+            : CustomMaterialColor(0xFFFFFFFF),
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),

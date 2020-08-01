@@ -191,7 +191,7 @@ class AddPassword extends StatelessWidget {
               if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
             },
           ),
-          floatingActionButton: extendedFab(
+          floatingActionButton: ExtendedFab(
             onPressed: () {
               bool processWillCancel = false;
               if (passwordTextFieldController.text.trim().isEmpty) {

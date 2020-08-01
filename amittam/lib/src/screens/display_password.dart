@@ -96,7 +96,7 @@ class DisplayPassword extends StatelessWidget {
                                           'Field cannot be empty!');
                                   },
                                 )
-                              : displayValueWidget(
+                              : DisplayValueWidget(
                                   value:
                                       DisplayPasswordValues.password.platform,
                                   valueType: 'Platform',
@@ -129,7 +129,7 @@ class DisplayPassword extends StatelessWidget {
                                   'Field cannot be empty!');
                           },
                         )
-                      : displayValueWidget(
+                      : DisplayValueWidget(
                           value: DisplayPasswordValues.password.username,
                           valueType: 'Username',
                           onTap: () {
@@ -191,7 +191,7 @@ class DisplayPassword extends StatelessWidget {
                                         .passwordTextFieldInputHidden),
                           ),
                         )
-                      : displayValueWidget(
+                      : DisplayValueWidget(
                           value: DisplayPasswordValues.password.password,
                           valueType: 'Password',
                           onTap: () {
@@ -228,7 +228,7 @@ class DisplayPassword extends StatelessWidget {
                               DisplayPasswordValues.notesTextFieldErrorString,
                           focusNode: notesTextFieldFocusNode,
                         )
-                      : displayValueWidget(
+                      : DisplayValueWidget(
                           value: DisplayPasswordValues.password.notes,
                           valueType: 'Notes',
                           onTap: () {
@@ -277,16 +277,9 @@ class DisplayPassword extends StatelessWidget {
                           context: context,
                           builder: (context) => AlertDialog(
                             backgroundColor: CustomColors.colorBackground,
-                            title: Text(
-                              'Deletion',
-                              style: TextStyle(
-                                  color: CustomColors.colorForeground),
-                            ),
-                            content: Text(
-                              'Do you really want to delete this password?',
-                              style: TextStyle(
-                                  color: CustomColors.colorForeground),
-                            ),
+                            title: StandardText('Deletion'),
+                            content: StandardText(
+                                'Do you really want to delete this password?'),
                             actions: <Widget>[
                               FlatButton(
                                 splashColor: CustomColors.colorForeground,
@@ -321,7 +314,7 @@ class DisplayPassword extends StatelessWidget {
                   DisplayPasswordValues.isEditingPassword ||
                   DisplayPasswordValues.isEditingPlatform ||
                   DisplayPasswordValues.isEditingUsername)
-              ? extendedFab(
+              ? ExtendedFab(
                   onPressed: () {
                     if ((DisplayPasswordValues.platformTextFieldController.text
                                 .trimRight()

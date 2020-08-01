@@ -68,22 +68,25 @@ Widget customTextFormField({
   );
 }
 
-Widget extendedFab({
-  @required void Function() onPressed,
-  @required Widget label,
-  Widget icon,
-}) {
-  return FloatingActionButton.extended(
-    onPressed: onPressed,
-    label: label,
-    icon: icon,
-    backgroundColor: CustomColors.colorBackground,
-    foregroundColor: CustomColors.colorForeground,
-    elevation: 0,
-    focusElevation: 0,
-    splashColor: CustomColors.colorForeground,
-    focusColor: Colors.transparent,
-  );
+class ExtendedFab extends StatelessWidget {
+  ExtendedFab({@required this.onPressed, @required this.label, this.icon});
+
+  final void Function() onPressed;
+  final Widget label;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) => FloatingActionButton.extended(
+        onPressed: onPressed,
+        label: label,
+        icon: icon,
+        backgroundColor: CustomColors.colorBackground,
+        foregroundColor: CustomColors.colorForeground,
+        elevation: 0,
+        focusElevation: 0,
+        splashColor: CustomColors.colorForeground,
+        focusColor: Colors.transparent,
+      );
 }
 
 class SwitchWithText extends StatelessWidget {
@@ -111,53 +114,53 @@ class SwitchWithText extends StatelessWidget {
   }
 }
 
-Widget displayValueWidget({
-  Object value = '',
-  String valueType = '',
-  bool editable = true,
-  void Function() onTap,
-}) {
-  TextStyle style =
-      TextStyle(color: CustomColors.colorForeground, fontSize: 18);
-  return Container(
-    decoration: BoxDecoration(
-      border: Border.all(color: CustomColors.colorForeground),
-      borderRadius: BorderRadius.circular(5),
-    ),
-    child: InkWell(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.all(18),
-        child: Text(
-          value.toString().isEmpty ? '$valueType' : '$value',
-          style: style,
+class DisplayValueWidget extends StatelessWidget {
+  DisplayValueWidget({this.value = '', this.valueType = '', this.onTap});
+
+  final Object value;
+  final String valueType;
+  final void Function() onTap;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: CustomColors.colorForeground),
+          borderRadius: BorderRadius.circular(5),
         ),
-      ),
-    ),
-  );
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            margin: EdgeInsets.all(18),
+            child: StandardText(
+              value.toString().isEmpty ? '$valueType' : '$value',
+              fontSize: 18,
+            ),
+          ),
+        ),
+      );
 }
 
-class MainBehavior extends ScrollBehavior {
+class MainScrollBehavior extends ScrollBehavior {
   @override
   Widget buildViewportChrome(
           BuildContext context, Widget child, AxisDirection axisDirection) =>
       child;
 }
 
-MaterialColor materialColor(int code) {
-  Color c = Color(code);
-  return MaterialColor(code, {
-    50: c,
-    100: c,
-    200: c,
-    300: c,
-    400: c,
-    500: c,
-    600: c,
-    700: c,
-    800: c,
-    900: c
-  });
+class CustomMaterialColor extends MaterialColor {
+  CustomMaterialColor(int code)
+      : super(code, {
+          50: Color(code),
+          100: Color(code),
+          200: Color(code),
+          300: Color(code),
+          400: Color(code),
+          500: Color(code),
+          600: Color(code),
+          700: Color(code),
+          800: Color(code),
+          900: Color(code),
+        });
 }
 
 void showStandardDialog({
