@@ -75,7 +75,7 @@ class DisplayPassword extends StatelessWidget {
                           PasswordType.onlineAccount
                       ? Container(
                           child: DisplayPasswordValues.isEditingPlatform
-                              ? customTextFormField(
+                              ? StandardTextFormField(
                                   hint: 'Platform',
                                   key: DisplayPasswordValues
                                       .platformTextFieldKey,
@@ -110,7 +110,7 @@ class DisplayPassword extends StatelessWidget {
                       : Container(),
                   Padding(padding: EdgeInsets.all(8)),
                   DisplayPasswordValues.isEditingUsername
-                      ? customTextFormField(
+                      ? StandardTextFormField(
                           hint: 'Username',
                           textinputType: TextInputType.emailAddress,
                           key: DisplayPasswordValues.usernameTextFieldKey,
@@ -140,7 +140,7 @@ class DisplayPassword extends StatelessWidget {
                         ),
                   Padding(padding: EdgeInsets.all(8)),
                   DisplayPasswordValues.isEditingPassword
-                      ? customTextFormField(
+                      ? StandardTextFormField(
                           hint: 'Password',
                           key: DisplayPasswordValues.passwordTextFieldKey,
                           controller:
@@ -219,7 +219,7 @@ class DisplayPassword extends StatelessWidget {
                       : Container(height: 0, width: 0),
                   Padding(padding: EdgeInsets.all(8)),
                   DisplayPasswordValues.isEditingNotes
-                      ? customTextFormField(
+                      ? StandardTextFormField(
                           hint: 'Notes (optional)',
                           key: DisplayPasswordValues.notesTextFieldKey,
                           controller:

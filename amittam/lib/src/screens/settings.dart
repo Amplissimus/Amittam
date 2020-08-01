@@ -122,7 +122,7 @@ class Settings extends StatelessWidget {
                                         fontSize: 16,
                                       ),
                                       Padding(padding: EdgeInsets.all(8)),
-                                      customTextFormField(
+                                      StandardTextFormField(
                                         hint: 'Requested text',
                                         controller: confirmTextFieldController,
                                         key: confirmTextFieldKey,
@@ -139,7 +139,7 @@ class Settings extends StatelessWidget {
                                         },
                                       ),
                                       Padding(padding: EdgeInsets.all(8)),
-                                      customTextFormField(
+                                      StandardTextFormField(
                                         hint: 'Enter Masterpassword',
                                         controller: passwordTextFieldController,
                                         key: passwordTextFieldKey,

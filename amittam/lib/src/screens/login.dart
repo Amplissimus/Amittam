@@ -50,7 +50,7 @@ class LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                customTextFormField(
+                StandardTextFormField(
                   focusNode: masterPwTextFieldFocusNode,
                   suffixIcon: IconButton(
                     splashColor: Colors.transparent,

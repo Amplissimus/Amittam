@@ -177,26 +177,15 @@ class MainPageState extends State<MainPage> {
                           'Do you really want to delete the selected password' +
                               (amountSelected > 1 ? 's' : '') +
                               '?'),
-                      actions: <Widget>[
-                        FlatButton(
-                          splashColor: CustomColors.colorForeground,
-                          child: StandardText('CANCEL'),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        FlatButton(
-                          splashColor: CustomColors.colorForeground,
-                          child: StandardText('CONFIRM'),
-                          onPressed: () {
-                            for (var pw in Values.displayablePasswords)
-                              if (pw.isSelected)
-                                Values.passwords.remove(pw.password);
-                            Prefs.passwords = Values.passwords;
-                            isSelecting = false;
-                            fullyRebuild();
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
+                      onConfirm: () {
+                        for (var pw in Values.displayablePasswords)
+                          if (pw.isSelected)
+                            Values.passwords.remove(pw.password);
+                        Prefs.passwords = Values.passwords;
+                        isSelecting = false;
+                        fullyRebuild();
+                        Navigator.pop(context);
+                      },
                     );
                   },
                 ),

@@ -48,7 +48,7 @@ class FirstLoginPageState extends State<FirstLoginPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                customTextFormField(
+                StandardTextFormField(
                   formatters: [BlacklistingTextInputFormatter(' ')],
                   suffixIcon: IconButton(
                     splashColor: Colors.transparent,

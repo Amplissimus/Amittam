@@ -95,7 +95,7 @@ class AddPassword extends StatelessWidget {
                     (AddPasswordValues.pwTypeIndex == 0)
                         ? Column(
                             children: [
-                              customTextFormField(
+                              StandardTextFormField(
                                 hint: 'Platform',
                                 key: platformTextFieldKey,
                                 controller: platformTextFieldController,
@@ -110,7 +110,7 @@ class AddPassword extends StatelessWidget {
                             ],
                           )
                         : Container(),
-                    customTextFormField(
+                    StandardTextFormField(
                       textinputType: TextInputType.emailAddress,
                       hint: AddPasswordValues.usernameText,
                       key: usernameTextFieldKey,
@@ -122,7 +122,7 @@ class AddPassword extends StatelessWidget {
                       },
                     ),
                     Padding(padding: EdgeInsets.all(8)),
-                    customTextFormField(
+                    StandardTextFormField(
                       suffixIcon: IconButton(
                         splashColor: Colors.transparent,
                         hoverColor: Colors.transparent,
@@ -172,7 +172,7 @@ class AddPassword extends StatelessWidget {
                       duration: Duration(milliseconds: 250),
                     ),
                     Padding(padding: EdgeInsets.all(8)),
-                    customTextFormField(
+                    StandardTextFormField(
                       hint: 'Notes (optional)',
                       key: notesTextFieldKey,
                       controller: notesTextFieldController,
