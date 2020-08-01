@@ -38,7 +38,7 @@ class AddPassword extends StatelessWidget {
         Values.afterBrightnessUpdate = () => setState(() {});
         return Scaffold(
           backgroundColor: CustomColors.colorBackground,
-          appBar: customAppBar(
+          appBar: StandardAppBar(
             title: Strings.appTitle,
             leading: IconButton(
               icon: Icon(

@@ -51,7 +51,7 @@ class DisplayPassword extends StatelessWidget {
               () => DisplayPasswordValues.passwordStrengthColor = Colors.green);
         return Scaffold(
           backgroundColor: CustomColors.colorBackground,
-          appBar: customAppBar(
+          appBar: StandardAppBar(
             title: 'Amittam',
             leading: IconButton(
               icon: Icon(

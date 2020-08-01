@@ -146,7 +146,7 @@ class MainPageState extends State<MainPage> {
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
-      appBar: AppBar(
+      appBar: StandardAppBar(
         leading: isSelecting
             ? IconButton(
                 onPressed: () {
@@ -158,10 +158,7 @@ class MainPageState extends State<MainPage> {
                 icon:
                     Icon(Icons.arrow_back, color: CustomColors.colorForeground))
             : null,
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        title: StandardText(Strings.appTitle, fontSize: 25),
+        title: Strings.appTitle,
         actions: isSelecting
             ? [
                 IconButton(

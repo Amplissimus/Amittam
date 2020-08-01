@@ -20,7 +20,7 @@ class Settings extends StatelessWidget {
         Values.afterBrightnessUpdate = () => setState(() {});
         return Scaffold(
           backgroundColor: CustomColors.colorBackground,
-          appBar: customAppBar(
+          appBar: StandardAppBar(
             title: 'Amittam',
             leading: IconButton(
               icon: Icon(

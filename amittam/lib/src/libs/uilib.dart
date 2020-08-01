@@ -2,22 +2,22 @@ import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-Widget customAppBar({
-  @required String title,
-  bool centerTitle = true,
-  List<Widget> actions,
-  double fontSize = 25,
-  Widget leading,
-  Color backgroundColor = Colors.transparent,
-}) {
-  return AppBar(
-    leading: leading,
-    actions: actions,
-    elevation: 0,
-    backgroundColor: backgroundColor,
-    centerTitle: centerTitle,
-    title: StandardText(title, fontSize: fontSize),
-  );
+class StandardAppBar extends AppBar {
+  StandardAppBar({
+    @required String title,
+    bool centerTitle = true,
+    List<Widget> actions,
+    double fontSize = 25,
+    Widget leading,
+    Color backgroundColor = Colors.transparent,
+  }) : super(
+          leading: leading,
+          actions: actions,
+          elevation: 0,
+          backgroundColor: backgroundColor,
+          centerTitle: centerTitle,
+          title: StandardText(title, fontSize: fontSize),
+        );
 }
 
 Widget customTextFormField({

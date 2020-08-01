@@ -18,7 +18,7 @@ class GeneratePassword extends StatelessWidget {
         return Scaffold(
           key: GeneratePasswordValues.scaffoldKey,
           backgroundColor: CustomColors.colorBackground,
-          appBar: customAppBar(
+          appBar: StandardAppBar(
             title: Strings.appTitle,
             leading: IconButton(
               icon: Icon(

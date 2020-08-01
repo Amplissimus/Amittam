@@ -37,7 +37,7 @@ class FirstLoginPageState extends State<FirstLoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.colorBackground,
-      appBar: customAppBar(title: Strings.appTitle),
+      appBar: StandardAppBar(title: Strings.appTitle),
       body: InkWell(
         child: Container(
           height: double.infinity,
