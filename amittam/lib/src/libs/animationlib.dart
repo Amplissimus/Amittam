@@ -1,9 +1,11 @@
+import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 
 class Animations {
   static void push(BuildContext context, Object newScreen,
       {Duration duration}) {
     if (duration == null) duration = Duration(milliseconds: 350);
+    Values.afterBrightnessUpdate = null;
     Navigator.of(context).push(
       PageRouteBuilder(
         transitionDuration: duration,

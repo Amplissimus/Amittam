@@ -1,4 +1,5 @@
 import 'package:Amittam/src/libs/lib.dart';
+import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ class DisplayablePassword {
 
   bool isSelected = false;
   String titleText;
-  TextStyle textStyle = TextStyle(color: CustomColors.colorForeground);
   void Function() onTap = () {};
   void Function() onLongPress = () {};
 
@@ -22,8 +22,8 @@ class DisplayablePassword {
       color: isSelected ? Values.green15 : Colors.transparent,
       child: ListTile(
         leading: suitableLeadingIcon,
-        title: Text(titleText, style: textStyle),
-        subtitle: Text(password.username, style: textStyle),
+        title: StandardText(titleText),
+        subtitle: StandardText(password.username),
         onTap: onTap,
         onLongPress: onLongPress,
       ),

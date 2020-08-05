@@ -65,10 +65,8 @@ class AddPassword extends StatelessWidget {
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(
+                          child: StandardText(
                             value,
-                            style:
-                                TextStyle(color: CustomColors.colorForeground),
                             textAlign: TextAlign.center,
                           ),
                         );

@@ -242,19 +242,18 @@ class DisplayPassword extends StatelessWidget {
                       ? Column(
                           children: [
                             Padding(padding: EdgeInsets.all(8)),
-                            Card(
-                              color: CustomColors.lightBackground,
-                              child: ListTile(
-                                leading:
-                                    Icon(MdiIcons.qrcode, color: Colors.green),
-                                title: Text('Show QR',
-                                    style: TextStyle(color: Colors.white)),
-                                onTap: () {
-                                  Animations.push(
-                                      context,
-                                      DisplayQr(
-                                          'WIFI:T:WPA;S:${DisplayPasswordValues.password.username};P:${DisplayPasswordValues.password.password};;'));
-                                },
+                            StandardButton(
+                              iconData: MdiIcons.qrcode,
+                              text: 'Show QR',
+                              onTap: () => Animations.push(
+                                context,
+                                DisplayQr(
+                                  'WIFI:T:WPA;S:'
+                                  '${DisplayPasswordValues.password.username}'
+                                  ';P:'
+                                  '${DisplayPasswordValues.password.password}'
+                                  ';;',
+                                ),
                               ),
                             ),
                           ],
@@ -266,42 +265,38 @@ class DisplayPassword extends StatelessWidget {
                                   PasswordType.wlanPassword
                               ? 2
                               : 4)),
-                  Card(
-                    color: CustomColors.lightBackground,
-                    child: ListTile(
-                      leading: Icon(MdiIcons.delete, color: Colors.green),
-                      title: Text('Delete password',
-                          style: TextStyle(color: Colors.white)),
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            backgroundColor: CustomColors.colorBackground,
-                            title: StandardText('Deletion'),
-                            content: StandardText(
-                                'Do you really want to delete this password?'),
-                            actions: <Widget>[
-                              FlatButton(
-                                splashColor: CustomColors.colorForeground,
-                                child: StandardText('CANCEL'),
-                                onPressed: () => Navigator.pop(context),
-                              ),
-                              FlatButton(
-                                splashColor: CustomColors.colorForeground,
-                                child: StandardText('CONFIRM'),
-                                onPressed: () {
-                                  Values.passwords.removeAt(Values.passwords
-                                      .indexOf(DisplayPasswordValues.password));
-                                  Prefs.passwords = Values.passwords;
-                                  if (functionOnPop != null) functionOnPop();
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                  StandardButton(
+                    iconData: MdiIcons.delete,
+                    text: 'Delete password',
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          backgroundColor: CustomColors.colorBackground,
+                          title: StandardText('Deletion'),
+                          content: StandardText(
+                              'Do you really want to delete this password?'),
+                          actions: <Widget>[
+                            FlatButton(
+                              splashColor: CustomColors.colorForeground,
+                              child: StandardText('CANCEL'),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                            FlatButton(
+                              splashColor: CustomColors.colorForeground,
+                              child: StandardText('CONFIRM'),
+                              onPressed: () {
+                                Values.passwords.removeAt(Values.passwords
+                                    .indexOf(DisplayPasswordValues.password));
+                                Prefs.passwords = Values.passwords;
+                                if (functionOnPop != null) functionOnPop();
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

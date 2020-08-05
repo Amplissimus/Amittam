@@ -175,15 +175,16 @@ void showStandardDialog({
           FlatButton(
             splashColor: CustomColors.colorForeground,
             child: StandardText('CONFIRM'),
-            onPressed: onConfirm,
+            onPressed: () => {onConfirm(), Navigator.pop(context)},
           ),
         ],
       ),
     );
 
 class StandardText extends Text {
-  StandardText(String text, {double fontSize})
+  StandardText(String text, {double fontSize, TextAlign textAlign})
       : super(text,
+            textAlign: textAlign,
             style: TextStyle(
                 color: CustomColors.colorForeground, fontSize: fontSize));
 }
@@ -203,4 +204,16 @@ class StandardSpeedDialChild extends SpeedDialChild {
     @required Icon icon,
     void Function() onTap,
   }) : super(label: label, child: icon, onTap: onTap);
+}
+
+class StandardButton extends Card {
+  StandardButton({IconData iconData, void Function() onTap, String text})
+      : super(
+          color: CustomColors.lightBackground,
+          child: ListTile(
+            leading: Icon(iconData, color: Colors.green),
+            title: StandardText(text),
+            onTap: onTap,
+          ),
+        );
 }

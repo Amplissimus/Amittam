@@ -78,7 +78,6 @@ class PasswordSearchDelegate extends SearchDelegate<DisplayablePassword> {
               DisplayablePassword displayablePassword = tempPasswords[index];
               Password password = displayablePassword.password;
               displayablePassword.onTap = () {
-                Values.afterBrightnessUpdate = null;
                 Navigator.pop(context);
                 Animations.push(
                     context, DisplayPassword(password, functionOnPop: onPop));

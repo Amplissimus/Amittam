@@ -184,7 +184,6 @@ class MainPageState extends State<MainPage> {
                         Prefs.passwords = Values.passwords;
                         isSelecting = false;
                         fullyRebuild();
-                        Navigator.pop(context);
                       },
                     );
                   },
@@ -248,7 +247,7 @@ class MainPageState extends State<MainPage> {
                         setState(() => isSelecting = atLeastOneSelected);
                         return;
                       }
-                      Values.afterBrightnessUpdate = null;
+
                       Animations.push(
                           context,
                           DisplayPassword(password,
@@ -281,27 +280,18 @@ class MainPageState extends State<MainPage> {
           StandardSpeedDialChild(
             label: 'Generate password',
             icon: Icon(MdiIcons.lockQuestion),
-            onTap: () {
-              Values.afterBrightnessUpdate = null;
-              Animations.push(context, GeneratePassword());
-            },
+            onTap: () => Animations.push(context, GeneratePassword()),
           ),
           StandardSpeedDialChild(
             label: 'Add password',
             icon: Icon(Icons.add),
-            onTap: () {
-              Values.afterBrightnessUpdate = null;
-              Animations.push(
-                  context, AddPassword(functionAfterSave: fullyRebuild));
-            },
+            onTap: () => Animations.push(
+                context, AddPassword(functionAfterSave: fullyRebuild)),
           ),
           StandardSpeedDialChild(
             label: 'Settings',
             icon: Icon(Icons.settings),
-            onTap: () {
-              Values.afterBrightnessUpdate = null;
-              Animations.push(context, Settings());
-            },
+            onTap: () => Animations.push(context, Settings()),
           ),
           StandardSpeedDialChild(
             label: 'Log out',
@@ -309,7 +299,6 @@ class MainPageState extends State<MainPage> {
             onTap: () {
               Values.passwords = [];
               Password.key = null;
-              Values.afterBrightnessUpdate = null;
               Animations.pushReplacement(context, LoginPage());
             },
           ),

@@ -1,3 +1,4 @@
+import 'package:Amittam/src/libs/animationlib.dart';
 import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
@@ -49,7 +50,6 @@ class FirstLoginPageState extends State<FirstLoginPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 StandardTextFormField(
-                  formatters: [BlacklistingTextInputFormatter(' ')],
                   suffixIcon: IconButton(
                     splashColor: Colors.transparent,
                     hoverColor: Colors.transparent,
@@ -117,54 +117,25 @@ class FirstLoginPageState extends State<FirstLoginPage> {
                 masterPWTextFieldErrorString = 'Password not strong enough!');
             return;
           }
-          showDialog(
+          showStandardDialog(
             context: context,
-            builder: (context) {
-              return AlertDialog(
-                backgroundColor: CustomColors.colorBackground,
-                title: Text('Confirm Master Password',
-                    style: TextStyle(color: CustomColors.colorForeground)),
-                content: Text(
-                    'Please confirm that "${masterPWTextFieldController.text.trim()}"'
-                    ' is your correct password!',
-                    style: TextStyle(color: CustomColors.colorForeground)),
-                actions: [
-                  FlatButton(
-                    splashColor: CustomColors.lightForeground,
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(
-                      'CANCEL',
-                      style: TextStyle(color: CustomColors.colorForeground),
-                    ),
-                  ),
-                  FlatButton(
-                    splashColor: CustomColors.lightForeground,
-                    onPressed: () {
-                      Navigator.pop(context);
-                      try {
-                        Prefs.setMasterPassword(
-                            masterPWTextFieldController.text.trim());
-                      } catch (e) {
-                        print(errorString(e));
-                        masterPWTextFieldErrorString = 'Error!';
-                        return;
-                      }
-                      Prefs.firstLogin = false;
-                      Values.afterBrightnessUpdate = null;
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MainApp(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'CONFRIM',
-                      style: TextStyle(color: CustomColors.colorForeground),
-                    ),
-                  ),
-                ],
-              );
+            title: 'Confirm Master Password',
+            content: StandardText(
+              'Please confirm that '
+              '"${masterPWTextFieldController.text.trim()}"'
+              ' is your correct password!',
+            ),
+            onConfirm: () {
+              try {
+                Prefs.setMasterPassword(
+                    masterPWTextFieldController.text.trim());
+              } catch (e) {
+                print(errorString(e));
+                masterPWTextFieldErrorString = 'Error!';
+                return;
+              }
+              Prefs.firstLogin = false;
+              Animations.pushReplacement(context, MainApp());
             },
           );
           return;

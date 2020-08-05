@@ -81,7 +81,7 @@ class LoginPageState extends State<LoginPage> {
                       return;
                     } else if (Prefs.masterPasswordIsValid(text)) {
                       Values.passwords = Prefs.passwords;
-                      Values.afterBrightnessUpdate = null;
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
