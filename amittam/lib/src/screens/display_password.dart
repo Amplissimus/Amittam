@@ -260,11 +260,12 @@ class DisplayPassword extends StatelessWidget {
                         )
                       : Container(),
                   Padding(
-                      padding: EdgeInsets.all(
-                          DisplayPasswordValues.password.passwordType ==
-                                  PasswordType.wlanPassword
-                              ? 2
-                              : 4)),
+                    padding: EdgeInsets.all(
+                        DisplayPasswordValues.password.passwordType ==
+                                PasswordType.wlanPassword
+                            ? 2
+                            : 4),
+                  ),
                   StandardButton(
                     iconData: MdiIcons.delete,
                     text: 'Delete password',

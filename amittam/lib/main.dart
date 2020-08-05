@@ -28,7 +28,10 @@ void main() {
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: SplashScreenPage());
+    return MaterialApp(
+      home: SplashScreenPage(),
+      theme: ThemeData(primarySwatch: Colors.green),
+    );
   }
 }
 
@@ -112,10 +115,10 @@ class MainPage extends StatefulWidget {
   MainPage({Key key}) : super(key: key);
 
   @override
-  MainPageState createState() => MainPageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> {
   bool isSelecting = false;
   var _scrollController = ScrollController();
 

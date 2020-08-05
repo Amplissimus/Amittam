@@ -1,3 +1,4 @@
+import 'package:Amittam/src/libs/auth.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/values.dart';
@@ -38,6 +39,11 @@ class Settings extends StatelessWidget {
                   text: 'Fast Login',
                   value: Prefs.fastLogin,
                   onChanged: (value) => setState(() => Prefs.fastLogin = value),
+                ),
+                StandardButton(
+                  iconData: MdiIcons.google,
+                  text: 'Sign in with google',
+                  onTap: () => AuthService.googleSignIn(),
                 ),
                 StandardButton(
                   iconData: Icons.info_outline,

@@ -108,7 +108,7 @@ class FirstLoginPageState extends State<FirstLoginPage> {
         },
       ),
       floatingActionButton: ExtendedFab(
-        label: Text('Set Password'),
+        label: StandardText('Set Password'),
         onPressed: () {
           double strength =
               estimatePasswordStrength(masterPWTextFieldController.text.trim());
