@@ -9,19 +9,12 @@ import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
 
-class FirstLogin extends StatelessWidget {
+class FirstLogin extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: FirstLoginPage());
-  }
+  _FirstLoginState createState() => _FirstLoginState();
 }
 
-class FirstLoginPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => FirstLoginPageState();
-}
-
-class FirstLoginPageState extends State<FirstLoginPage> {
+class _FirstLoginState extends State<FirstLogin> {
   Color passwordStrengthColor = Colors.grey;
   GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
   TextEditingController masterPWTextFieldController = TextEditingController();

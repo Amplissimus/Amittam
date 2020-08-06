@@ -303,7 +303,7 @@ class _MainPageState extends State<MainPage> {
             onTap: () {
               Values.passwords = [];
               Password.key = null;
-              Animations.pushReplacement(context, LoginPage());
+              Animations.pushReplacement(context, Login());
             },
           ),
         ],

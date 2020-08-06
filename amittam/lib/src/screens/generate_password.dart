@@ -7,125 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class GeneratePassword extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    if (GeneratePasswordValues.currentGenPassword == '0')
-      GeneratePasswordValues.regenPassword();
-    return StatefulBuilder(
-      builder: (context, setState) {
-        Values.afterBrightnessUpdate = () => setState(() {});
-        return Scaffold(
-          key: GeneratePasswordValues.scaffoldKey,
-          backgroundColor: CustomColors.colorBackground,
-          appBar: StandardAppBar(
-            title: Strings.appTitle,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: CustomColors.colorForeground,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-          body: Container(
-            margin: EdgeInsets.all(10),
-            child: ListView(
-              children: <Widget>[
-                StandardDivider(height: null),
-                Container(
-                  height: 40,
-                  child: Center(
-                    child: Text(
-                      GeneratePasswordValues.currentGenPassword,
-                      style: TextStyle(
-                        color: CustomColors.colorForeground,
-                        fontSize: GeneratePasswordValues.pwTextSize,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-                StandardDivider(height: null),
-                Slider(
-                  min: 1,
-                  max: 32,
-                  value: GeneratePasswordValues.currentSliderValue,
-                  onChanged: (value) => setState(() {
-                    GeneratePasswordValues.currentSliderValue = value;
-                    GeneratePasswordValues.regenPassword();
-                    GeneratePasswordValues.updatePwTextSize();
-                  }),
-                  divisions: 31,
-                  label: '${GeneratePasswordValues.currentSliderValue.toInt()}',
-                ),
-                Divider(color: CustomColors.colorForeground),
-                SwitchWithText(
-                  text: 'Use numbers',
-                  value: GeneratePasswordValues.usingNumbers,
-                  onChanged: (value) {
-                    setState(() {
-                      GeneratePasswordValues.usingNumbers = value;
-                      GeneratePasswordValues.regenPassword();
-                    });
-                  },
-                ),
-                SwitchWithText(
-                  text: 'Use special characters',
-                  value: GeneratePasswordValues.usingSpecialCharacters,
-                  onChanged: (value) {
-                    GeneratePasswordValues.regenPassword();
-                    setState(() {
-                      GeneratePasswordValues.usingSpecialCharacters = value;
-                      GeneratePasswordValues.regenPassword();
-                    });
-                  },
-                ),
-                StandardDivider(height: null),
-                Card(
-                  color: CustomColors.lightBackground,
-                  child: ListTile(
-                    leading: Icon(MdiIcons.contentCopy, color: Colors.green),
-                    title: Text('Copy password to clipboard',
-                        style: TextStyle(color: CustomColors.colorForeground)),
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(
-                          text: GeneratePasswordValues.currentGenPassword));
-                      GeneratePasswordValues.scaffoldKey.currentState
-                          ?.showSnackBar(
-                        SnackBar(
-                          backgroundColor: CustomColors.colorBackground,
-                          content: Text(
-                            'Copied password to clipboard!',
-                            textAlign: TextAlign.center,
-                            style:
-                                TextStyle(color: CustomColors.colorForeground),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+class GeneratePassword extends StatefulWidget {
+  _GeneratePasswordState createState() => _GeneratePasswordState();
 }
 
-class GeneratePasswordValues {
-  static final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+class _GeneratePasswordState extends State<GeneratePassword> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
-  static double currentSliderValue = 16;
-  static String currentGenPassword = '0';
-  static double pwTextSize = 23;
+  double currentSliderValue = 16;
+  String currentGenPassword = '0';
+  double pwTextSize = 23;
 
-  static bool usingSpecialCharacters = false;
-  static bool usingNumbers = false;
+  bool usingSpecialCharacters = false;
+  bool usingNumbers = false;
 
-  static void updatePwTextSize() {
+  void updatePwTextSize() {
     if (currentSliderValue < 9)
       pwTextSize = 30;
     else if (currentSliderValue < 13)
@@ -142,7 +38,7 @@ class GeneratePasswordValues {
       pwTextSize = 18;
   }
 
-  static void regenPassword() {
+  void regenPassword() {
     String tempString = '';
     for (var i = 0; i < currentSliderValue; i++) {
       int randomNumber = new Random().nextInt(100);
@@ -181,7 +77,7 @@ class GeneratePasswordValues {
     currentGenPassword = tempString;
   }
 
-  static final List<String> specialCharacters = [
+  final List<String> specialCharacters = [
     '!',
     '"',
     '§',
@@ -205,7 +101,7 @@ class GeneratePasswordValues {
     '*',
     '°',
   ];
-  static final List<String> standardLetters = [
+  final List<String> standardLetters = [
     'a',
     'b',
     'c',
@@ -233,7 +129,7 @@ class GeneratePasswordValues {
     'y',
     'z',
   ];
-  static final List<int> standardNumbers = [
+  final List<int> standardNumbers = [
     1,
     2,
     3,
@@ -245,4 +141,101 @@ class GeneratePasswordValues {
     9,
     0,
   ];
+
+  @override
+  Widget build(BuildContext context) {
+    if (currentGenPassword == '0') regenPassword();
+    Values.afterBrightnessUpdate = () => setState(() {});
+    return Scaffold(
+      key: scaffoldKey,
+      backgroundColor: CustomColors.colorBackground,
+      appBar: StandardAppBar(
+        title: Strings.appTitle,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: CustomColors.colorForeground,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Container(
+        margin: EdgeInsets.all(10),
+        child: ListView(
+          children: <Widget>[
+            StandardDivider(height: null),
+            Container(
+              height: 40,
+              child: Center(
+                child: Text(
+                  currentGenPassword,
+                  style: TextStyle(
+                    color: CustomColors.colorForeground,
+                    fontSize: pwTextSize,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            StandardDivider(height: null),
+            Slider(
+              min: 1,
+              max: 32,
+              value: currentSliderValue,
+              onChanged: (value) => setState(() {
+                currentSliderValue = value;
+                regenPassword();
+                updatePwTextSize();
+              }),
+              divisions: 31,
+              label: '${currentSliderValue.toInt()}',
+            ),
+            Divider(color: CustomColors.colorForeground),
+            SwitchWithText(
+              text: 'Use numbers',
+              value: usingNumbers,
+              onChanged: (value) {
+                setState(() {
+                  usingNumbers = value;
+                  regenPassword();
+                });
+              },
+            ),
+            SwitchWithText(
+              text: 'Use special characters',
+              value: usingSpecialCharacters,
+              onChanged: (value) {
+                setState(() {
+                  usingSpecialCharacters = value;
+                  regenPassword();
+                });
+              },
+            ),
+            StandardDivider(height: null),
+            Card(
+              color: CustomColors.lightBackground,
+              child: ListTile(
+                leading: Icon(MdiIcons.contentCopy, color: Colors.green),
+                title: Text('Copy password to clipboard',
+                    style: TextStyle(color: CustomColors.colorForeground)),
+                onTap: () {
+                  Clipboard.setData(ClipboardData(text: currentGenPassword));
+                  scaffoldKey.currentState?.showSnackBar(
+                    SnackBar(
+                      backgroundColor: CustomColors.colorBackground,
+                      content: Text(
+                        'Copied password to clipboard!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: CustomColors.colorForeground),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
