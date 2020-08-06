@@ -6,260 +6,47 @@ import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:password_strength/password_strength.dart';
 
-class AddPassword extends StatelessWidget {
-  AddPassword({@required this.functionAfterSave});
+class AddPassword extends StatefulWidget {
+  AddPassword({this.functionAfterSave});
   final void Function() functionAfterSave;
-  final GlobalKey<FormFieldState> platformTextFieldKey = GlobalKey();
-  final TextEditingController platformTextFieldController =
-      TextEditingController();
-  final GlobalKey<FormFieldState> usernameTextFieldKey = GlobalKey();
-  final TextEditingController usernameTextFieldController =
-      TextEditingController();
-  final GlobalKey<FormFieldState> passwordTextFieldKey = GlobalKey();
-  final TextEditingController passwordTextFieldController =
-      TextEditingController();
-  final GlobalKey<FormFieldState> notesTextFieldKey = GlobalKey();
-  final TextEditingController notesTextFieldController =
-      TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    AddPasswordValues.platformTextFieldErrorString = null;
-    AddPasswordValues.usernameTextFieldErrorString = null;
-    AddPasswordValues.passwordTextFieldErrorString = null;
-    AddPasswordValues.notesTextFieldErrorString = null;
-    AddPasswordValues.passwordStrengthColor = Colors.grey;
-    AddPasswordValues.passwordTextFieldInputHidden = true;
-    AddPasswordValues.currentPWType = AddPasswordValues.passwordTypes[0];
-    AddPasswordValues.passwordType = PasswordType.onlineAccount;
-    AddPasswordValues.updateUsernameText();
-    return StatefulBuilder(
-      builder: (context, setState) {
-        Values.afterBrightnessUpdate = () => setState(() {});
-        return Scaffold(
-          backgroundColor: CustomColors.colorBackground,
-          appBar: StandardAppBar(
-            title: Strings.appTitle,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: CustomColors.colorForeground,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-          body: InkWell(
-            focusColor: Colors.transparent,
-            child: Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Colors.transparent,
-              margin: EdgeInsets.all(16),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Padding(padding: EdgeInsets.all(8)),
-                    DropdownButton(
-                      value: AddPasswordValues.currentPWType,
-                      items: AddPasswordValues.passwordTypes
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: StandardText(
-                            value,
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() => AddPasswordValues.currentPWType = value);
-                        AddPasswordValues.updateUsernameText(
-                          functionAfterFinish: () => setState(
-                            () {
-                              AddPasswordValues.passwordType = PasswordType
-                                  .values[AddPasswordValues.pwTypeIndex];
-                              AddPasswordValues.platformTextFieldErrorString =
-                                  null;
-                            },
-                          ),
-                        );
-                      },
-                      underline: Container(
-                        height: 2,
-                        color: CustomColors.colorForeground,
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.all(4)),
-                    (AddPasswordValues.pwTypeIndex == 0)
-                        ? Column(
-                            children: [
-                              StandardTextFormField(
-                                hint: 'Platform',
-                                key: platformTextFieldKey,
-                                controller: platformTextFieldController,
-                                errorText: AddPasswordValues
-                                    .platformTextFieldErrorString,
-                                onChanged: (value) {
-                                  setState(() => AddPasswordValues
-                                      .platformTextFieldErrorString = null);
-                                },
-                              ),
-                              Padding(padding: EdgeInsets.all(8)),
-                            ],
-                          )
-                        : Container(),
-                    StandardTextFormField(
-                      textinputType: TextInputType.emailAddress,
-                      hint: AddPasswordValues.usernameText,
-                      key: usernameTextFieldKey,
-                      controller: usernameTextFieldController,
-                      errorText: AddPasswordValues.usernameTextFieldErrorString,
-                      onChanged: (value) {
-                        setState(() => AddPasswordValues
-                            .usernameTextFieldErrorString = null);
-                      },
-                    ),
-                    Padding(padding: EdgeInsets.all(8)),
-                    StandardTextFormField(
-                      suffixIcon: IconButton(
-                        splashColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        icon: AddPasswordValues.passwordTextFieldInputHidden
-                            ? Icon(Icons.visibility,
-                                color: CustomColors.colorForeground)
-                            : Icon(Icons.visibility_off,
-                                color: CustomColors.colorForeground),
-                        onPressed: () => setState(() => AddPasswordValues
-                                .passwordTextFieldInputHidden =
-                            !AddPasswordValues.passwordTextFieldInputHidden),
-                      ),
-                      obscureText:
-                          AddPasswordValues.passwordTextFieldInputHidden,
-                      textinputType: TextInputType.visiblePassword,
-                      errorText: AddPasswordValues.passwordTextFieldErrorString,
-                      controller: passwordTextFieldController,
-                      key: passwordTextFieldKey,
-                      hint: 'Password',
-                      onChanged: (text) {
-                        setState(() => AddPasswordValues
-                            .passwordTextFieldErrorString = null);
-                        String value = passwordTextFieldController.text.trim();
-                        double strength = estimatePasswordStrength(value);
-
-                        if (strength < 0.3)
-                          setState(() => AddPasswordValues
-                              .passwordStrengthColor = Colors.grey);
-                        else if (strength < 0.7)
-                          setState(() => AddPasswordValues
-                              .passwordStrengthColor = Colors.orange);
-                        else
-                          setState(() => AddPasswordValues
-                              .passwordStrengthColor = Colors.green);
-                      },
-                    ),
-                    Padding(padding: EdgeInsets.all(8)),
-                    AnimatedContainer(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: AddPasswordValues.passwordStrengthColor,
-                        border: Border(),
-                      ),
-                      height: 10,
-                      duration: Duration(milliseconds: 250),
-                    ),
-                    Padding(padding: EdgeInsets.all(8)),
-                    StandardTextFormField(
-                      hint: 'Notes (optional)',
-                      key: notesTextFieldKey,
-                      controller: notesTextFieldController,
-                      errorText: AddPasswordValues.notesTextFieldErrorString,
-                    ),
-                    Padding(padding: EdgeInsets.all(48)),
-                  ],
-                ),
-              ),
-            ),
-            hoverColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
-            },
-          ),
-          floatingActionButton: ExtendedFab(
-            onPressed: () {
-              bool processWillCancel = false;
-              if (passwordTextFieldController.text.trim().isEmpty) {
-                setState(() => AddPasswordValues.passwordTextFieldErrorString =
-                    'Field cannot be empty!');
-                processWillCancel = true;
-              }
-              if (usernameTextFieldController.text.trim().isEmpty) {
-                setState(() => AddPasswordValues.usernameTextFieldErrorString =
-                    'Field cannot be empty!');
-                processWillCancel = true;
-              }
-              if (platformTextFieldController.text.trim().isEmpty &&
-                  AddPasswordValues.passwordType ==
-                      PasswordType.onlineAccount) {
-                setState(() => AddPasswordValues.platformTextFieldErrorString =
-                    'Field cannot be empty!');
-                processWillCancel = true;
-              }
-              if (AddPasswordValues.passwordType !=
-                  PasswordType.onlineAccount) {
-                platformTextFieldController.text =
-                    usernameTextFieldController.text;
-              }
-              if (processWillCancel) return;
-              Password password = Password(
-                passwordTextFieldController.text,
-                usernameParam: usernameTextFieldController.text,
-                notesParam: notesTextFieldController.text,
-                platformParam: platformTextFieldController.text,
-                passwordType: AddPasswordValues.passwordType,
-              );
-              Values.passwords.add(password);
-              Prefs.passwords = Values.passwords;
-              if (functionAfterSave != null) functionAfterSave();
-              Navigator.pop(context);
-            },
-            label: Text('Save'),
-            icon: Icon(Icons.save),
-          ),
-        );
-      },
-    );
-  }
+  _AddPasswordState createState() => _AddPasswordState();
 }
 
-class AddPasswordValues {
-  static String platformTextFieldErrorString;
-  static String usernameTextFieldErrorString;
-  static String passwordTextFieldErrorString;
-  static String notesTextFieldErrorString;
+class _AddPasswordState extends State<AddPassword> {
+  GlobalKey<FormFieldState> platformTextFieldKey = GlobalKey();
+  TextEditingController platformTextFieldController = TextEditingController();
+  GlobalKey<FormFieldState> usernameTextFieldKey = GlobalKey();
+  TextEditingController usernameTextFieldController = TextEditingController();
+  GlobalKey<FormFieldState> passwordTextFieldKey = GlobalKey();
+  TextEditingController passwordTextFieldController = TextEditingController();
+  GlobalKey<FormFieldState> notesTextFieldKey = GlobalKey();
+  TextEditingController notesTextFieldController = TextEditingController();
 
-  static Color passwordStrengthColor = Colors.grey;
-  static bool passwordTextFieldInputHidden = true;
+  String platformTextFieldErrorString;
+  String usernameTextFieldErrorString;
+  String passwordTextFieldErrorString;
+  String notesTextFieldErrorString;
 
-  static String usernameText;
-  static String currentPWType;
-  static PasswordType passwordType = PasswordType.onlineAccount;
-  static final List<String> passwordTypes = [
+  Color passwordStrengthColor = Colors.grey;
+  bool passwordTextFieldInputHidden = true;
+
+  String usernameText;
+  String currentPWType;
+  PasswordType passwordType = PasswordType.onlineAccount;
+  final List<String> passwordTypes = [
     'Online Account',
     'E-Mail Account',
     'WiFi Password',
     'Other',
   ];
-  static int get pwTypeIndex {
+  int get pwTypeIndex {
     if (!passwordTypes.contains(currentPWType)) return -1;
     return passwordTypes.indexOf(currentPWType);
   }
 
-  static void updateUsernameText({void Function() functionAfterFinish}) {
+  void updateUsernameText({void Function() functionAfterFinish}) {
     if (functionAfterFinish == null) functionAfterFinish = () {};
     switch (pwTypeIndex) {
       case 0:
@@ -278,5 +65,201 @@ class AddPasswordValues {
         usernameText = 'Username';
     }
     functionAfterFinish();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    platformTextFieldErrorString = null;
+    usernameTextFieldErrorString = null;
+    passwordTextFieldErrorString = null;
+    notesTextFieldErrorString = null;
+    passwordStrengthColor = Colors.grey;
+    passwordTextFieldInputHidden = true;
+    currentPWType = passwordTypes[0];
+    passwordType = PasswordType.onlineAccount;
+    Values.afterBrightnessUpdate = () => setState(() {});
+    return Scaffold(
+      backgroundColor: CustomColors.colorBackground,
+      appBar: StandardAppBar(
+        title: Strings.appTitle,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: CustomColors.colorForeground,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: InkWell(
+        focusColor: Colors.transparent,
+        child: Container(
+          height: double.infinity,
+          width: double.infinity,
+          color: Colors.transparent,
+          margin: EdgeInsets.all(16),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Padding(padding: EdgeInsets.all(8)),
+                DropdownButton(
+                  value: currentPWType,
+                  items: passwordTypes
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: StandardText(
+                        value,
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() => currentPWType = value);
+                    updateUsernameText(
+                      functionAfterFinish: () => setState(
+                        () {
+                          passwordType = PasswordType.values[pwTypeIndex];
+                          platformTextFieldErrorString = null;
+                        },
+                      ),
+                    );
+                  },
+                  underline: Container(
+                    height: 2,
+                    color: CustomColors.colorForeground,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(4)),
+                (pwTypeIndex == 0)
+                    ? Column(
+                        children: [
+                          StandardTextFormField(
+                            hint: 'Platform',
+                            key: platformTextFieldKey,
+                            controller: platformTextFieldController,
+                            errorText: platformTextFieldErrorString,
+                            onChanged: (value) {
+                              setState(
+                                  () => platformTextFieldErrorString = null);
+                            },
+                          ),
+                          Padding(padding: EdgeInsets.all(8)),
+                        ],
+                      )
+                    : Container(),
+                StandardTextFormField(
+                  textinputType: TextInputType.emailAddress,
+                  hint: usernameText,
+                  key: usernameTextFieldKey,
+                  controller: usernameTextFieldController,
+                  errorText: usernameTextFieldErrorString,
+                  onChanged: (value) {
+                    setState(() => usernameTextFieldErrorString = null);
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(8)),
+                StandardTextFormField(
+                  suffixIcon: IconButton(
+                    splashColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    icon: passwordTextFieldInputHidden
+                        ? Icon(Icons.visibility,
+                            color: CustomColors.colorForeground)
+                        : Icon(Icons.visibility_off,
+                            color: CustomColors.colorForeground),
+                    onPressed: () => setState(() =>
+                        passwordTextFieldInputHidden =
+                            !passwordTextFieldInputHidden),
+                  ),
+                  obscureText: passwordTextFieldInputHidden,
+                  textinputType: TextInputType.visiblePassword,
+                  errorText: passwordTextFieldErrorString,
+                  controller: passwordTextFieldController,
+                  key: passwordTextFieldKey,
+                  hint: 'Password',
+                  onChanged: (text) {
+                    setState(() => passwordTextFieldErrorString = null);
+                    String value = passwordTextFieldController.text.trim();
+                    double strength = estimatePasswordStrength(value);
+
+                    if (strength < 0.3)
+                      setState(() => passwordStrengthColor = Colors.grey);
+                    else if (strength < 0.7)
+                      setState(() => passwordStrengthColor = Colors.orange);
+                    else
+                      setState(() => passwordStrengthColor = Colors.green);
+                  },
+                ),
+                Padding(padding: EdgeInsets.all(8)),
+                AnimatedContainer(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: passwordStrengthColor,
+                    border: Border(),
+                  ),
+                  height: 10,
+                  duration: Duration(milliseconds: 250),
+                ),
+                Padding(padding: EdgeInsets.all(8)),
+                StandardTextFormField(
+                  hint: 'Notes (optional)',
+                  key: notesTextFieldKey,
+                  controller: notesTextFieldController,
+                  errorText: notesTextFieldErrorString,
+                ),
+                Padding(padding: EdgeInsets.all(48)),
+              ],
+            ),
+          ),
+        ),
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
+        },
+      ),
+      floatingActionButton: ExtendedFab(
+        onPressed: () {
+          bool processWillCancel = false;
+          if (passwordTextFieldController.text.trim().isEmpty) {
+            setState(
+                () => passwordTextFieldErrorString = 'Field cannot be empty!');
+            processWillCancel = true;
+          }
+          if (usernameTextFieldController.text.trim().isEmpty) {
+            setState(
+                () => usernameTextFieldErrorString = 'Field cannot be empty!');
+            processWillCancel = true;
+          }
+          if (platformTextFieldController.text.trim().isEmpty &&
+              passwordType == PasswordType.onlineAccount) {
+            setState(
+                () => platformTextFieldErrorString = 'Field cannot be empty!');
+            processWillCancel = true;
+          }
+          if (passwordType != PasswordType.onlineAccount) {
+            platformTextFieldController.text = usernameTextFieldController.text;
+          }
+          if (processWillCancel) return;
+          Password password = Password(
+            passwordTextFieldController.text,
+            usernameParam: usernameTextFieldController.text,
+            notesParam: notesTextFieldController.text,
+            platformParam: platformTextFieldController.text,
+            passwordType: passwordType,
+          );
+          Values.passwords.add(password);
+          Prefs.passwords = Values.passwords;
+          if (widget.functionAfterSave != null) widget.functionAfterSave();
+          Navigator.pop(context);
+        },
+        label: Text('Save'),
+        icon: Icon(Icons.save),
+      ),
+    );
   }
 }
