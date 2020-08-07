@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class Settings extends StatefulWidget {
+  @override
   _SettingsState createState() => _SettingsState();
 }
 

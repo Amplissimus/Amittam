@@ -13,9 +13,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   Color passwordStrengthColor = Colors.grey;
-  GlobalKey<FormFieldState> masterPWTextFieldKey = new GlobalKey();
-  TextEditingController masterPWTextFieldController =
-      new TextEditingController();
+  GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
+  TextEditingController masterPWTextFieldController = TextEditingController();
   FocusNode masterPwTextFieldFocusNode = FocusNode();
   String masterPWTextFieldErrorString;
   bool masterPWTextFieldInputHidden = true;

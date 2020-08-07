@@ -199,16 +199,14 @@ class _MainPageState extends State<MainPage> {
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
-                  onPressed: () {
-                    showSearch(
-                      context: context,
-                      delegate: PasswordSearchDelegate(
-                        Values.displayablePasswords,
-                        fullyRebuild,
-                        initialScrollOffset: _scrollController.offset,
-                      ),
-                    );
-                  },
+                  onPressed: () => showSearch(
+                    context: context,
+                    delegate: PasswordSearchDelegate(
+                      Values.displayablePasswords,
+                      fullyRebuild,
+                      initialScrollOffset: _scrollController.offset,
+                    ),
+                  ),
                 ),
               ],
       ),
@@ -218,11 +216,10 @@ class _MainPageState extends State<MainPage> {
         highlightColor: Colors.transparent,
         focusColor: Colors.transparent,
         onTap: () {
-          if (isSelecting) {
-            for (var pw in Values.displayablePasswords) pw.isSelected = false;
-            isSelecting = false;
-            rebuild();
-          }
+          assert(isSelecting);
+          for (var pw in Values.displayablePasswords) pw.isSelected = false;
+          isSelecting = false;
+          rebuild();
         },
         child: Container(
           color: Colors.transparent,

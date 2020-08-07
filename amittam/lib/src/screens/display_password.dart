@@ -11,9 +11,11 @@ import 'package:password_strength/password_strength.dart';
 
 class DisplayPassword extends StatefulWidget {
   DisplayPassword(this.password, {this.functionOnPop});
+
   final void Function() functionOnPop;
   final Password password;
 
+  @override
   _DisplayPasswordState createState() => _DisplayPasswordState();
 }
 
