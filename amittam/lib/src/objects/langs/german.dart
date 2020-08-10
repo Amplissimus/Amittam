@@ -2,115 +2,87 @@ import 'package:Amittam/src/objects/language.dart';
 
 class German extends Language {
   @override
-  // TODO: implement addPassword
-  String get addPassword => throw UnimplementedError();
+  String get addPassword => 'Passwort hinzufügen';
 
   @override
-  // TODO: implement cancel
-  String get cancel => throw UnimplementedError();
+  String get cancel => 'abbrechen';
 
   @override
-  // TODO: implement changeLang
-  String get chooseLang => throw UnimplementedError();
+  String get chooseLang => 'Sprache auswählen';
 
   @override
-  // TODO: implement confirm
-  String get confirm => throw UnimplementedError();
+  String get confirm => 'bestätigen';
 
   @override
-  // TODO: implement context
-  String get context => throw UnimplementedError();
+  String get context => 'Kontext';
 
   @override
-  // TODO: implement copyMasterPwToClipboard
-  String get copyPWToClipboard => throw UnimplementedError();
+  String get copyPWToClipboard => 'Passwort in Zwischenablage kopieren';
 
   @override
-  // TODO: implement deleteAppData
-  String get deleteAppData => throw UnimplementedError();
+  String get copiedPWToClipboard => 'Passwort in Zwischenablage kopiert!';
 
   @override
-  // TODO: implement fastLogin
-  String get fastLogin => throw UnimplementedError();
+  String get deleteAppData => 'App-Daten löschen';
 
   @override
-  // TODO: implement generatePassword
-  String get generatePassword => throw UnimplementedError();
+  String get fastLogin => 'Schneller Login';
 
   @override
-  // TODO: implement logOut
-  String get logOut => throw UnimplementedError();
+  String get generatePassword => 'Passwort generieren';
 
   @override
-  // TODO: implement noPasswordsRegistered
-  String get noPasswordsRegistered => throw UnimplementedError();
+  String get logOut => 'Ausloggen';
 
   @override
-  // TODO: implement notes
-  String get notes => throw UnimplementedError();
+  String get noPasswordsRegistered => 'Keine Passwörter registriert!';
 
   @override
-  // TODO: implement password
-  String get password => throw UnimplementedError();
+  String get notes => 'Notizen';
 
   @override
-  // TODO: implement platform
-  String get platform => throw UnimplementedError();
+  String get password => 'Passwort';
 
   @override
-  // TODO: implement pwNotStrongEnough
-  String get pwNotStrongEnough => throw UnimplementedError();
+  String get platform => 'Plattform';
 
   @override
-  // TODO: implement save
-  String get save => throw UnimplementedError();
+  String get pwNotStrongEnough => 'Passwort zu schwach!';
 
   @override
-  // TODO: implement setMasterPW
-  String get setMasterPW => throw UnimplementedError();
+  String get save => 'speichern';
 
   @override
-  // TODO: implement settings
-  String get settings => throw UnimplementedError();
+  String get setMasterPW => 'Masterpasswort speichern';
 
   @override
-  // TODO: implement showAppInfo
-  String get showAppInfo => throw UnimplementedError();
+  String get settings => 'Einstellungen';
 
   @override
-  // TODO: implement signInWithGoogle
-  String get signInWithGoogle => throw UnimplementedError();
+  String get showAppInfo => 'App-Informationen anzeigen';
 
   @override
-  // TODO: implement useNumbers
-  String get useNumbers => throw UnimplementedError();
+  String get signInWithGoogle => 'Mit Google anmelden';
 
   @override
-  // TODO: implement useSpecialChars
-  String get useSpecialChars => throw UnimplementedError();
+  String get useNumbers => 'Ziffern verwenden';
 
   @override
-  // TODO: implement username
-  String get username => throw UnimplementedError();
+  String get useSpecialChars => 'Sonderzeichen verwenden';
 
   @override
-  // TODO: implement onlineAcc
-  String get onlineAcc => throw UnimplementedError();
+  String get username => 'Benutzername';
 
   @override
-  // TODO: implement other
-  String get other => throw UnimplementedError();
+  String get onlineAcc => 'Online-Konto';
 
   @override
-  // TODO: implement wlanPW
-  String get wlanPW => throw UnimplementedError();
+  String get other => 'andere';
 
   @override
-  // TODO: implement emailAcc
-  String get emailAcc => throw UnimplementedError();
+  String get wifiPW => 'WLAN Passwort';
 
   @override
-  // TODO: implement copiedPWToClipboard
-  String get copiedPWToClipboard => throw UnimplementedError();
+  String get emailAcc => 'E-Mail Konto';
 
 }

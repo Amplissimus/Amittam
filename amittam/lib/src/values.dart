@@ -1,11 +1,24 @@
+
+import 'dart:io';
+
 import 'package:Amittam/src/objects/displayable_password.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:flutter/material.dart';
 
+import 'objects/langs/english.dart';
+import 'objects/langs/german.dart';
 import 'objects/language.dart';
 
-Language currentLang;
-
+Language currentLang = English();
+void updateLang() {
+  switch(Platform.localeName.split('_')[0]) {
+    case 'de':
+      currentLang = German();
+      break;
+    default:
+      currentLang = English();
+  }
+}
 class CustomColors {
   static bool isDarkMode = false;
 

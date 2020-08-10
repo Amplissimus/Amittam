@@ -51,8 +51,9 @@ abstract class Language {
 
   String get onlineAcc;
 
-  String get wlanPW;
+  String get wifiPW;
 
   String get other;
+
   String get emailAcc;
 }

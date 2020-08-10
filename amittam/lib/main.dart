@@ -18,12 +18,9 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-void main() {
-  runApp(SplashScreen());
-}
+void main() => runApp(SplashScreen());
 
 class SplashScreen extends StatelessWidget {
   @override
@@ -53,6 +50,7 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
+      updateLang();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -121,10 +119,9 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   bool isSelecting = false;
   var _scrollController = ScrollController();
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void rebuild() {
-    setState(() {});
-  }
+  void rebuild() => setState(() {});
 
   void fullyRebuild() {
     Values.passwords = Prefs.passwords;
@@ -149,6 +146,7 @@ class _MainPageState extends State<MainPage> {
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: CustomColors.colorBackground,
       appBar: StandardAppBar(
         leading: isSelecting
@@ -164,7 +162,7 @@ class _MainPageState extends State<MainPage> {
             : null,
         title: Strings.appTitle,
         actions: isSelecting
-            ? [
+            ? <Widget>[
                 IconButton(
                   icon: Icon(MdiIcons.delete, color: Colors.green),
                   hoverColor: Colors.transparent,
@@ -193,20 +191,28 @@ class _MainPageState extends State<MainPage> {
                   },
                 ),
               ]
-            : [
+            : <Widget>[
                 IconButton(
                   icon: Icon(Icons.search, color: CustomColors.colorForeground),
                   hoverColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
-                  onPressed: () => showSearch(
-                    context: context,
-                    delegate: PasswordSearchDelegate(
-                      Values.displayablePasswords,
-                      fullyRebuild,
-                      initialScrollOffset: _scrollController.offset,
-                    ),
-                  ),
+                  onPressed: () => Values.displayablePasswords.isEmpty
+                      ? _scaffoldKey.currentState?.showSnackBar(
+                          SnackBar(
+                            backgroundColor: CustomColors.colorBackground,
+                            content: StandardText('Error!',
+                                textAlign: TextAlign.center),
+                          ),
+                        )
+                      : showSearch(
+                          context: context,
+                          delegate: PasswordSearchDelegate(
+                            Values.displayablePasswords,
+                            fullyRebuild,
+                            initialScrollOffset: _scrollController.offset,
+                          ),
+                        ),
                 ),
               ],
       ),
@@ -226,7 +232,8 @@ class _MainPageState extends State<MainPage> {
           margin: EdgeInsets.all(16),
           child: Values.displayablePasswords.isEmpty
               ? Center(
-                  child: StandardText('No passwords registered!', fontSize: 20))
+                  child: StandardText(currentLang.noPasswordsRegistered,
+                      fontSize: 20))
               : ListView.separated(
                   controller: _scrollController,
                   cacheExtent: 5,
@@ -273,42 +280,47 @@ class _MainPageState extends State<MainPage> {
                 ),
         ),
       ),
-      floatingActionButton: SpeedDial(
-        backgroundColor: Colors.green,
-        overlayOpacity: 0,
-        animatedIcon: AnimatedIcons.menu_close,
-        children: [
-          StandardSpeedDialChild(
-            label: 'Generate password',
-            icon: Icon(MdiIcons.lockQuestion),
-            onTap: () => Animations.push(context, GeneratePassword()),
-          ),
-          StandardSpeedDialChild(
-            label: 'Add password',
-            icon: Icon(Icons.add),
-            onTap: () => Animations.push(
-                context, AddPassword(functionAfterSave: fullyRebuild)),
-          ),
-          StandardSpeedDialChild(
-            label: 'Settings',
-            icon: Icon(Icons.settings),
-            onTap: () => Animations.push(context, Settings()),
-          ),
-          StandardSpeedDialChild(
-            label: 'Log out',
-            icon: Icon(MdiIcons.logout),
-            onTap: () {
-              Values.passwords = [];
-              Password.key = null;
-              Animations.pushReplacement(context, Login());
-            },
-          ),
-        ],
-      ),
       drawer: Drawer(
         child: ListView(
           children: [
-            ListTile(title: StandardText('')),
+            Container(
+              child: ListTile(
+                  title: StandardText(currentLang.appTitle, fontSize: 26)),
+            ),
+            ListTile(
+              leading: StandardIcon(Icons.add),
+              title: StandardText(currentLang.addPassword),
+              onTap: () {
+                Navigator.pop(context);
+                Animations.push(
+                    context, AddPassword(functionAfterSave: fullyRebuild));
+              },
+            ),
+            ListTile(
+              leading: StandardIcon(MdiIcons.lockQuestion),
+              title: StandardText(currentLang.generatePassword),
+              onTap: () {
+                Navigator.pop(context);
+                Animations.push(context, GeneratePassword());
+              },
+            ),
+            ListTile(
+              leading: StandardIcon(Icons.settings),
+              title: StandardText(currentLang.settings),
+              onTap: () {
+                Navigator.pop(context);
+                Animations.push(context, Settings());
+              },
+            ),
+            ListTile(
+              leading: StandardIcon(MdiIcons.logout),
+              title: StandardText(currentLang.logOut),
+              onTap: () {
+                Values.passwords = [];
+                Password.key = null;
+                Animations.pushReplacement(context, Login());
+              },
+            ),
           ],
         ),
       ),

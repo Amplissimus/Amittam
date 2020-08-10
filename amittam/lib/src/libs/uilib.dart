@@ -217,3 +217,8 @@ class StandardButton extends Card {
           ),
         );
 }
+
+class StandardIcon extends Icon {
+  StandardIcon(IconData iconData)
+      : super(iconData, color: CustomColors.colorForeground);
+}
