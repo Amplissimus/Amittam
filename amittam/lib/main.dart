@@ -305,6 +305,13 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(title: StandardText('')),
+          ],
+        ),
+      ),
     );
   }
 }

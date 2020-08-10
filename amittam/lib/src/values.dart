@@ -2,6 +2,10 @@ import 'package:Amittam/src/objects/displayable_password.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:flutter/material.dart';
 
+import 'objects/language.dart';
+
+Language currentLang;
+
 class CustomColors {
   static bool isDarkMode = false;
 

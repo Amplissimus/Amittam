@@ -149,7 +149,7 @@ class _AddPasswordState extends State<AddPassword> {
                     : Container(),
                 StandardTextFormField(
                   textinputType: TextInputType.emailAddress,
-                  hint: usernameText,
+                  hint: 'Username',
                   key: usernameTextFieldKey,
                   controller: usernameTextFieldController,
                   errorText: usernameTextFieldErrorString,
