@@ -62,7 +62,7 @@ class German extends Language {
   String get showAppInfo => 'App-Informationen anzeigen';
 
   @override
-  String get signInWithGoogle => 'Mit Google anmelden';
+  String get signInWithPhoneNumber => 'Mit Telefonnummer anmelden';
 
   @override
   String get useNumbers => 'Ziffern verwenden';
@@ -84,5 +84,41 @@ class German extends Language {
 
   @override
   String get emailAcc => 'E-Mail Konto';
+
+  @override
+  String get englishName => 'German';
+
+  @override
+  String get nativeName => 'Deutsch';
+
+  @override
+  String get searchDot => 'Suchen...';
+
+  @override
+  String get appInfo => 'Amittam ist ein quelloffener Passwortmanager, der fast alle Daten, sogar das Hauptzugangspasswort, mithilfe des Hauptzugangspasswort verschlüsselt, abspeichert und eine Aktualisierung zwischen Geräten in Echtzeit ermöglicht, sobald sich der Benutzer mit seiner Telefonnummer ein Amittam-Konto erstellt hat. Die manuell eingetragenen Daten können nur mit Eingabe des korrekten Hauptzugangspassworts im Login Bildschirm eingesehen werden.';
+
+  @override
+  String get enterVerificationCode => 'Bitte gib den eben erhaltenen Verifizierungscode in die Textbox unterhalb ein.';
+
+  @override
+  String get enteredVerificationCodeWrong => 'Der eingegebene Verfizierungscode ist falsch!';
+
+  @override
+  String get phoneLogin => 'Telefon Login';
+
+  @override
+  String get phoneLoginWarning => 'Sobald der Knopf oberhalb betätigt wird, sollte eine SMS gesendet werden. SMS-Veträge & sonstige Telefonverträge können gelten.';
+
+  @override
+  String get phoneNumber => 'Telefonnummer';
+
+  @override
+  String get verificationCode => 'Verifizierungscode';
+
+  @override
+  String get verifyCode => 'Code überprüfen';
+
+  @override
+  String get verifyPhoneNumber => 'Telefonnummer bestätigen';
 
 }

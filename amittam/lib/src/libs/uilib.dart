@@ -1,3 +1,6 @@
+import 'package:Amittam/src/objects/langs/english.dart';
+import 'package:Amittam/src/objects/langs/german.dart';
+import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +21,7 @@ class StandardAppBar extends AppBar {
           backgroundColor: backgroundColor,
           centerTitle: centerTitle,
           title: StandardText(title, fontSize: fontSize),
+          iconTheme: IconThemeData(color: CustomColors.colorForeground),
         );
 }
 
@@ -169,13 +173,13 @@ void showStandardDialog({
         actions: <Widget>[
           FlatButton(
             splashColor: CustomColors.colorForeground,
-            child: StandardText('CANCEL'),
+            child: StandardText(currentLang.cancel.toUpperCase()),
             onPressed: () => Navigator.pop(context),
           ),
           FlatButton(
             splashColor: CustomColors.colorForeground,
-            child: StandardText('CONFIRM'),
-            onPressed: () => {onConfirm(), Navigator.pop(context)},
+            child: StandardText(currentLang.confirm.toUpperCase()),
+            onPressed: () => {Navigator.pop(context), onConfirm()},
           ),
         ],
       ),
@@ -207,7 +211,7 @@ class StandardSpeedDialChild extends SpeedDialChild {
 }
 
 class StandardButton extends Card {
-  StandardButton({IconData iconData, void Function() onTap, String text})
+  StandardButton({@required IconData iconData, void Function() onTap, @required String text})
       : super(
           color: CustomColors.lightBackground,
           child: ListTile(
@@ -221,4 +225,18 @@ class StandardButton extends Card {
 class StandardIcon extends Icon {
   StandardIcon(IconData iconData)
       : super(iconData, color: CustomColors.colorForeground);
+}
+
+class StandardDropdownButton extends DropdownButton {
+  StandardDropdownButton(
+      {@required List<DropdownMenuItem<dynamic>> items,
+      @required dynamic value,
+      @required void Function(dynamic value) onChanged})
+      : super(
+          items: items,
+          onChanged: onChanged,
+          value: value,
+          underline: Container(height: 2, color: Colors.green),
+          style: TextStyle(color: CustomColors.colorForeground),
+        );
 }

@@ -1,6 +1,7 @@
 import 'package:Amittam/src/libs/animationlib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/objects/displayable_password.dart';
+import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/screens/display_password.dart';
 import 'package:Amittam/src/values.dart';
@@ -71,27 +72,35 @@ class PasswordSearchDelegate extends SearchDelegate<DisplayablePassword> {
         child: Container(
           color: Colors.transparent,
           margin: EdgeInsets.all(16),
-          child: ListView.separated(
-            controller: _controller,
-            cacheExtent: 5,
-            itemBuilder: (context, index) {
-              DisplayablePassword displayablePassword = tempPasswords[index];
-              Password password = displayablePassword.password;
-              displayablePassword.onTap = () {
-                Navigator.pop(context);
-                Animations.push(
-                    context, DisplayPassword(password, functionOnPop: onPop));
-              };
-              displayablePassword.onLongPress = () {};
-              return displayablePassword.asWidget;
-            },
-            separatorBuilder: (context, index) => StandardDivider(),
-            itemCount: tempPasswords.length,
-          ),
+          child: tempPasswords.isEmpty
+              ? ListTile(
+                  title:
+                      StandardText('No results!', textAlign: TextAlign.center))
+              : ListView.separated(
+                  controller: _controller,
+                  cacheExtent: 5,
+                  itemBuilder: (context, index) {
+                    DisplayablePassword displayablePassword =
+                        tempPasswords[index];
+                    Password password = displayablePassword.password;
+                    displayablePassword.onTap = () {
+                      Navigator.pop(context);
+                      Animations.push(context,
+                          DisplayPassword(password, onPop: onPop));
+                    };
+                    displayablePassword.onLongPress = () {};
+                    return displayablePassword.asWidget;
+                  },
+                  separatorBuilder: (context, index) => StandardDivider(),
+                  itemCount: tempPasswords.length,
+                ),
         ),
       ),
     );
   }
+
+  @override
+  String get searchFieldLabel => currentLang.searchDot;
 
   @override
   ThemeData appBarTheme(BuildContext context) {

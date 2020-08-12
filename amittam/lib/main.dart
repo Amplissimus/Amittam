@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:Amittam/src/libs/animationlib.dart';
+import 'package:Amittam/src/libs/auth.dart';
 import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/displayable_password.dart';
+import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/objects/search_delegates.dart';
 import 'package:Amittam/src/screens/add_password.dart';
@@ -50,7 +52,7 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
-      updateLang();
+      await AuthService.initialize();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -120,6 +122,11 @@ class _MainPageState extends State<MainPage> {
   bool isSelecting = false;
   var _scrollController = ScrollController();
   var _scaffoldKey = GlobalKey<ScaffoldState>();
+  var _verticalPageController = PageController();
+  var _horizontalPageController = PageController();
+
+  Widget _secondPage;
+  Widget _topSecondPage;
 
   void rebuild() => setState(() {});
 
@@ -133,6 +140,16 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
+    _secondPage = DisplayPassword(
+      Password(
+        'Dummy',
+        passwordType: PasswordType.emailAccount,
+        platform: 'DummyPlatform',
+        username: 'DummyUsername',
+      ),
+      onPop: () {},
+    );
+    _topSecondPage = Settings(rebuild);
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     Values.displayablePasswords = passwordsToDisplayable(Values.passwords);
@@ -145,185 +162,225 @@ class _MainPageState extends State<MainPage> {
     Values.afterBrightnessUpdate = fullyRebuild;
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: CustomColors.colorBackground,
-      appBar: StandardAppBar(
-        leading: isSelecting
-            ? IconButton(
-                onPressed: () {
+    return PageView(
+      physics: NeverScrollableScrollPhysics(),
+      controller: _verticalPageController,
+      scrollDirection: Axis.vertical,
+      children: [
+        PageView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: _horizontalPageController,
+          children: [
+            Scaffold(
+              key: _scaffoldKey,
+              backgroundColor: CustomColors.colorBackground,
+              appBar: StandardAppBar(
+                leading: isSelecting
+                    ? IconButton(
+                        onPressed: () {
+                          for (var pw in Values.displayablePasswords)
+                            pw.isSelected = false;
+                          isSelecting = false;
+                          rebuild();
+                        },
+                        icon: Icon(Icons.arrow_back,
+                            color: CustomColors.colorForeground))
+                    : null,
+                title: Strings.appTitle,
+                actions: isSelecting
+                    ? <Widget>[
+                        IconButton(
+                          icon: Icon(MdiIcons.delete, color: Colors.green),
+                          hoverColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onPressed: () {
+                            int amountSelected = 0;
+                            for (var pw in Values.displayablePasswords)
+                              if (pw.isSelected) amountSelected++;
+                            showStandardDialog(
+                              context: context,
+                              title: 'Deletion',
+                              content: StandardText(
+                                  'Do you really want to delete the selected password' +
+                                      (amountSelected > 1 ? 's' : '') +
+                                      '?'),
+                              onConfirm: () {
+                                for (var pw in Values.displayablePasswords)
+                                  if (pw.isSelected)
+                                    Values.passwords.remove(pw.password);
+                                Prefs.passwords = Values.passwords;
+                                isSelecting = false;
+                                fullyRebuild();
+                              },
+                            );
+                          },
+                        ),
+                      ]
+                    : <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.search),
+                          hoverColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onPressed: () => Values.displayablePasswords.isEmpty
+                              ? _scaffoldKey.currentState?.showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:
+                                        CustomColors.colorBackground,
+                                    content: StandardText('Error!',
+                                        textAlign: TextAlign.center),
+                                  ),
+                                )
+                              : showSearch(
+                                  context: context,
+                                  delegate: PasswordSearchDelegate(
+                                    Values.displayablePasswords,
+                                    fullyRebuild,
+                                    initialScrollOffset:
+                                        _scrollController.offset,
+                                  ),
+                                ),
+                        ),
+                      ],
+              ),
+              body: InkWell(
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                onTap: () {
+                  if (!isSelecting) return;
                   for (var pw in Values.displayablePasswords)
                     pw.isSelected = false;
                   isSelecting = false;
                   rebuild();
                 },
-                icon:
-                    Icon(Icons.arrow_back, color: CustomColors.colorForeground))
-            : null,
-        title: Strings.appTitle,
-        actions: isSelecting
-            ? <Widget>[
-                IconButton(
-                  icon: Icon(MdiIcons.delete, color: Colors.green),
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onPressed: () {
-                    int amountSelected = 0;
-                    for (var pw in Values.displayablePasswords)
-                      if (pw.isSelected) amountSelected++;
-                    showStandardDialog(
-                      context: context,
-                      title: 'Deletion',
-                      content: StandardText(
-                          'Do you really want to delete the selected password' +
-                              (amountSelected > 1 ? 's' : '') +
-                              '?'),
-                      onConfirm: () {
-                        for (var pw in Values.displayablePasswords)
-                          if (pw.isSelected)
-                            Values.passwords.remove(pw.password);
-                        Prefs.passwords = Values.passwords;
-                        isSelecting = false;
-                        fullyRebuild();
-                      },
-                    );
-                  },
-                ),
-              ]
-            : <Widget>[
-                IconButton(
-                  icon: Icon(Icons.search, color: CustomColors.colorForeground),
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onPressed: () => Values.displayablePasswords.isEmpty
-                      ? _scaffoldKey.currentState?.showSnackBar(
-                          SnackBar(
-                            backgroundColor: CustomColors.colorBackground,
-                            content: StandardText('Error!',
-                                textAlign: TextAlign.center),
-                          ),
-                        )
-                      : showSearch(
-                          context: context,
-                          delegate: PasswordSearchDelegate(
-                            Values.displayablePasswords,
-                            fullyRebuild,
-                            initialScrollOffset: _scrollController.offset,
-                          ),
+                child: Container(
+                  color: Colors.transparent,
+                  margin: EdgeInsets.all(16),
+                  child: Values.displayablePasswords.isEmpty
+                      ? Center(
+                          child: StandardText(currentLang.noPasswordsRegistered,
+                              fontSize: 20))
+                      : ListView.separated(
+                          controller: _scrollController,
+                          cacheExtent: 5,
+                          itemBuilder: (context, index) {
+                            DisplayablePassword displayablePassword =
+                                Values.displayablePasswords[index];
+                            Password password = displayablePassword.password;
+                            displayablePassword.onTap = () async {
+                              if (isSelecting) {
+                                setState(() => displayablePassword.isSelected =
+                                    !displayablePassword.isSelected);
+                                bool atLeastOneSelected = false;
+                                for (var pw in Values.displayablePasswords)
+                                  if (!atLeastOneSelected && pw.isSelected) {
+                                    atLeastOneSelected = true;
+                                    break;
+                                  }
+                                setState(
+                                    () => isSelecting = atLeastOneSelected);
+                                return;
+                              }
+                              setState(() => _secondPage = DisplayPassword(
+                                    password,
+                                    onPop: () {
+                                      fullyRebuild();
+                                      animateToPage(0, _verticalPageController);
+                                    },
+                                  ));
+                              animateToPage(1, _verticalPageController);
+                            };
+                            displayablePassword.onLongPress = () {
+                              setState(() => displayablePassword.isSelected =
+                                  !displayablePassword.isSelected);
+                              bool atLeastOneSelected = false;
+                              for (var pw in Values.displayablePasswords)
+                                if (!atLeastOneSelected && pw.isSelected) {
+                                  atLeastOneSelected = true;
+                                  break;
+                                }
+                              setState(() => isSelecting = atLeastOneSelected);
+                            };
+                            return displayablePassword.asWidget;
+                          },
+                          separatorBuilder: (context, index) =>
+                              StandardDivider(),
+                          itemCount: Values.displayablePasswords.length,
                         ),
                 ),
-              ],
-      ),
-      body: InkWell(
-        hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        onTap: () {
-          assert(isSelecting);
-          for (var pw in Values.displayablePasswords) pw.isSelected = false;
-          isSelecting = false;
-          rebuild();
-        },
-        child: Container(
-          color: Colors.transparent,
-          margin: EdgeInsets.all(16),
-          child: Values.displayablePasswords.isEmpty
-              ? Center(
-                  child: StandardText(currentLang.noPasswordsRegistered,
-                      fontSize: 20))
-              : ListView.separated(
-                  controller: _scrollController,
-                  cacheExtent: 5,
-                  itemBuilder: (context, index) {
-                    DisplayablePassword displayablePassword =
-                        Values.displayablePasswords[index];
-                    Password password = displayablePassword.password;
-                    displayablePassword.onTap = () {
-                      if (isSelecting) {
-                        setState(() => displayablePassword.isSelected =
-                            !displayablePassword.isSelected);
-                        bool atLeastOneSelected = false;
-                        for (var pw in Values.displayablePasswords) {
-                          if (!atLeastOneSelected && pw.isSelected) {
-                            atLeastOneSelected = true;
-                            break;
-                          }
-                        }
-                        setState(() => isSelecting = atLeastOneSelected);
-                        return;
-                      }
-
-                      Animations.push(
-                          context,
-                          DisplayPassword(password,
-                              functionOnPop: fullyRebuild));
-                    };
-                    displayablePassword.onLongPress = () {
-                      setState(() => displayablePassword.isSelected =
-                          !displayablePassword.isSelected);
-                      bool atLeastOneSelected = false;
-                      for (var pw in Values.displayablePasswords) {
-                        if (!atLeastOneSelected && pw.isSelected) {
-                          atLeastOneSelected = true;
-                          break;
-                        }
-                      }
-                      setState(() => isSelecting = atLeastOneSelected);
-                    };
-                    return displayablePassword.asWidget;
-                  },
-                  separatorBuilder: (context, index) => StandardDivider(),
-                  itemCount: Values.displayablePasswords.length,
+              ),
+              drawer: Drawer(
+                child: Container(
+                  height: double.infinity,
+                  color: CustomColors.colorBackground,
+                  child: ListView(
+                    children: [
+                      Container(
+                        child: ListTile(
+                            title: StandardText(currentLang.appTitle,
+                                fontSize: 26)),
+                      ),
+                      ListTile(
+                        leading: StandardIcon(Icons.add),
+                        title: StandardText(currentLang.addPassword),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _topSecondPage = AddPassword(() {
+                            fullyRebuild();
+                            animateToPage(0, _horizontalPageController);
+                          });
+                          rebuild();
+                          animateToPage(1, _horizontalPageController);
+                        },
+                      ),
+                      ListTile(
+                        leading: StandardIcon(MdiIcons.lockQuestion),
+                        title: StandardText(currentLang.generatePassword),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _topSecondPage = GeneratePassword(() {
+                            rebuild();
+                            animateToPage(0, _horizontalPageController);
+                          });
+                          rebuild();
+                          animateToPage(1, _horizontalPageController);
+                        },
+                      ),
+                      ListTile(
+                        leading: StandardIcon(Icons.settings),
+                        title: StandardText(currentLang.settings),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _topSecondPage = Settings(() {
+                            rebuild();
+                            animateToPage(0, _horizontalPageController);
+                          });
+                          rebuild();
+                          animateToPage(1, _horizontalPageController);
+                        },
+                      ),
+                      ListTile(
+                        leading: StandardIcon(MdiIcons.logout),
+                        title: StandardText(currentLang.logOut),
+                        onTap: () {
+                          Values.passwords = [];
+                          Password.key = null;
+                          Animations.pushReplacement(context, Login());
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-        ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            Container(
-              child: ListTile(
-                  title: StandardText(currentLang.appTitle, fontSize: 26)),
+              ),
             ),
-            ListTile(
-              leading: StandardIcon(Icons.add),
-              title: StandardText(currentLang.addPassword),
-              onTap: () {
-                Navigator.pop(context);
-                Animations.push(
-                    context, AddPassword(functionAfterSave: fullyRebuild));
-              },
-            ),
-            ListTile(
-              leading: StandardIcon(MdiIcons.lockQuestion),
-              title: StandardText(currentLang.generatePassword),
-              onTap: () {
-                Navigator.pop(context);
-                Animations.push(context, GeneratePassword());
-              },
-            ),
-            ListTile(
-              leading: StandardIcon(Icons.settings),
-              title: StandardText(currentLang.settings),
-              onTap: () {
-                Navigator.pop(context);
-                Animations.push(context, Settings());
-              },
-            ),
-            ListTile(
-              leading: StandardIcon(MdiIcons.logout),
-              title: StandardText(currentLang.logOut),
-              onTap: () {
-                Values.passwords = [];
-                Password.key = null;
-                Animations.pushReplacement(context, Login());
-              },
-            ),
+            _topSecondPage
           ],
         ),
-      ),
+        _secondPage,
+      ],
     );
   }
 }

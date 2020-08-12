@@ -9,14 +9,12 @@ import 'objects/langs/english.dart';
 import 'objects/langs/german.dart';
 import 'objects/language.dart';
 
-Language currentLang = English();
-void updateLang() {
+Language getLangByLocaleName() {
   switch(Platform.localeName.split('_')[0]) {
     case 'de':
-      currentLang = German();
-      break;
+      return German();
     default:
-      currentLang = English();
+      return English();
   }
 }
 class CustomColors {

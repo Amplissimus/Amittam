@@ -7,22 +7,22 @@ import 'package:encrypt/encrypt.dart' as crypt;
 
 class Password {
   Password(
-    String passwordParam, {
-    @required String usernameParam,
-    @required String platformParam,
+    String password, {
+    @required String username,
+    @required String platform,
     @required this.passwordType,
-    String notesParam,
+    String notes,
   }) {
-    if (notesParam == null) notesParam = '';
-    if (usernameParam == null) usernameParam = '';
-    if (platformParam == null) platformParam = '';
-    if (passwordParam == null) passwordParam = '';
+    if (notes == null) notes = '';
+    if (username == null) username = '';
+    if (platform == null) platform = '';
+    if (password == null) password = '';
     if (key == null)
       throw 'Masterpassword not defined! Password could not be initialized!';
-    this.password = passwordParam;
-    this.platform = platformParam;
-    this.notes = notesParam;
-    this.username = usernameParam;
+    this.password = password;
+    this.platform = platform;
+    this.notes = notes;
+    this.username = username;
   }
 
   static var key;

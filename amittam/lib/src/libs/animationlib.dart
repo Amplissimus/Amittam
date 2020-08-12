@@ -39,3 +39,7 @@ class Animations {
     );
   }
 }
+
+void animateToPage(int page, PageController pageController) =>
+    pageController.animateToPage(page,
+        duration: Duration(milliseconds: 600), curve: Curves.easeOutCirc);

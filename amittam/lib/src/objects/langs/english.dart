@@ -62,7 +62,7 @@ class English extends Language {
   String get showAppInfo => 'Show app information';
 
   @override
-  String get signInWithGoogle => 'Sign in with Google';
+  String get signInWithPhoneNumber => 'Sign in with phone number';
 
   @override
   String get useNumbers => 'Use numbers';
@@ -84,4 +84,40 @@ class English extends Language {
 
   @override
   String get emailAcc => 'E-Mail account';
+
+  @override
+  String get englishName => 'English';
+
+  @override
+  String get nativeName => 'English';
+
+  @override
+  String get searchDot => 'Search...';
+
+  @override
+  String get appInfo => 'Amittam is an open source password manager, that stores mostly all data encrypted using the master password, even the master password itself. It allows realtime updates between devices as soon as the user has logged into his Amittam-Account using his phone number. The user is only granted access to his manually input data by inputting the correct master password on the login screen.';
+
+  @override
+  String get enterVerificationCode => 'Please enter the received verification code below.';
+
+  @override
+  String get enteredVerificationCodeWrong => 'The entered verification code was wrong!';
+
+  @override
+  String get phoneLogin => 'Phone login';
+
+  @override
+  String get phoneLoginWarning => 'By pressing on the button above, an SMS may be sent. Message & Data rates may apply.';
+
+  @override
+  String get phoneNumber => 'Phone number';
+
+  @override
+  String get verificationCode => 'Verification code';
+
+  @override
+  String get verifyCode => 'Verify code';
+
+  @override
+  String get verifyPhoneNumber => 'Verify phone number';
 }
