@@ -117,6 +117,7 @@ class _AddPasswordState extends State<AddPassword> {
             margin: EdgeInsets.all(16),
             child: SingleChildScrollView(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Padding(padding: EdgeInsets.all(8)),
                   StandardDropdownButton(
@@ -155,7 +156,7 @@ class _AddPasswordState extends State<AddPassword> {
                         )
                       : Container(),
                   StandardTextFormField(
-                    textinputType: TextInputType.emailAddress,
+                    textInputType: TextInputType.emailAddress,
                     hint: usernameText,
                     key: usernameTextFieldKey,
                     controller: usernameTextFieldController,
@@ -181,7 +182,7 @@ class _AddPasswordState extends State<AddPassword> {
                               !passwordTextFieldInputHidden),
                     ),
                     obscureText: passwordTextFieldInputHidden,
-                    textinputType: TextInputType.visiblePassword,
+                    textInputType: TextInputType.visiblePassword,
                     errorText: passwordTextFieldErrorString,
                     controller: passwordTextFieldController,
                     key: passwordTextFieldKey,

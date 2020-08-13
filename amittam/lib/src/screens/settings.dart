@@ -1,5 +1,5 @@
 import 'package:Amittam/src/libs/animationlib.dart';
-import 'package:Amittam/src/libs/auth.dart';
+import 'package:Amittam/src/libs/firebaselib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/language.dart';
@@ -37,8 +37,10 @@ class _SettingsState extends State<Settings> {
     Values.afterBrightnessUpdate = () => setState(() {});
     return WillPopScope(
       onWillPop: () {
-        if (_pageController.offset == 0.0) widget.onPop();
-        else animateToPage(0, _pageController);
+        if (_pageController.offset == 0.0)
+          widget.onPop();
+        else
+          animateToPage(0, _pageController);
         return Future(() => false);
       },
       child: PageView(
@@ -66,11 +68,11 @@ class _SettingsState extends State<Settings> {
                     onChanged: (value) =>
                         setState(() => Prefs.fastLogin = value),
                   ),
-                  AuthService.isSignedIn
+                  FirebaseService.isSignedIn
                       ? StandardButton(
                           iconData: MdiIcons.phoneLock,
                           text: currentLang.logOut,
-                          onTap: () => AuthService.signOut()
+                          onTap: () => FirebaseService.signOut()
                               .then((value) => setState(() {})),
                         )
                       : StandardButton(
@@ -241,6 +243,7 @@ class _SettingsState extends State<Settings> {
             ),
           ),
           PhoneLogin(() {
+            setState(() {});
             animateToPage(0, _pageController);
           }),
         ],

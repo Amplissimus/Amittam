@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:Amittam/src/libs/animationlib.dart';
-import 'package:Amittam/src/libs/auth.dart';
+import 'package:Amittam/src/libs/firebaselib.dart';
 import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
@@ -52,7 +52,7 @@ class SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 1500), () async {
       await Prefs.initialize();
-      await AuthService.initialize();
+      await FirebaseService.initialize();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -153,6 +153,7 @@ class _MainPageState extends State<MainPage> {
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     Values.displayablePasswords = passwordsToDisplayable(Values.passwords);
+
     super.initState();
   }
 

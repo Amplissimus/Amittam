@@ -28,11 +28,12 @@ class StandardAppBar extends AppBar {
 class StandardTextFormField extends TextFormField {
   StandardTextFormField({
     String hint,
-    TextInputType textinputType,
+    TextInputType textInputType,
     GlobalKey<FormFieldState> key,
     TextEditingController controller,
     String errorText,
     void Function(String) onChanged,
+    void Function(String) onSaved,
     bool enableInteractiveSelection = true,
     Widget suffixIcon,
     bool obscureText = false,
@@ -40,6 +41,7 @@ class StandardTextFormField extends TextFormField {
     FocusNode focusNode,
     List<TextInputFormatter> formatters,
   }) : super(
+          onSaved: onSaved,
           autofocus: autofocus,
           focusNode: focusNode,
           obscureText: obscureText,
@@ -49,7 +51,7 @@ class StandardTextFormField extends TextFormField {
           controller: controller,
           inputFormatters: formatters,
           key: key,
-          keyboardType: textinputType,
+          keyboardType: textInputType,
           style: TextStyle(color: CustomColors.colorForeground),
           decoration: InputDecoration(
             suffixIcon: suffixIcon,
@@ -211,7 +213,10 @@ class StandardSpeedDialChild extends SpeedDialChild {
 }
 
 class StandardButton extends Card {
-  StandardButton({@required IconData iconData, void Function() onTap, @required String text})
+  StandardButton(
+      {@required IconData iconData,
+      void Function() onTap,
+      @required String text})
       : super(
           color: CustomColors.lightBackground,
           child: ListTile(

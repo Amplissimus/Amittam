@@ -1,7 +1,12 @@
 import 'dart:convert';
 
+import 'package:Amittam/src/libs/firebaselib.dart';
 import 'package:Amittam/src/libs/lib.dart';
+import 'package:Amittam/src/libs/prefslib.dart';
+import 'package:Amittam/src/objects/displayable_password.dart';
+import 'package:Amittam/src/values.dart';
 import 'package:enum_to_string/enum_to_string.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as crypt;
 
@@ -27,9 +32,8 @@ class Password {
 
   static var key;
 
-  static void updateKey(String s) {
-    key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
-  }
+  static void updateKey(String s) =>
+      key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
 
   static set masterPassword(String s) =>
       Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
@@ -42,15 +46,19 @@ class Password {
   String encryptedPassword = '';
 
   set platform(String s) => encryptedPlatform = encryptWithMasterPWToBase64(s);
+
   String get platform => decryptWithMasterPWFromBase64(encryptedPlatform);
 
   set username(String s) => encryptedUsername = encryptWithMasterPWToBase64(s);
+
   String get username => decryptWithMasterPWFromBase64(encryptedUsername);
 
   set notes(String s) => encryptedNotes = encryptWithMasterPWToBase64(s);
+
   String get notes => decryptWithMasterPWFromBase64(encryptedNotes);
 
   set password(String s) => encryptedPassword = encryptWithMasterPWToBase64(s);
+
   String get password => decryptWithMasterPWFromBase64(encryptedPassword);
 
   String encryptWithMasterPWToBase64(String decrypted) {
@@ -92,30 +100,31 @@ class Password {
         passwordType =
             EnumToString.fromString(PasswordType.values, json['passwordType']);
 
-  factory Password.fromJson(String jsonString) {
-    return Password.fromMap(json.decode(jsonString));
-  }
+  factory Password.fromJson(String jsonString) =>
+      Password.fromMap(json.decode(jsonString));
 
-  Map toMap() {
-    return {
-      'encryptedPlatform': this.encryptedPlatform,
-      'encryptedUsername': this.encryptedUsername,
-      'encryptedNotes': this.encryptedNotes,
-      'encryptedPassword': this.encryptedPassword,
-      'passwordType': EnumToString.parse(this.passwordType),
-    };
-  }
+  Password.fromSnapshot(DataSnapshot snapshot)
+      : encryptedPlatform = snapshot.value['encryptedPlatform'],
+        encryptedUsername = snapshot.value['encryptedUsername'],
+        encryptedNotes = snapshot.value['encryptedNotes'],
+        encryptedPassword = snapshot.value['encryptedPassword'],
+        passwordType = EnumToString.fromString(
+            PasswordType.values, snapshot.value['encryptedPlatform']);
 
-  String toJson() {
-    return json.encode(toMap());
-  }
+  Map<String, dynamic> toMap() => {
+        'encryptedPlatform': this.encryptedPlatform,
+        'encryptedUsername': this.encryptedUsername,
+        'encryptedNotes': this.encryptedNotes,
+        'encryptedPassword': this.encryptedPassword,
+        'passwordType': EnumToString.parse(this.passwordType),
+      };
+
+  String toJson() => json.encode(toMap());
 
   static String exportPasswordsToEncryptedString(List<Password> passwords) {
     List<String> tempStringList = [];
-    print(passwords);
-    for (Password password in passwords) {
-      tempStringList.add(password.toJson());
-    }
+    for (Password password in passwords) tempStringList.add(password.toJson());
+
     String jsonDecrypted = jsonEncode(tempStringList);
     crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
     return crypter.encrypt(jsonDecrypted, iv: crypt.IV.fromLength(16)).base64;
@@ -131,4 +140,35 @@ String expandStringTo32Characters(String string) {
     if (i >= string.length - 1) i = 0;
   }
   return tempString.replaceRange(31, tempString.length - 1, '');
+}
+
+DataSnapshot processableSnapshot;
+
+Future<void> getPasswordsFromFirebaseEventSnapshot(DataSnapshot dataSnapshot) async {
+  int i = 0;
+  bool b = true;
+  List<String> tempStringList = [];
+  List<Password> tempList = [];
+  if(processableSnapshot == dataSnapshot) processableSnapshot = null;
+  if (Password.key == null) {
+    processableSnapshot = dataSnapshot;
+    return;
+  }
+  while (b) {
+    try {
+      tempStringList.add(dataSnapshot.value[i]);
+      tempList.add(Password.fromJson(dataSnapshot.value[i]));
+      i++;
+    } catch (e) {
+      b = false;
+    }
+  }
+  Prefs.preferences.setStringList('passwords', tempStringList);
+  Values.passwords = tempList;
+  Values.displayablePasswords = passwordsToDisplayable(tempList);
+  await FirebaseService.masterPasswordRef
+      .once()
+      .then((snapshot) => print(snapshot.value.toString()));
+  if (Values.afterBrightnessUpdate != null) Values.afterBrightnessUpdate();
+  print(i);
 }

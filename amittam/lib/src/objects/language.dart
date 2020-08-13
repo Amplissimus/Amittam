@@ -85,6 +85,20 @@ abstract class Language {
   String get verifyCode;
 
   String get enteredVerificationCodeWrong;
+
+  String get enteredPhoneNumberInvalid;
+
+  String get fieldIsEmpty;
+
+  String firstLoginConfirmPW(String s);
+
+  String get confirmMasterPW;
+
+  String get enterMasterPW;
+
+  String get logIn;
+
+  String get enteredPWIsWrong;
 }
 
 enum Lang {

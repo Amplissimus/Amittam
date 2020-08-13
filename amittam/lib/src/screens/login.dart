@@ -1,5 +1,8 @@
+import 'package:Amittam/src/libs/animationlib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
+import 'package:Amittam/src/objects/language.dart';
+import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:Amittam/main.dart';
 import 'package:flutter/material.dart';
@@ -60,26 +63,27 @@ class _LoginState extends State<Login> {
                   ),
                   obscureText: masterPWTextFieldInputHidden,
                   enableInteractiveSelection: false,
-                  textinputType: TextInputType.visiblePassword,
+                  textInputType: TextInputType.visiblePassword,
                   errorText: masterPWTextFieldErrorString,
                   controller: masterPWTextFieldController,
                   key: masterPWTextFieldKey,
-                  hint: 'Enter Masterpassword',
-                  onChanged: (value) {
-                    setState(() => masterPWTextFieldErrorString = null);
+                  hint: currentLang.enterMasterPW,
+                  onChanged: (value) async {
+                    if (value.trim().isEmpty)
+                      setState(() => masterPWTextFieldErrorString =
+                          currentLang.fieldIsEmpty);
+                    else
+                      setState(() => masterPWTextFieldErrorString = null);
                     if (!Prefs.fastLogin) return;
                     String text = masterPWTextFieldController.text.trim();
                     if (estimatePasswordStrength(text) < 0.3) {
                       return;
                     } else if (Prefs.masterPasswordIsValid(text)) {
                       Values.passwords = Prefs.passwords;
-
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MainApp(),
-                        ),
-                      );
+                      if (processableSnapshot != null)
+                        await getPasswordsFromFirebaseEventSnapshot(
+                            processableSnapshot);
+                      Animations.pushReplacement(context, MainApp());
                     }
                   },
                 ),
@@ -92,20 +96,18 @@ class _LoginState extends State<Login> {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         focusColor: Colors.transparent,
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
-        },
+        onTap: () => FocusScope.of(context).unfocus(),
       ),
       floatingActionButton: ExtendedFab(
-        onPressed: () {
+        onPressed: () async {
           String text = masterPWTextFieldController.text.trim();
-          if (estimatePasswordStrength(text) < 0.3)
-            setState(() => masterPWTextFieldErrorString = 'Impossible input!');
-          else if (!Prefs.masterPasswordIsValid(text))
-            setState(() => masterPWTextFieldErrorString = 'Invalid input!');
+          if (!Prefs.masterPasswordIsValid(text))
+            setState(() =>
+                masterPWTextFieldErrorString = currentLang.enteredPWIsWrong);
           else {
             Values.passwords = Prefs.passwords;
+            if (processableSnapshot != null)
+              await getPasswordsFromFirebaseEventSnapshot(processableSnapshot);
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -115,7 +117,7 @@ class _LoginState extends State<Login> {
           }
         },
         icon: Icon(MdiIcons.login),
-        label: Text('Log in'),
+        label: Text(currentLang.logIn),
       ),
     );
   }

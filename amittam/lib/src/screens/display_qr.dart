@@ -22,7 +22,7 @@ class _DisplayQrState extends State<DisplayQr> {
             ),
             onPressed: () => Navigator.pop(context)),
         elevation: 0,
-        title: StandardText('Display QR', fontSize: 25),
+        title: Text('Display QR', style: TextStyle(fontSize: 25, color: Colors.black)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
       ),

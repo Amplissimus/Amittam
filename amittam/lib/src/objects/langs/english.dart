@@ -95,19 +95,23 @@ class English extends Language {
   String get searchDot => 'Search...';
 
   @override
-  String get appInfo => 'Amittam is an open source password manager, that stores mostly all data encrypted using the master password, even the master password itself. It allows realtime updates between devices as soon as the user has logged into his Amittam-Account using his phone number. The user is only granted access to his manually input data by inputting the correct master password on the login screen.';
+  String get appInfo =>
+      'Amittam is an open source password manager, that stores mostly all data encrypted using the master password, even the master password itself. It allows realtime updates between devices as soon as the user has logged into his Amittam-Account using his phone number. The user is only granted access to his manually input data by inputting the correct master password on the login screen.';
 
   @override
-  String get enterVerificationCode => 'Please enter the received verification code below.';
+  String get enterVerificationCode =>
+      'Please enter the received verification code below.';
 
   @override
-  String get enteredVerificationCodeWrong => 'The entered verification code was wrong!';
+  String get enteredVerificationCodeWrong =>
+      'The entered verification code was wrong!';
 
   @override
   String get phoneLogin => 'Phone login';
 
   @override
-  String get phoneLoginWarning => 'By pressing on the button above, an SMS may be sent. Message & Data rates may apply.';
+  String get phoneLoginWarning =>
+      'By pressing on the button above, an SMS may be sent. Message & Data rates may apply.';
 
   @override
   String get phoneNumber => 'Phone number';
@@ -120,4 +124,27 @@ class English extends Language {
 
   @override
   String get verifyPhoneNumber => 'Verify phone number';
+
+  @override
+  String get enteredPhoneNumberInvalid =>
+      'The entered phone number does not exist!';
+
+  @override
+  String get fieldIsEmpty => 'Field is empty!';
+
+  @override
+  String firstLoginConfirmPW(String s) =>
+      'Please confirm that "$s" is your correct password!';
+
+  @override
+  String get confirmMasterPW => 'Confirm master password';
+
+  @override
+  String get enterMasterPW => 'Enter master password';
+
+  @override
+  String get logIn => 'Log in';
+
+  @override
+  String get enteredPWIsWrong => 'The entered password is not correct!';
 }

@@ -3,6 +3,7 @@ import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/main.dart';
+import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,11 +60,11 @@ class _FirstLoginState extends State<FirstLogin> {
                   ),
                   obscureText: masterPWTextFieldInputHidden,
                   enableInteractiveSelection: false,
-                  textinputType: TextInputType.visiblePassword,
+                  textInputType: TextInputType.visiblePassword,
                   errorText: masterPWTextFieldErrorString,
                   controller: masterPWTextFieldController,
                   key: masterPWTextFieldKey,
-                  hint: 'Set Masterpassword',
+                  hint: currentLang.enterMasterPW,
                   onChanged: (textFieldText) {
                     setState(() => masterPWTextFieldErrorString = null);
                     String value = textFieldText.trim();
@@ -101,30 +102,27 @@ class _FirstLoginState extends State<FirstLogin> {
         },
       ),
       floatingActionButton: ExtendedFab(
-        label: StandardText('Set Password'),
+        label: StandardText(currentLang.setMasterPW),
         onPressed: () {
           double strength =
               estimatePasswordStrength(masterPWTextFieldController.text.trim());
           if (strength < 0.3) {
             setState(() =>
-                masterPWTextFieldErrorString = 'Password not strong enough!');
+                masterPWTextFieldErrorString = currentLang.pwNotStrongEnough);
             return;
           }
           showStandardDialog(
             context: context,
-            title: 'Confirm Master Password',
-            content: StandardText(
-              'Please confirm that '
-              '"${masterPWTextFieldController.text.trim()}"'
-              ' is your correct password!',
-            ),
+            title: currentLang.confirmMasterPW,
+            content: StandardText(currentLang
+                .firstLoginConfirmPW(masterPWTextFieldController.text.trim())),
             onConfirm: () {
               try {
                 Prefs.setMasterPassword(
                     masterPWTextFieldController.text.trim());
               } catch (e) {
                 print(errorString(e));
-                masterPWTextFieldErrorString = 'Error!';
+                setState(() => masterPWTextFieldErrorString = 'Error!');
                 return;
               }
               Prefs.firstLogin = false;

@@ -130,7 +130,7 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                 isEditingUsername
                     ? StandardTextFormField(
                         hint: 'Username',
-                        textinputType: TextInputType.emailAddress,
+                        textInputType: TextInputType.emailAddress,
                         key: usernameTextFieldKey,
                         controller: usernameTextFieldController,
                         errorText: usernameTextFieldErrorString,

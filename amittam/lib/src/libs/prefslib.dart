@@ -1,3 +1,4 @@
+import 'package:Amittam/src/libs/firebaselib.dart';
 import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/values.dart';
@@ -72,6 +73,7 @@ class Prefs {
   }
 
   static set passwords(List<Password> passwords) {
+    if(FirebaseService.isSignedIn) FirebaseService.savePasswords(passwords);
     List<String> tempStringList = [];
     for (Password password in passwords)
       tempStringList.add(password.toJson());

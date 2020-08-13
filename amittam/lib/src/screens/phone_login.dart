@@ -1,9 +1,15 @@
-import 'package:Amittam/src/libs/auth.dart';
+import 'package:Amittam/src/libs/animationlib.dart';
+import 'package:Amittam/src/libs/firebaselib.dart';
+import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
+import 'package:Amittam/src/objects/language.dart';
+import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+import 'login.dart';
 
 class PhoneLogin extends StatefulWidget {
   PhoneLogin(this.onPop);
@@ -24,131 +30,170 @@ class _PhoneLoginState extends State<PhoneLogin> {
   var verificationId;
   bool isLoading = false;
 
+  final List<Password> finalTempPasswords = Prefs.passwords;
+  final String finalTempMasterPW =
+      Prefs.preferences.getString('encrypted_master_password');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: CustomColors.colorBackground,
-        appBar: StandardAppBar(title: 'Phone Registration'),
-        body: InkWell(
-          hoverColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          child: PageView(
-            controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              Container(
-                height: double.infinity,
-                margin: EdgeInsets.all(16),
-                child: Center(
-                  child: Column(
-                    children: [
-                      StandardTextFormField(
-                        controller: _pnTextFieldController,
-                        errorText: _pnErrorText,
-                        hint: 'Phone Number',
-                        textinputType: TextInputType.phone,
-                      ),
-                      Padding(padding: EdgeInsets.all(2)),
-                      StandardButton(
-                        iconData: MdiIcons.phoneLock,
-                        text: 'Verify phone number',
-                        onTap: () async {
-                          setState(() => isLoading = true);
-                          try {
-                            await AuthService.signIn(_pnTextFieldController.text.trim(),
-                                    (verificationId, [forceResendingToken]) {
-                                  setState(() => isLoading = false);
-                                  _pageController.animateToPage(1,
-                                      duration: Duration(milliseconds: 600),
-                                      curve: Curves.easeOutCirc);
-                                  this.verificationId = verificationId;
-                                });
-                          } catch(e) {
-                            _scaffoldKey.currentState?.showSnackBar(
-                              SnackBar(
-                                backgroundColor: CustomColors.colorBackground,
-                                content: StandardText(
-                                  'The entered phone number does not exist!',
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            );
-                          }
-                          setState(() => isLoading = false);
-                        },
-                      ),
-                      StandardText(
-                        'By pressing on the button above, an SMS may be sent. Message & Data rates may apply.',
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                height: double.infinity,
-                margin: EdgeInsets.all(16),
-                child: Center(
-                  child: Column(
-                    children: [
-                      StandardText(
-                          'Please enter the received verification code below.'),
-                      Padding(padding: EdgeInsets.all(4)),
-                      StandardTextFormField(
-                        controller: _codeTextFieldController,
-                        errorText: _codeErrorText,
-                        hint: 'Verfifcation Code',
-                      ),
-                      Padding(padding: EdgeInsets.all(2)),
-                      StandardButton(
-                        text: 'Verify code',
-                        iconData: MdiIcons.check,
-                        onTap: () async {
-                          try {
-                            setState(() => isLoading = true);
-                            await AuthService.firebaseAuth
-                                .signInWithCredential(
-                                    PhoneAuthProvider.getCredential(
-                                        verificationId: verificationId,
-                                        smsCode: _codeTextFieldController.text
-                                            .trim()))
-                                .then((AuthResult result) =>
-                                    AuthService.firebaseUser = result.user);
-                            AuthService.isSignedIn = true;
-                            setState(() => isLoading = false);
-                          } catch (e) {
-                            setState(() => isLoading = false);
-                            _scaffoldKey.currentState?.showSnackBar(
-                              SnackBar(
-                                backgroundColor: CustomColors.colorBackground,
-                                content: StandardText(
-                                  'The entered verfication code was wrong!',
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            );
-                            AuthService.isSignedIn = false;
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+      key: _scaffoldKey,
+      backgroundColor: CustomColors.colorBackground,
+      appBar: StandardAppBar(
+        title: currentLang.phoneLogin,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: CustomColors.colorForeground,
           ),
-          onTap: () => FocusScope.of(context).unfocus(),
+          onPressed: () => {widget.onPop(), FocusScope.of(context).unfocus()},
         ),
-        bottomSheet: isLoading
-            ? LinearProgressIndicator(
-                backgroundColor: Colors.grey,
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(CustomColors.colorForeground),
-              )
-            : null,
+      ),
+      body: InkWell(
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        child: PageView(
+          controller: _pageController,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            Container(
+              height: double.infinity,
+              margin: EdgeInsets.all(16),
+              child: Center(
+                child: Column(
+                  children: [
+                    StandardTextFormField(
+                      autofocus: true,
+                      controller: _pnTextFieldController,
+                      errorText: _pnErrorText,
+                      hint: currentLang.phoneNumber,
+                      textInputType: TextInputType.phone,
+                      onChanged: (value) {
+                        if (value.isEmpty)
+                          setState(
+                              () => _pnErrorText = currentLang.fieldIsEmpty);
+                        else
+                          setState(() => _pnErrorText = null);
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.all(2)),
+                    StandardButton(
+                      iconData: MdiIcons.phoneLock,
+                      text: currentLang.verifyPhoneNumber,
+                      onTap: () async {
+                        if (_pnTextFieldController.text.trim().isEmpty) {
+                          setState(
+                              () => _pnErrorText = currentLang.fieldIsEmpty);
+                          return;
+                        }
+                        setState(() => isLoading = true);
+                        try {
+                          await FirebaseService.signIn(
+                              _pnTextFieldController.text.trim(),
+                              (verificationId, [forceResendingToken]) {
+                            setState(() => isLoading = false);
+                            _pageController.animateToPage(1,
+                                duration: Duration(milliseconds: 600),
+                                curve: Curves.easeOutCirc);
+                            this.verificationId = verificationId;
+                          });
+                          FocusScope.of(context).unfocus();
+                        } catch (e) {
+                          _scaffoldKey.currentState?.showSnackBar(
+                            SnackBar(
+                              backgroundColor: CustomColors.colorBackground,
+                              content: StandardText(
+                                currentLang.enteredPhoneNumberInvalid,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
+                        }
+                        setState(() => isLoading = false);
+                      },
+                    ),
+                    StandardText(
+                      currentLang.phoneLoginWarning,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: double.infinity,
+              margin: EdgeInsets.all(16),
+              child: Center(
+                child: Column(
+                  children: [
+                    StandardText(
+                        'Please enter the received verification code below.'),
+                    Padding(padding: EdgeInsets.all(4)),
+                    StandardTextFormField(
+                      autofocus: true,
+                      controller: _codeTextFieldController,
+                      errorText: _codeErrorText,
+                      hint: currentLang.verificationCode,
+                      onChanged: (value) {
+                        if (value.isEmpty)
+                          setState(
+                              () => _codeErrorText = currentLang.fieldIsEmpty);
+                        else
+                          setState(() => _codeErrorText = null);
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.all(2)),
+                    StandardButton(
+                      text: currentLang.verifyCode,
+                      iconData: MdiIcons.check,
+                      onTap: () async {
+                        try {
+                          setState(() => isLoading = true);
+                          await FirebaseService.firebaseAuth
+                              .signInWithCredential(
+                                  PhoneAuthProvider.getCredential(
+                                      verificationId: verificationId,
+                                      smsCode:
+                                          _codeTextFieldController.text.trim()))
+                              .then((AuthResult result) =>
+                                  FirebaseService.firebaseUser = result.user);
+                          await FirebaseService.initialize();
+                          setState(() => isLoading = false);
+                          FocusScope.of(context).unfocus();
+                          Values.passwords = [];
+                          Password.key = null;
+                          Animations.pushReplacement(context, Login());
+                        } catch (e) {
+                          setState(() => isLoading = false);
+                          _scaffoldKey.currentState?.showSnackBar(
+                            SnackBar(
+                              backgroundColor: CustomColors.colorBackground,
+                              content: StandardText(
+                                currentLang.enteredVerificationCodeWrong,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        onTap: () => FocusScope.of(context).unfocus(),
+      ),
+      bottomSheet: isLoading
+          ? LinearProgressIndicator(
+              backgroundColor: Colors.grey,
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(CustomColors.colorForeground),
+            )
+          : null,
     );
   }
 }

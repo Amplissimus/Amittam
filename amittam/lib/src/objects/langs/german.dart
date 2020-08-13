@@ -53,7 +53,7 @@ class German extends Language {
   String get save => 'speichern';
 
   @override
-  String get setMasterPW => 'Masterpasswort speichern';
+  String get setMasterPW => 'Hauptzugangspasswort speichern';
 
   @override
   String get settings => 'Einstellungen';
@@ -120,5 +120,27 @@ class German extends Language {
 
   @override
   String get verifyPhoneNumber => 'Telefonnummer bestätigen';
+
+  @override
+  String get enteredPhoneNumberInvalid => 'Die eingetragene Telefonnummer existiert nicht!';
+
+  @override
+  String get fieldIsEmpty => 'Feld ist leer!';
+
+  @override
+  String firstLoginConfirmPW(String s) =>
+      'Bitte bestätige, dass "$s" dein gewolltes Hauptzugangspasswort ist!';
+
+  @override
+  String get confirmMasterPW => 'Hauptzugangspasswort bestätigen';
+
+  @override
+  String get enterMasterPW => 'Hauptzugangspasswort eingeben';
+
+  @override
+  String get logIn => 'Einloggen';
+
+  @override
+  String get enteredPWIsWrong => 'Das eingegebene Passwort ist nicht korrekt!';
 
 }
