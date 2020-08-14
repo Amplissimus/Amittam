@@ -1,2 +1,2 @@
 # Amittam
-Amittam is a local password manager which stores nothing online and should only transfer its passwords between devices via Bluetooth, Android Beam, AirDrop or NFC. Software is not secure for rooted and jailbroken devices.
+Amittam is an open source password manager, that stores mostly all data encrypted using the master password, even the master password itself. It allows realtime updates between devices as soon as the user has logged into his Amittam-Account using his phone number. The user is only granted access to his manually input data by inputting the correct master password on the login screen.
