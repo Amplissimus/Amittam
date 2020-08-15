@@ -41,7 +41,7 @@ class Prefs {
 
   static set lang(Lang l) {
     preferences.setString('saved_lang', EnumToString.parse(l));
-    FirebaseService.saveSettings();
+    if(FirebaseService.isSignedIn) FirebaseService.saveSettings();
   }
 
   static void setMasterPassword(String password) {
