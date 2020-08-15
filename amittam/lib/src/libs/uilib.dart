@@ -9,6 +9,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 class StandardAppBar extends AppBar {
   StandardAppBar({
     @required String title,
+    Color fontColor,
     bool centerTitle = true,
     List<Widget> actions,
     double fontSize = 25,
@@ -20,7 +21,7 @@ class StandardAppBar extends AppBar {
           elevation: 0,
           backgroundColor: backgroundColor,
           centerTitle: centerTitle,
-          title: StandardText(title, fontSize: fontSize),
+          title: StandardText(title, fontSize: fontSize, fontColor: fontColor),
           iconTheme: IconThemeData(color: CustomColors.colorForeground),
         );
 }
@@ -103,8 +104,9 @@ class SwitchWithText extends ListTile {
     @required String text,
     @required bool value,
     @required void Function(bool) onChanged,
+    Color fontColor,
   }) : super(
-          title: StandardText(text),
+          title: StandardText(text, fontColor: fontColor),
           trailing: Switch(
             inactiveTrackColor: Colors.grey,
             inactiveThumbColor: CustomColors.colorForeground,
@@ -159,13 +161,13 @@ class CustomMaterialColor extends MaterialColor {
         });
 }
 
-void showStandardDialog({
+Future<void> showStandardDialog({
   @required BuildContext context,
   String title = '',
   Widget content,
   void Function() onConfirm,
-}) =>
-    showDialog(
+}) async =>
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: StandardText(title),
@@ -188,11 +190,15 @@ void showStandardDialog({
     );
 
 class StandardText extends Text {
-  StandardText(String text, {double fontSize, TextAlign textAlign})
+  StandardText(String text,
+      {double fontSize, TextAlign textAlign, Color fontColor})
       : super(text,
             textAlign: textAlign,
             style: TextStyle(
-                color: CustomColors.colorForeground, fontSize: fontSize));
+                color: fontColor == null
+                    ? CustomColors.colorForeground
+                    : fontColor,
+                fontSize: fontSize));
 }
 
 class StandardDivider extends Divider {

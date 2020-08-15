@@ -1,42 +1,72 @@
 import 'package:Amittam/src/libs/uilib.dart';
+import 'package:Amittam/src/objects/language.dart';
+import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class DisplayQr extends StatefulWidget {
-  DisplayQr(this.data);
+class DisplayQrPage extends StatefulWidget {
+  DisplayQrPage(this.data);
+
   final String data;
+
   @override
-  _DisplayQrState createState() => _DisplayQrState();
+  _DisplayQrPageState createState() => _DisplayQrPageState();
 }
 
-class _DisplayQrState extends State<DisplayQr> {
-  bool usesNormalTheme = true;
+class _DisplayQrPageState extends State<DisplayQrPage> {
+  bool useNativeTheme = true;
+
+  @override
+  void initState() {
+    Values.afterBrightnessUpdate = () => setState(() {});
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: StandardAppBar(
+        fontColor: useNativeTheme ? CustomColors.colorForeground : Colors.black,
+        title: currentLang.appTitle,
         leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: Colors.black,
+              color:
+                  useNativeTheme ? CustomColors.colorForeground : Colors.black,
             ),
             onPressed: () => Navigator.pop(context)),
-        elevation: 0,
-        title: Text('Display QR', style: TextStyle(fontSize: 25, color: Colors.black)),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
       ),
       body: Center(
         child: Container(
           margin: EdgeInsets.all(30),
-          child: QrImage(
-            data: widget.data,
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [QrImage(
+                  data: widget.data,
+                  backgroundColor: useNativeTheme
+                      ? CustomColors.colorBackground
+                      : Colors.white,
+                  foregroundColor: useNativeTheme
+                      ? CustomColors.colorForeground
+                      : Colors.black,
+                ),
+              Padding(padding: EdgeInsets.all(4)),
+              CustomColors.isDarkMode
+                  ? SwitchWithText(
+                      fontColor: useNativeTheme
+                          ? CustomColors.colorForeground
+                          : Colors.black,
+                      text: currentLang.scanOptimized,
+                      value: !useNativeTheme,
+                      onChanged: (value) =>
+                          setState(() => useNativeTheme = !value))
+                  : null,
+            ],
           ),
         ),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor:
+          useNativeTheme ? CustomColors.colorBackground : Colors.white,
     );
   }
 }

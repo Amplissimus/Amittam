@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
 
-class Login extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginPageState extends State<LoginPage> {
   Color passwordStrengthColor = Colors.grey;
   GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
   TextEditingController masterPWTextFieldController = TextEditingController();
@@ -80,9 +80,6 @@ class _LoginState extends State<Login> {
                       return;
                     } else if (Prefs.masterPasswordIsValid(text)) {
                       Values.passwords = Prefs.passwords;
-                      if (processableSnapshot != null)
-                        await getPasswordsFromFirebaseEventSnapshot(
-                            processableSnapshot);
                       Animations.pushReplacement(context, MainApp());
                     }
                   },
@@ -106,14 +103,7 @@ class _LoginState extends State<Login> {
                 masterPWTextFieldErrorString = currentLang.enteredPWIsWrong);
           else {
             Values.passwords = Prefs.passwords;
-            if (processableSnapshot != null)
-              await getPasswordsFromFirebaseEventSnapshot(processableSnapshot);
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MainApp(),
-              ),
-            );
+            Animations.pushReplacement(context, MainApp());
           }
         },
         icon: Icon(MdiIcons.login),

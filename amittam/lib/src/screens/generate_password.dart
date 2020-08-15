@@ -8,16 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class GeneratePassword extends StatefulWidget {
-  GeneratePassword(this.onPop);
+class GeneratePasswordPage extends StatefulWidget {
+  GeneratePasswordPage(this.onPop);
 
   final void Function() onPop;
 
   @override
-  _GeneratePasswordState createState() => _GeneratePasswordState();
+  _GeneratePasswordPageState createState() => _GeneratePasswordPageState();
 }
 
-class _GeneratePasswordState extends State<GeneratePassword> {
+class _GeneratePasswordPageState extends State<GeneratePasswordPage> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   double currentSliderValue = 16;

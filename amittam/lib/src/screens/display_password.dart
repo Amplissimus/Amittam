@@ -10,18 +10,19 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
 
-class DisplayPassword extends StatefulWidget {
-  DisplayPassword(this.password, {this.onPop});
+class DisplayPasswordPage extends StatefulWidget {
+  DisplayPasswordPage(this.password, {this.onPop});
 
   final void Function() onPop;
   final Password password;
 
   @override
-  _DisplayPasswordState createState() => _DisplayPasswordState(password);
+  _DisplayPasswordPageState createState() =>
+      _DisplayPasswordPageState(password);
 }
 
-class _DisplayPasswordState extends State<DisplayPassword> {
-  _DisplayPasswordState(this.password) {
+class _DisplayPasswordPageState extends State<DisplayPasswordPage> {
+  _DisplayPasswordPageState(this.password) {
     passwordTextFieldController =
         TextEditingController(text: password.password);
     platformTextFieldController =
@@ -79,7 +80,7 @@ class _DisplayPasswordState extends State<DisplayPassword> {
       child: Scaffold(
         backgroundColor: CustomColors.colorBackground,
         appBar: StandardAppBar(
-          title: currentLang.appTitle,
+          title: currentLang.displayPassword,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -100,7 +101,7 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                     ? Container(
                         child: isEditingPlatform
                             ? StandardTextFormField(
-                                hint: 'Platform',
+                                hint: currentLang.platform,
                                 key: platformTextFieldKey,
                                 controller: platformTextFieldController,
                                 errorText: platformTextFieldErrorString,
@@ -113,12 +114,12 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                                       .isEmpty)
                                     setState(() =>
                                         platformTextFieldErrorString =
-                                            'Field cannot be empty!');
+                                            currentLang.fieldIsEmpty);
                                 },
                               )
                             : DisplayValueWidget(
                                 value: password.platform,
-                                valueType: 'Platform',
+                                valueType: currentLang.platform,
                                 onTap: () {
                                   setState(() => isEditingPlatform = true);
                                   platformTextFieldFocusNode.requestFocus();
@@ -129,7 +130,7 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                 Padding(padding: EdgeInsets.all(8)),
                 isEditingUsername
                     ? StandardTextFormField(
-                        hint: 'Username',
+                        hint: currentLang.username,
                         textInputType: TextInputType.emailAddress,
                         key: usernameTextFieldKey,
                         controller: usernameTextFieldController,
@@ -139,12 +140,12 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                           setState(() => usernameTextFieldErrorString = null);
                           if (usernameTextFieldController.text.isEmpty)
                             setState(() => usernameTextFieldErrorString =
-                                'Field cannot be empty!');
+                                currentLang.fieldIsEmpty);
                         },
                       )
                     : DisplayValueWidget(
                         value: password.username,
-                        valueType: 'Username',
+                        valueType: currentLang.username,
                         onTap: () {
                           setState(() => isEditingUsername = true);
                           usernameTextFieldFocusNode.requestFocus();
@@ -153,7 +154,7 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                 Padding(padding: EdgeInsets.all(8)),
                 isEditingPassword
                     ? StandardTextFormField(
-                        hint: 'Password',
+                        hint: currentLang.password,
                         key: passwordTextFieldKey,
                         controller: passwordTextFieldController,
                         errorText: passwordTextFieldErrorString,
@@ -163,7 +164,7 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                           setState(() => passwordTextFieldErrorString = null);
                           if (passwordTextFieldController.text.isEmpty)
                             setState(() => passwordTextFieldErrorString =
-                                'Field cannot be empty!');
+                                currentLang.fieldIsEmpty);
                           String value =
                               passwordTextFieldController.text.trim();
                           double strength = estimatePasswordStrength(value);
@@ -194,7 +195,7 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                       )
                     : DisplayValueWidget(
                         value: password.password,
-                        valueType: 'Password',
+                        valueType: currentLang.password,
                         onTap: () {
                           setState(() => isEditingPassword = true);
                           passwordTextFieldFocusNode.requestFocus();
@@ -219,7 +220,7 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                 Padding(padding: EdgeInsets.all(8)),
                 isEditingNotes
                     ? StandardTextFormField(
-                        hint: 'Notes (optional)',
+                        hint: currentLang.notesOptional,
                         key: notesTextFieldKey,
                         controller: notesTextFieldController,
                         errorText: notesTextFieldErrorString,
@@ -227,22 +228,22 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                       )
                     : DisplayValueWidget(
                         value: password.notes,
-                        valueType: 'Notes',
+                        valueType: currentLang.notes,
                         onTap: () {
                           setState(() => isEditingNotes = true);
                           notesTextFieldFocusNode.requestFocus();
                         },
                       ),
-                password.passwordType == PasswordType.wlanPassword
+                password.passwordType == PasswordType.wifiPassword
                     ? Column(
                         children: [
                           Padding(padding: EdgeInsets.all(8)),
                           StandardButton(
                             iconData: MdiIcons.qrcode,
-                            text: 'Show QR',
+                            text: currentLang.showQr,
                             onTap: () => Animations.push(
                               context,
-                              DisplayQr(
+                              DisplayQrPage(
                                 'WIFI:T:WPA;S:'
                                 '${password.username}'
                                 ';P:'
@@ -256,18 +257,17 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                     : Container(),
                 Padding(
                   padding: EdgeInsets.all(
-                      password.passwordType == PasswordType.wlanPassword
+                      password.passwordType == PasswordType.wifiPassword
                           ? 2
                           : 4),
                 ),
                 StandardButton(
                   iconData: MdiIcons.delete,
-                  text: 'Delete password',
+                  text: currentLang.deletePassword,
                   onTap: () => showStandardDialog(
                     context: context,
-                    content: StandardText(
-                        'Do you really want to delete this password?'),
-                    title: 'Deletion',
+                    content: StandardText(currentLang.reallyDeletePassword),
+                    title: currentLang.deletion,
                     onConfirm: () {
                       if (isEditingNotes ||
                           isEditingPassword ||
@@ -326,7 +326,7 @@ class _DisplayPasswordState extends State<DisplayPassword> {
                   });
                   FocusScope.of(context).unfocus();
                 },
-                label: Text('Save'),
+                label: Text(currentLang.save),
                 icon: Icon(Icons.save),
               )
             : null,

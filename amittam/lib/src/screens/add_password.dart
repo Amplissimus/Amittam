@@ -7,16 +7,16 @@ import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:password_strength/password_strength.dart';
 
-class AddPassword extends StatefulWidget {
-  AddPassword(this.onPop);
+class AddPasswordPage extends StatefulWidget {
+  AddPasswordPage(this.onPop);
 
   final void Function() onPop;
 
   @override
-  _AddPasswordState createState() => _AddPasswordState();
+  _AddPasswordPageState createState() => _AddPasswordPageState();
 }
 
-class _AddPasswordState extends State<AddPassword> {
+class _AddPasswordPageState extends State<AddPasswordPage> {
   GlobalKey<FormFieldState> platformTextFieldKey = GlobalKey();
   TextEditingController platformTextFieldController = TextEditingController();
   GlobalKey<FormFieldState> usernameTextFieldKey = GlobalKey();
@@ -35,40 +35,27 @@ class _AddPasswordState extends State<AddPassword> {
   bool passwordTextFieldInputHidden = true;
 
   String usernameText;
-  String currentPWType;
-  PasswordType passwordType = PasswordType.onlineAccount;
-  final List<String> passwordTypes = [
-    'Online Account',
-    'E-Mail Account',
-    'WiFi Password',
-    'Other',
-  ];
+  PasswordType currentPWType = PasswordType.onlineAccount;
 
   void rebuild() => setState(() {});
 
-  int get pwTypeIndex {
-    if (!passwordTypes.contains(currentPWType)) return -1;
-    return passwordTypes.indexOf(currentPWType);
-  }
-
   void updateUsernameText() {
-    switch (pwTypeIndex) {
-      case 0:
-        usernameText = 'Username';
+    switch (currentPWType) {
+      case PasswordType.onlineAccount:
+        usernameText = currentLang.username;
         break;
-      case 1:
-        usernameText = 'Mail Address';
+      case PasswordType.emailAccount:
+        usernameText = currentLang.mailAddress;
         break;
-      case 2:
+      case PasswordType.wifiPassword:
         usernameText = 'SSID';
         break;
-      case 3:
-        usernameText = 'Context';
+      case PasswordType.other:
+        usernameText = currentLang.context;
         break;
       default:
-        usernameText = 'Username';
+        usernameText = currentLang.username;
     }
-    passwordType = PasswordType.values[pwTypeIndex];
     platformTextFieldErrorString = null;
     rebuild();
   }
@@ -81,8 +68,7 @@ class _AddPasswordState extends State<AddPassword> {
     notesTextFieldErrorString = null;
     passwordStrengthColor = Colors.grey;
     passwordTextFieldInputHidden = true;
-    currentPWType = passwordTypes[0];
-    passwordType = PasswordType.onlineAccount;
+    currentPWType = PasswordType.onlineAccount;
     Values.afterBrightnessUpdate = rebuild;
     updateUsernameText();
     super.initState();
@@ -99,7 +85,7 @@ class _AddPasswordState extends State<AddPassword> {
       child: Scaffold(
         backgroundColor: CustomColors.colorBackground,
         appBar: StandardAppBar(
-          title: currentLang.appTitle,
+          title: currentLang.addPassword,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -122,27 +108,26 @@ class _AddPasswordState extends State<AddPassword> {
                   Padding(padding: EdgeInsets.all(8)),
                   StandardDropdownButton(
                     value: currentPWType,
-                    items: passwordTypes
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
+                    items: PasswordType.values
+                        .map<DropdownMenuItem<PasswordType>>((PasswordType value) => DropdownMenuItem<PasswordType>(
                         value: value,
                         child: StandardText(
-                          value,
+                          currentLang.pwTypeToString(value),
                           textAlign: TextAlign.center,
                         ),
-                      );
-                    }).toList(),
+                      )
+                    ).toList(),
                     onChanged: (value) {
                       currentPWType = value;
                       updateUsernameText();
                     },
                   ),
                   Padding(padding: EdgeInsets.all(4)),
-                  (pwTypeIndex == 0)
+                  (currentPWType == PasswordType.onlineAccount)
                       ? Column(
                           children: [
                             StandardTextFormField(
-                              hint: 'Platform',
+                              hint: currentLang.platform,
                               key: platformTextFieldKey,
                               controller: platformTextFieldController,
                               errorText: platformTextFieldErrorString,
@@ -186,7 +171,7 @@ class _AddPasswordState extends State<AddPassword> {
                     errorText: passwordTextFieldErrorString,
                     controller: passwordTextFieldController,
                     key: passwordTextFieldKey,
-                    hint: 'Password',
+                    hint: currentLang.password,
                     onChanged: (text) {
                       setState(() => passwordTextFieldErrorString = null);
                       String value = passwordTextFieldController.text.trim();
@@ -212,7 +197,7 @@ class _AddPasswordState extends State<AddPassword> {
                   ),
                   Padding(padding: EdgeInsets.all(8)),
                   StandardTextFormField(
-                    hint: 'Notes (optional)',
+                    hint: currentLang.notesOptional,
                     key: notesTextFieldKey,
                     controller: notesTextFieldController,
                     errorText: notesTextFieldErrorString,
@@ -244,12 +229,12 @@ class _AddPasswordState extends State<AddPassword> {
               processWillCancel = true;
             }
             if (platformTextFieldController.text.trim().isEmpty &&
-                passwordType == PasswordType.onlineAccount) {
+                currentPWType == PasswordType.onlineAccount) {
               setState(() =>
                   platformTextFieldErrorString = 'Field cannot be empty!');
               processWillCancel = true;
             }
-            if (passwordType != PasswordType.onlineAccount)
+            if (currentPWType != PasswordType.onlineAccount)
               platformTextFieldController.text =
                   usernameTextFieldController.text;
             if (processWillCancel) return;
@@ -259,13 +244,13 @@ class _AddPasswordState extends State<AddPassword> {
               username: usernameTextFieldController.text,
               notes: notesTextFieldController.text,
               platform: platformTextFieldController.text,
-              passwordType: passwordType,
+              passwordType: currentPWType,
             );
             Values.passwords.add(password);
             Prefs.passwords = Values.passwords;
             if (widget.onPop != null) widget.onPop();
           },
-          label: Text('Save'),
+          label: Text(currentLang.save),
           icon: Icon(Icons.save),
         ),
       ),

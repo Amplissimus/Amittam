@@ -59,8 +59,8 @@ class SplashScreenPageState extends State<SplashScreenPage> {
           builder: (context) => (Prefs.firstLogin ||
                   Prefs.preferences.getString('encrypted_master_password') ==
                       null)
-              ? FirstLogin()
-              : Login(),
+              ? FirstLoginPage()
+              : LoginPage(),
         ),
       );
     });
@@ -140,7 +140,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    _secondPage = DisplayPassword(
+    _secondPage = DisplayPasswordPage(
       Password(
         'Dummy',
         passwordType: PasswordType.emailAccount,
@@ -149,7 +149,7 @@ class _MainPageState extends State<MainPage> {
       ),
       onPop: () {},
     );
-    _topSecondPage = Settings(rebuild);
+    _topSecondPage = SettingsPage(rebuild);
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
     Values.displayablePasswords = passwordsToDisplayable(Values.passwords);
@@ -285,7 +285,7 @@ class _MainPageState extends State<MainPage> {
                                     () => isSelecting = atLeastOneSelected);
                                 return;
                               }
-                              setState(() => _secondPage = DisplayPassword(
+                              setState(() => _secondPage = DisplayPasswordPage(
                                     password,
                                     onPop: () {
                                       fullyRebuild();
@@ -329,7 +329,7 @@ class _MainPageState extends State<MainPage> {
                         title: StandardText(currentLang.addPassword),
                         onTap: () {
                           Navigator.pop(context);
-                          _topSecondPage = AddPassword(() {
+                          _topSecondPage = AddPasswordPage(() {
                             fullyRebuild();
                             animateToPage(0, _horizontalPageController);
                           });
@@ -342,7 +342,7 @@ class _MainPageState extends State<MainPage> {
                         title: StandardText(currentLang.generatePassword),
                         onTap: () {
                           Navigator.pop(context);
-                          _topSecondPage = GeneratePassword(() {
+                          _topSecondPage = GeneratePasswordPage(() {
                             rebuild();
                             animateToPage(0, _horizontalPageController);
                           });
@@ -355,8 +355,8 @@ class _MainPageState extends State<MainPage> {
                         title: StandardText(currentLang.settings),
                         onTap: () {
                           Navigator.pop(context);
-                          _topSecondPage = Settings(() {
-                            rebuild();
+                          _topSecondPage = SettingsPage(() {
+                            fullyRebuild();
                             animateToPage(0, _horizontalPageController);
                           });
                           rebuild();
@@ -369,7 +369,7 @@ class _MainPageState extends State<MainPage> {
                         onTap: () {
                           Values.passwords = [];
                           Password.key = null;
-                          Animations.pushReplacement(context, Login());
+                          Animations.pushReplacement(context, LoginPage());
                         },
                       ),
                     ],

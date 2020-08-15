@@ -4,18 +4,19 @@ import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/main.dart';
 import 'package:Amittam/src/objects/language.dart';
+import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:password_strength/password_strength.dart';
 
-class FirstLogin extends StatefulWidget {
+class FirstLoginPage extends StatefulWidget {
   @override
-  _FirstLoginState createState() => _FirstLoginState();
+  _FirstLoginPageState createState() => _FirstLoginPageState();
 }
 
-class _FirstLoginState extends State<FirstLogin> {
+class _FirstLoginPageState extends State<FirstLoginPage> {
   Color passwordStrengthColor = Colors.grey;
   GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
   TextEditingController masterPWTextFieldController = TextEditingController();
@@ -125,7 +126,14 @@ class _FirstLoginState extends State<FirstLogin> {
                 setState(() => masterPWTextFieldErrorString = 'Error!');
                 return;
               }
-              Prefs.firstLogin = false;
+              if (Values.decryptedPasswords.isEmpty)
+                Prefs.firstLogin = false;
+              else {
+                List<Password> tempPasswordList = [];
+                for (DecryptedPassword pw in Values.decryptedPasswords)
+                  tempPasswordList.add(pw.asPassword);
+                Prefs.passwords = tempPasswordList;
+              }
               Animations.pushReplacement(context, MainApp());
             },
           );

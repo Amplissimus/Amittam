@@ -1,10 +1,13 @@
+import 'package:Amittam/src/libs/lib.dart';
+import 'package:Amittam/src/libs/prefslib.dart';
+
 import 'langs/english.dart';
 import 'langs/german.dart';
 
 abstract class Language {
   String get appTitle => 'Amittam';
 
-  String get versionString => '1.0.1';
+  String get versionString => '1.2.0';
 
   String get nativeName;
 
@@ -26,7 +29,7 @@ abstract class Language {
 
   String get deleteAppData;
 
-  String get signInWithPhoneNumber;
+  String get signInWithGoogle;
 
   String get fastLogin;
 
@@ -58,39 +61,13 @@ abstract class Language {
 
   String get pwNotStrongEnough;
 
-  String get onlineAcc;
-
-  String get wifiPW;
-
-  String get other;
-
-  String get emailAcc;
-
   String get searchDot;
 
   String get appInfo;
 
-  String get phoneNumber;
-
-  String get phoneLoginWarning;
-
-  String get verifyPhoneNumber;
-
-  String get phoneLogin;
-
-  String get enterVerificationCode;
-
-  String get verificationCode;
-
-  String get verifyCode;
-
-  String get enteredVerificationCodeWrong;
-
-  String get enteredPhoneNumberInvalid;
-
   String get fieldIsEmpty;
 
-  String firstLoginConfirmPW(String s);
+  String get mailAddress;
 
   String get confirmMasterPW;
 
@@ -99,6 +76,46 @@ abstract class Language {
   String get logIn;
 
   String get enteredPWIsWrong;
+
+  String get editMasterPassword;
+
+  String get proceedByUsingOnlineData;
+
+  String get proceedByUsingOnlineDataDesc;
+
+  String get proceedByUsingLocalData;
+
+  String get proceedByUsingLocalDataDesc;
+
+  String get useLocalStoredData;
+
+  String get useOnlineStoredData;
+
+  String get notesOptional;
+
+  String get deletePassword;
+
+  String get deletion;
+
+  String get finishLogin;
+
+  String get showQr;
+
+  String get reallyDeletePassword;
+
+  String get scanOptimized;
+
+  String get displayPassword;
+
+  String get requestedText;
+
+  String get resetActionRequest;
+
+  String deleteSelectedPasswordsWarning(bool multiple);
+
+  String firstLoginConfirmPW(String s);
+
+  String pwTypeToString(PasswordType pwType);
 }
 
 enum Lang {
@@ -110,7 +127,10 @@ Lang _currentLang = Lang.english;
 
 Language get currentLang => langToLanguage(_currentLang);
 
-set currentLang(Language l) => _currentLang = languageToLang(l);
+set currentLang(Language l) {
+  _currentLang = languageToLang(l);
+  Prefs.lang = languageToLang(l);
+}
 
 Language langToLanguage(Lang l) {
   switch (l) {

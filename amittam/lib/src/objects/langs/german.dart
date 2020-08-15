@@ -1,3 +1,5 @@
+import 'package:Amittam/src/libs/firebaselib.dart';
+import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/objects/language.dart';
 
 class German extends Language {
@@ -50,7 +52,7 @@ class German extends Language {
   String get pwNotStrongEnough => 'Passwort zu schwach!';
 
   @override
-  String get save => 'speichern';
+  String get save => 'Speichern';
 
   @override
   String get setMasterPW => 'Hauptzugangspasswort speichern';
@@ -62,7 +64,7 @@ class German extends Language {
   String get showAppInfo => 'App-Informationen anzeigen';
 
   @override
-  String get signInWithPhoneNumber => 'Mit Telefonnummer anmelden';
+  String get signInWithGoogle => 'Mit Google anmelden';
 
   @override
   String get useNumbers => 'Ziffern verwenden';
@@ -74,18 +76,6 @@ class German extends Language {
   String get username => 'Benutzername';
 
   @override
-  String get onlineAcc => 'Online-Konto';
-
-  @override
-  String get other => 'andere';
-
-  @override
-  String get wifiPW => 'WLAN Passwort';
-
-  @override
-  String get emailAcc => 'E-Mail Konto';
-
-  @override
   String get englishName => 'German';
 
   @override
@@ -95,41 +85,11 @@ class German extends Language {
   String get searchDot => 'Suchen...';
 
   @override
-  String get appInfo => 'Amittam ist ein quelloffener Passwortmanager, der fast alle Daten, sogar das Hauptzugangspasswort, mithilfe des Hauptzugangspasswort verschlüsselt, abspeichert und eine Aktualisierung zwischen Geräten in Echtzeit ermöglicht, sobald sich der Benutzer mit seiner Telefonnummer ein Amittam-Konto erstellt hat. Die manuell eingetragenen Daten können nur mit Eingabe des korrekten Hauptzugangspassworts im Login Bildschirm eingesehen werden.';
-
-  @override
-  String get enterVerificationCode => 'Bitte gib den eben erhaltenen Verifizierungscode in die Textbox unterhalb ein.';
-
-  @override
-  String get enteredVerificationCodeWrong => 'Der eingegebene Verfizierungscode ist falsch!';
-
-  @override
-  String get phoneLogin => 'Telefon Login';
-
-  @override
-  String get phoneLoginWarning => 'Sobald der Knopf oberhalb betätigt wird, sollte eine SMS gesendet werden. SMS-Veträge & sonstige Telefonverträge können gelten.';
-
-  @override
-  String get phoneNumber => 'Telefonnummer';
-
-  @override
-  String get verificationCode => 'Verifizierungscode';
-
-  @override
-  String get verifyCode => 'Code überprüfen';
-
-  @override
-  String get verifyPhoneNumber => 'Telefonnummer bestätigen';
-
-  @override
-  String get enteredPhoneNumberInvalid => 'Die eingetragene Telefonnummer existiert nicht!';
+  String get appInfo =>
+      'Amittam ist ein quelloffener Passwortmanager, der fast alle Daten, sogar das Hauptzugangspasswort, mithilfe des Hauptzugangspasswort verschlüsselt, abspeichert und eine Aktualisierung zwischen Geräten in Echtzeit ermöglicht, sobald sich der Benutzer mit seinem Google Konto verifiziert hat. Die manuell eingetragenen Daten können nur mit Eingabe des korrekten Hauptzugangspassworts im Login Bildschirm eingesehen werden.';
 
   @override
   String get fieldIsEmpty => 'Feld ist leer!';
-
-  @override
-  String firstLoginConfirmPW(String s) =>
-      'Bitte bestätige, dass "$s" dein gewolltes Hauptzugangspasswort ist!';
 
   @override
   String get confirmMasterPW => 'Hauptzugangspasswort bestätigen';
@@ -143,4 +103,85 @@ class German extends Language {
   @override
   String get enteredPWIsWrong => 'Das eingegebene Passwort ist nicht korrekt!';
 
+  @override
+  String get deletePassword => 'Passwort löschen';
+
+  @override
+  String get deletion => 'Löschung';
+
+  @override
+  String get editMasterPassword => 'Hauptzugangspasswort ändern';
+
+  @override
+  String get notesOptional => 'Notizen (optional)';
+
+  @override
+  String get proceedByUsingLocalData =>
+      'Mit dem Sichern der lokalen App-Daten fortfahren';
+
+  @override
+  String get proceedByUsingLocalDataDesc =>
+      'Mit dem Sichern der lokal gespeicherten App-Daten werden alle, derzeit online gespeicherten App-Daten gelöscht!';
+
+  @override
+  String get proceedByUsingOnlineData =>
+      'Mit dem Herunterladen der online gespeicherten App-Daten fortfahren';
+
+  @override
+  String get proceedByUsingOnlineDataDesc =>
+      'Mit dem Herunterladen der online gespeicherten App-Daten wird der Benutzer ausgeloggt, wenn das aktuelle Hauptzugangspasswort nicht der online gespeicherten Variante gleicht. Alle derzeit lokal gespeicherten App-Daten gehen dabei verloren!';
+
+  @override
+  String get useLocalStoredData => 'Lokal gespeicherte Daten verwenden';
+
+  @override
+  String get useOnlineStoredData => 'Online gespeicherte Daten verwenden';
+
+  @override
+  String get finishLogin => 'Login abschließen';
+
+  @override
+  String get mailAddress => 'E-Mail Adresse';
+
+  @override
+  String get showQr => 'QR Code anzeigen';
+
+  @override
+  String get reallyDeletePassword => 'Willst du dieses Passwort wirklich löschen?';
+
+  @override
+  String get scanOptimized => 'Optimiert für Scans';
+
+  @override
+  String get displayPassword => 'Passwort anzeigen';
+
+  @override
+  String get requestedText => 'Angefordeter Text';
+
+  @override
+  String get resetActionRequest => 'Bitte gib "${this.confirm.toUpperCase()}" in die Textbox unterhalb ein und bestätige daraufhin das Löschen der gesamten App-Daten mit dem Hauptzugangspasswort.${FirebaseService.isSignedIn ? ' Damit werden deine sämtlichen App-Daten auch aus unserer Datenbank gelöscht!' : ''}';
+
+  @override
+  String pwTypeToString(PasswordType pwType) {
+    switch (pwType) {
+      case PasswordType.onlineAccount:
+        return 'Online-Konto';
+      case PasswordType.emailAccount:
+        return 'E-Mail Konto';
+      case PasswordType.wifiPassword:
+        return 'WLAN Passwort';
+      case PasswordType.other:
+        return 'Sonstiges';
+      default:
+        return 'Error!';
+    }
+  }
+
+  @override
+  String deleteSelectedPasswordsWarning(bool multiple) =>
+      'Möchtest du ${multiple ? 'die ausgewählten Passwörter' : 'das ausgewählte Passwort'} wirklich löschen?';
+
+  @override
+  String firstLoginConfirmPW(String s) =>
+      'Bitte bestätige, dass "$s" dein gewolltes Hauptzugangspasswort ist! Dein Hauptzugangspasswort ist der einzige Weg, um Zugang zu deinen Daten zu erlangen, da diese mithilfe des Hauptzugangspasswortes verschlüsselt werden. Bitte notiere das Hauptzugangspasswort für den Fall, dass du es vergessen solltest!';
 }

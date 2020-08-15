@@ -56,7 +56,7 @@ class DisplayablePassword {
         titleText = 'Mail Address';
         return getleadingIcon(MdiIcons.email);
         break;
-      case PasswordType.wlanPassword:
+      case PasswordType.wifiPassword:
         titleText = 'WiFi';
         return getleadingIcon(MdiIcons.wifiStrength3Lock);
         break;

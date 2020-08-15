@@ -86,7 +86,7 @@ class PasswordSearchDelegate extends SearchDelegate<DisplayablePassword> {
                     displayablePassword.onTap = () {
                       Navigator.pop(context);
                       Animations.push(context,
-                          DisplayPassword(password, onPop: onPop));
+                          DisplayPasswordPage(password, onPop: onPop));
                     };
                     displayablePassword.onLongPress = () {};
                     return displayablePassword.asWidget;

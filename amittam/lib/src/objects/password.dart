@@ -13,15 +13,11 @@ import 'package:encrypt/encrypt.dart' as crypt;
 class Password {
   Password(
     String password, {
-    @required String username,
-    @required String platform,
-    @required this.passwordType,
-    String notes,
+    String username = '',
+    String platform = '',
+    String notes = '',
+    this.passwordType,
   }) {
-    if (notes == null) notes = '';
-    if (username == null) username = '';
-    if (platform == null) platform = '';
-    if (password == null) password = '';
     if (key == null)
       throw 'Masterpassword not defined! Password could not be initialized!';
     this.password = password;
@@ -83,15 +79,6 @@ class Password {
     }
   }
 
-  @override
-  String toString() {
-    return 'encryptedPlatform: $encryptedPlatform, '
-        'encryptedUsername: $encryptedUsername, '
-        'encryptedPassword: $encryptedPassword, '
-        'encryptedNotes: $encryptedNotes'
-        'passwordType: ${EnumToString.parse(passwordType)}';
-  }
-
   Password.fromMap(Map<String, dynamic> json)
       : encryptedPlatform = json['encryptedPlatform'],
         encryptedUsername = json['encryptedUsername'],
@@ -121,14 +108,95 @@ class Password {
 
   String toJson() => json.encode(toMap());
 
+  Map<String, dynamic> toDecryptedMap() => {
+        'platform': this.platform,
+        'username': this.username,
+        'password': this.password,
+        'notes': this.notes,
+        'passwordType': EnumToString.parse(this.passwordType),
+      };
+
+  factory Password.fromDecryptedMap(Map<String, dynamic> json) => Password(
+        json['password'],
+        platform: json['platform'],
+        username: json['username'],
+        notes: json['notes'],
+        passwordType:
+            EnumToString.fromString(PasswordType.values, json['passwordType']),
+      );
+
+  factory Password.fromDecryptedJson(String jsonString) =>
+      Password.fromDecryptedMap(json.decode(jsonString));
+
+  String toDecryptedJson() => json.encode(toDecryptedMap());
+
   static String exportPasswordsToEncryptedString(List<Password> passwords) {
     List<String> tempStringList = [];
     for (Password password in passwords) tempStringList.add(password.toJson());
-
     String jsonDecrypted = jsonEncode(tempStringList);
-    crypt.Encrypter crypter = crypt.Encrypter(crypt.AES(Password.key));
-    return crypter.encrypt(jsonDecrypted, iv: crypt.IV.fromLength(16)).base64;
+    return crypt.Encrypter(crypt.AES(Password.key))
+        .encrypt(jsonDecrypted, iv: crypt.IV.fromLength(16))
+        .base64;
   }
+
+  DecryptedPassword get asDecryptedPassword => DecryptedPassword(
+        platform: this.platform,
+        username: this.username,
+        password: this.password,
+        notes: this.notes,
+        passwordType: this.passwordType,
+      );
+
+  @override
+  String toString() =>
+      'Password{passwordType: $passwordType, encryptedPlatform: $encryptedPlatform, encryptedUsername: $encryptedUsername, encryptedNotes: $encryptedNotes, encryptedPassword: $encryptedPassword}';
+}
+
+class DecryptedPassword {
+  DecryptedPassword({
+    this.platform = '',
+    this.username = '',
+    this.password = '',
+    this.notes = '',
+    this.passwordType = PasswordType.onlineAccount,
+  });
+
+  String platform;
+  String username;
+  String password;
+  String notes;
+  PasswordType passwordType;
+
+  Password get asPassword => Password(
+        this.password,
+        platform: this.platform,
+        username: this.username,
+        notes: this.notes,
+        passwordType: this.passwordType,
+      );
+
+  Map<String, dynamic> toMap() => {
+        'platform': this.platform,
+        'username': this.username,
+        'password': this.password,
+        'notes': this.notes,
+        'passwordType': EnumToString.parse(this.passwordType),
+      };
+
+  DecryptedPassword.fromMap(Map<String, dynamic> json)
+      : platform = json['platform'],
+        username = json['username'],
+        notes = json['notes'],
+        password = json['password'],
+        passwordType =
+            EnumToString.fromString(PasswordType.values, json['passwordType']);
+
+  factory DecryptedPassword.fromJson(String jsonString) =>
+      DecryptedPassword.fromMap(json.decode(jsonString));
+
+  @override
+  String toString() =>
+      'DecryptedPassword{platform: $platform, username: $username, password: $password, notes: $notes, passwordType: $passwordType}';
 }
 
 String expandStringTo32Characters(String string) {
@@ -142,33 +210,25 @@ String expandStringTo32Characters(String string) {
   return tempString.replaceRange(31, tempString.length - 1, '');
 }
 
-DataSnapshot processableSnapshot;
-
-Future<void> getPasswordsFromFirebaseEventSnapshot(DataSnapshot dataSnapshot) async {
+Future<void> getPasswordsFromFirebaseEventSnapshot(
+    DataSnapshot dataSnapshot) async {
+  if (!Prefs.allowRetrievingCloudData) return;
   int i = 0;
   bool b = true;
   List<String> tempStringList = [];
-  List<Password> tempList = [];
-  if(processableSnapshot == dataSnapshot) processableSnapshot = null;
-  if (Password.key == null) {
-    processableSnapshot = dataSnapshot;
-    return;
-  }
-  while (b) {
+  List<Password> tempPasswordList = [];
+  while (b)
     try {
       tempStringList.add(dataSnapshot.value[i]);
-      tempList.add(Password.fromJson(dataSnapshot.value[i]));
+      tempPasswordList.add(Password.fromJson(dataSnapshot.value[i]));
       i++;
     } catch (e) {
       b = false;
     }
-  }
   Prefs.preferences.setStringList('passwords', tempStringList);
-  Values.passwords = tempList;
-  Values.displayablePasswords = passwordsToDisplayable(tempList);
-  await FirebaseService.masterPasswordRef
-      .once()
-      .then((snapshot) => print(snapshot.value.toString()));
+  Values.passwords = tempPasswordList;
+  await FirebaseService.masterPasswordRef.once().then((snapshot) =>
+      Prefs.preferences.setString(
+          'encrypted_master_password', snapshot.value.toString().trim()));
   if (Values.afterBrightnessUpdate != null) Values.afterBrightnessUpdate();
-  print(i);
 }

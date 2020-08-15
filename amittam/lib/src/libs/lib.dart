@@ -64,6 +64,6 @@ class Choice {
 enum PasswordType {
   onlineAccount,
   emailAccount,
-  wlanPassword,
+  wifiPassword,
   other,
 }

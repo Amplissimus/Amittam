@@ -3,23 +3,27 @@ import 'package:Amittam/src/libs/firebaselib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/language.dart';
-import 'package:Amittam/src/screens/phone_login.dart';
+import 'package:Amittam/src/objects/password.dart';
+import 'package:Amittam/src/screens/first_login.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class Settings extends StatefulWidget {
-  Settings(this.onPop);
+import 'after_login.dart';
+
+class SettingsPage extends StatefulWidget {
+  SettingsPage(this.onPop);
 
   final void Function() onPop;
 
   @override
-  _SettingsState createState() => _SettingsState();
+  _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsPageState extends State<SettingsPage> {
   GlobalKey<FormFieldState> confirmTextFieldKey = GlobalKey();
   TextEditingController confirmTextFieldController = TextEditingController();
   GlobalKey<FormFieldState> passwordTextFieldKey = GlobalKey();
@@ -41,15 +45,18 @@ class _SettingsState extends State<Settings> {
           widget.onPop();
         else
           animateToPage(0, _pageController);
+        if (FirebaseService.isSignedIn && !Prefs.allowRetrievingCloudData)
+          FirebaseService.signOut().then((value) => setState(() {}));
         return Future(() => false);
       },
       child: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         children: [
           Scaffold(
             backgroundColor: CustomColors.colorBackground,
             appBar: StandardAppBar(
-              title: currentLang.appTitle,
+              title: currentLang.settings,
               leading: IconButton(
                 icon: Icon(
                   Icons.arrow_back,
@@ -70,15 +77,20 @@ class _SettingsState extends State<Settings> {
                   ),
                   FirebaseService.isSignedIn
                       ? StandardButton(
-                          iconData: MdiIcons.phoneLock,
+                          iconData: MdiIcons.google,
                           text: currentLang.logOut,
                           onTap: () => FirebaseService.signOut()
                               .then((value) => setState(() {})),
                         )
                       : StandardButton(
-                          iconData: MdiIcons.phoneLock,
-                          text: currentLang.signInWithPhoneNumber,
-                          onTap: () => animateToPage(1, _pageController),
+                          iconData: MdiIcons.google,
+                          text: currentLang.signInWithGoogle,
+                          onTap: () async {
+                            await FirebaseService.signInWithGoogle();
+                            if (await FirebaseService.hasExistingData())
+                              animateToPage(1, _pageController);
+                            else setState(() {});
+                          },
                         ),
                   StandardButton(
                     text: currentLang.chooseLang,
@@ -124,6 +136,15 @@ class _SettingsState extends State<Settings> {
                     },
                   ),
                   StandardButton(
+                    iconData: MdiIcons.lockReset,
+                    text: currentLang.editMasterPassword,
+                    onTap: () {
+                      for (Password pw in Prefs.passwords)
+                        Values.decryptedPasswords.add(pw.asDecryptedPassword);
+                      Animations.pushReplacement(context, FirstLoginPage());
+                    },
+                  ),
+                  StandardButton(
                     iconData: Icons.info_outline,
                     text: currentLang.showAppInfo,
                     onTap: () => showAboutDialog(
@@ -148,35 +169,11 @@ class _SettingsState extends State<Settings> {
                       passwordTextFieldController.text = '';
                       confirmTextFieldErrorText = null;
                       passwordTextFieldErrorText = null;
-                      showDialog(
-                        barrierDismissible: true,
+                      showStandardDialog(
                         context: context,
-                        builder: (context) => StatefulBuilder(
+                        content: StatefulBuilder(
                           builder: (context, setAlState) {
-                            return AlertDialog(
-                              backgroundColor: CustomColors.colorBackground,
-                              title: StandardText(currentLang.deleteAppData),
-                              actions: [
-                                FlatButton(
-                                  splashColor: CustomColors.colorForeground,
-                                  onPressed: () => Navigator.pop(context),
-                                  child: StandardText('CANCEL'),
-                                ),
-                                FlatButton(
-                                  splashColor: CustomColors.colorForeground,
-                                  onPressed: () {
-                                    if (confirmTextFieldController.text ==
-                                            'CONFIRM' &&
-                                        Prefs.masterPasswordIsValid(
-                                            passwordTextFieldController.text)) {
-                                      Prefs.preferences.clear();
-                                      SystemNavigator.pop();
-                                    }
-                                  },
-                                  child: StandardText('CONFIRM'),
-                                ),
-                              ],
-                              content: InkWell(
+                            return InkWell(
                                 onTap: () {
                                   FocusScopeNode currentFocus =
                                       FocusScope.of(context);
@@ -188,14 +185,12 @@ class _SettingsState extends State<Settings> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       StandardText(
-                                        'Please type "CONFIRM" in the Textbox below and '
-                                        'then confirm deleting the App-Data '
-                                        'using your master password.',
+                                        currentLang.resetActionRequest,
                                         fontSize: 16,
                                       ),
                                       Padding(padding: EdgeInsets.all(8)),
                                       StandardTextFormField(
-                                        hint: 'Requested text',
+                                        hint: currentLang.requestedText,
                                         controller: confirmTextFieldController,
                                         key: confirmTextFieldKey,
                                         errorText: confirmTextFieldErrorText,
@@ -205,12 +200,12 @@ class _SettingsState extends State<Settings> {
                                           if (value.trim().isEmpty)
                                             setAlState(() =>
                                                 confirmTextFieldErrorText =
-                                                    'Field cannot be empty!');
+                                                    currentLang.fieldIsEmpty);
                                         },
                                       ),
                                       Padding(padding: EdgeInsets.all(8)),
                                       StandardTextFormField(
-                                        hint: 'Enter Masterpassword',
+                                        hint: currentLang.enterMasterPW,
                                         controller: passwordTextFieldController,
                                         key: passwordTextFieldKey,
                                         errorText: passwordTextFieldErrorText,
@@ -221,7 +216,7 @@ class _SettingsState extends State<Settings> {
                                           if (value.trim().isEmpty)
                                             setAlState(() =>
                                                 passwordTextFieldErrorText =
-                                                    'Field cannot be empty!');
+                                                    currentLang.fieldIsEmpty);
                                         },
                                       ),
                                     ],
@@ -231,10 +226,19 @@ class _SettingsState extends State<Settings> {
                                 splashColor: Colors.transparent,
                                 highlightColor: Colors.transparent,
                                 focusColor: Colors.transparent,
-                              ),
-                            );
+                              );
                           },
                         ),
+                        onConfirm: () async {
+                          if (confirmTextFieldController.text ==
+                              currentLang.confirm.toUpperCase() &&
+                              Prefs.masterPasswordIsValid(
+                                  passwordTextFieldController.text)) {
+                            await Prefs.preferences.clear();
+                            await FirebaseService.deleteOnlineData();
+                            SystemNavigator.pop();
+                          }
+                        }
                       );
                     },
                   ),
@@ -242,7 +246,7 @@ class _SettingsState extends State<Settings> {
               ),
             ),
           ),
-          PhoneLogin(() {
+          AfterLoginPage(() {
             setState(() {});
             animateToPage(0, _pageController);
           }),

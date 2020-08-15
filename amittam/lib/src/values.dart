@@ -38,7 +38,9 @@ class Strings {
 
 class Values {
   static List<DisplayablePassword> displayablePasswords = [];
+  static List<DecryptedPassword> decryptedPasswords = [];
   static List<Password> passwords = [];
+
   static void Function() afterBrightnessUpdate;
   static void Function() tempRebuildFunction = () {};
 
