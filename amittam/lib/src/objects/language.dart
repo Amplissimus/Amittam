@@ -111,6 +111,10 @@ abstract class Language {
 
   String get resetActionRequest;
 
+  String get noResults;
+
+  String get wifi;
+
   String deleteSelectedPasswordsWarning(bool multiple);
 
   String firstLoginConfirmPW(String s);

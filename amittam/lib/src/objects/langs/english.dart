@@ -164,6 +164,12 @@ class English extends Language {
       'Please type "${this.confirm.toUpperCase()}" in the textbox below and then confirm deleting the app data using your master password.${FirebaseService.isSignedIn ? ' By performing this action, all of your app data will also be deleted from our databases!' : ''}';
 
   @override
+  String get noResults => 'No results!';
+
+  @override
+  String get wifi => 'WiFi';
+
+  @override
   String deleteSelectedPasswordsWarning(bool multiple) =>
       'Do you really want to delete the selected password${multiple ? 's' : ''}?';
 

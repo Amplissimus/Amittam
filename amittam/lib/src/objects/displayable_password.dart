@@ -1,5 +1,6 @@
 import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
+import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
@@ -53,11 +54,11 @@ class DisplayablePassword {
           return getleadingIcon(MdiIcons.accountCircle);
         break;
       case PasswordType.emailAccount:
-        titleText = 'Mail Address';
+        titleText = currentLang.mailAddress;
         return getleadingIcon(MdiIcons.email);
         break;
       case PasswordType.wifiPassword:
-        titleText = 'WiFi';
+        titleText = currentLang.wifi;
         return getleadingIcon(MdiIcons.wifiStrength3Lock);
         break;
       default:

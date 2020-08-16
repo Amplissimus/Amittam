@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/objects/settings_object.dart';
@@ -28,11 +29,16 @@ class FirebaseService {
   static Future<void> initialize() async {
     firebaseUser = await firebaseAuth.currentUser();
     if (isSignedIn) _initializeReferences();
-    if (Prefs.allowRetrievingCloudData && isSignedIn) {
+    if (await internetConnectionAvailable() &&
+        Prefs.allowRetrievingCloudData &&
+        isSignedIn) {
       await loadSettings();
       await retrievePasswords();
-    } else if(isSignedIn) await signOut();
-    else Prefs.allowRetrievingCloudData = false;
+    } else if (isSignedIn)
+      await signOut();
+    else
+      Prefs.allowRetrievingCloudData = false;
+    print(await internetConnectionAvailable() ? 'Internet!' : 'No Internet!');
   }
 
   static void _initializeReferences() {
@@ -115,7 +121,7 @@ class FirebaseService {
   }
 
   static Future<void> deleteOnlineData() async {
-    if(generalUserRef == null) _initializeReferences();
+    if (generalUserRef == null) _initializeReferences();
     await generalUserRef.set(null);
   }
 }

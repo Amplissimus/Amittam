@@ -162,6 +162,12 @@ class German extends Language {
   String get resetActionRequest => 'Bitte gib "${this.confirm.toUpperCase()}" in die Textbox unterhalb ein und bestätige daraufhin das Löschen der gesamten App-Daten mit dem Hauptzugangspasswort.${FirebaseService.isSignedIn ? ' Damit werden deine sämtlichen App-Daten auch aus unserer Datenbank gelöscht!' : ''}';
 
   @override
+  String get noResults => 'Keine Ergebnisse!';
+
+  @override
+  String get wifi => 'WLAN';
+
+  @override
   String pwTypeToString(PasswordType pwType) {
     switch (pwType) {
       case PasswordType.onlineAccount:

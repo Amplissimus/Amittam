@@ -201,11 +201,10 @@ class _MainPageState extends State<MainPage> {
                               if (pw.isSelected) amountSelected++;
                             showStandardDialog(
                               context: context,
-                              title: 'Deletion',
+                              title: currentLang.deletion,
                               content: StandardText(
-                                  'Do you really want to delete the selected password' +
-                                      (amountSelected > 1 ? 's' : '') +
-                                      '?'),
+                                  currentLang.deleteSelectedPasswordsWarning(
+                                      amountSelected > 1)),
                               onConfirm: () {
                                 for (var pw in Values.displayablePasswords)
                                   if (pw.isSelected)
@@ -265,8 +264,9 @@ class _MainPageState extends State<MainPage> {
                           child: StandardText(currentLang.noPasswordsRegistered,
                               fontSize: 20))
                       : ListView.separated(
+                    physics: BouncingScrollPhysics(),
                           controller: _scrollController,
-                          cacheExtent: 5,
+                          cacheExtent: 20,
                           itemBuilder: (context, index) {
                             DisplayablePassword displayablePassword =
                                 Values.displayablePasswords[index];

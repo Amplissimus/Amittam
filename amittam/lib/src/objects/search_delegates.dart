@@ -74,8 +74,8 @@ class PasswordSearchDelegate extends SearchDelegate<DisplayablePassword> {
           margin: EdgeInsets.all(16),
           child: tempPasswords.isEmpty
               ? ListTile(
-                  title:
-                      StandardText('No results!', textAlign: TextAlign.center))
+                  title: StandardText(currentLang.noResults,
+                      textAlign: TextAlign.center))
               : ListView.separated(
                   controller: _controller,
                   cacheExtent: 5,
@@ -85,8 +85,8 @@ class PasswordSearchDelegate extends SearchDelegate<DisplayablePassword> {
                     Password password = displayablePassword.password;
                     displayablePassword.onTap = () {
                       Navigator.pop(context);
-                      Animations.push(context,
-                          DisplayPasswordPage(password, onPop: onPop));
+                      Animations.push(
+                          context, DisplayPasswordPage(password, onPop: onPop));
                     };
                     displayablePassword.onLongPress = () {};
                     return displayablePassword.asWidget;

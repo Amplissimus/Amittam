@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,4 +68,14 @@ enum PasswordType {
   emailAccount,
   wifiPassword,
   other,
+}
+
+Future<bool> internetConnectionAvailable() async {
+  try{
+    final result = await InternetAddress.lookup('google.com');
+    if(result.isNotEmpty && result[0].rawAddress.isNotEmpty) return true;
+    return false;
+  } catch(e) {
+    return false;
+  }
 }
