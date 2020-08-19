@@ -1,10 +1,8 @@
-import 'package:Amittam/src/objects/langs/english.dart';
-import 'package:Amittam/src/objects/langs/german.dart';
 import 'package:Amittam/src/objects/language.dart';
-import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:provider/provider.dart';
 
 class StandardAppBar extends AppBar {
   StandardAppBar({
@@ -14,7 +12,7 @@ class StandardAppBar extends AppBar {
     List<Widget> actions,
     double fontSize = 25,
     Widget leading,
-    Color backgroundColor = Colors.transparent,
+    Color backgroundColor,
   }) : super(
           leading: leading,
           actions: actions,
@@ -22,7 +20,6 @@ class StandardAppBar extends AppBar {
           backgroundColor: backgroundColor,
           centerTitle: centerTitle,
           title: StandardText(title, fontSize: fontSize, fontColor: fontColor),
-          iconTheme: IconThemeData(color: CustomColors.colorForeground),
         );
 }
 
@@ -48,59 +45,21 @@ class StandardTextFormField extends TextFormField {
           obscureText: obscureText,
           enableInteractiveSelection: enableInteractiveSelection,
           onChanged: onChanged,
-          cursorColor: CustomColors.colorForeground,
           controller: controller,
           inputFormatters: formatters,
           key: key,
           keyboardType: textInputType,
-          style: TextStyle(color: CustomColors.colorForeground),
           decoration: InputDecoration(
             suffixIcon: suffixIcon,
             errorText: errorText,
             labelText: hint,
-            fillColor: CustomColors.colorForeground,
-            labelStyle: TextStyle(color: CustomColors.colorForeground),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(color: CustomColors.colorForeground),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: CustomColors.colorForeground, width: 1.0),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: CustomColors.colorForeground, width: 2.0),
-              borderRadius: BorderRadius.circular(5),
-            ),
           ),
         );
 }
 
-class ExtendedFab extends StatelessWidget {
-  ExtendedFab({@required this.onPressed, @required this.label, this.icon});
-
-  final void Function() onPressed;
-  final Widget label;
-  final Widget icon;
-
-  @override
-  Widget build(BuildContext context) => FloatingActionButton.extended(
-        onPressed: onPressed,
-        label: label,
-        icon: icon,
-        backgroundColor: CustomColors.colorBackground,
-        foregroundColor: CustomColors.colorForeground,
-        elevation: 0,
-        focusElevation: 0,
-        splashColor: CustomColors.colorForeground,
-        focusColor: Colors.transparent,
-      );
-}
-
 class SwitchWithText extends ListTile {
   SwitchWithText({
+    @required BuildContext context,
     @required String text,
     @required bool value,
     @required void Function(bool) onChanged,
@@ -108,8 +67,11 @@ class SwitchWithText extends ListTile {
   }) : super(
           title: StandardText(text, fontColor: fontColor),
           trailing: Switch(
-            inactiveTrackColor: Colors.grey,
-            inactiveThumbColor: CustomColors.colorForeground,
+            inactiveTrackColor:
+                Provider.of<ThemeChanger>(context).usesDarkTheme()
+                    ? Colors.white30
+                    : Colors.black26,
+            inactiveThumbColor: Colors.grey,
             value: value,
             onChanged: onChanged,
             activeColor: Colors.green,
@@ -122,7 +84,7 @@ class DisplayValueWidget extends Container {
       {Object value = '', String valueType = '', void Function() onTap})
       : super(
           decoration: BoxDecoration(
-            border: Border.all(color: CustomColors.colorForeground),
+            border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(5),
           ),
           child: InkWell(
@@ -172,17 +134,14 @@ Future<void> showStandardDialog({
       builder: (context) => AlertDialog(
         title: StandardText(title),
         content: content,
-        backgroundColor: CustomColors.colorBackground,
         elevation: 0,
         actions: <Widget>[
           FlatButton(
-            splashColor: CustomColors.colorForeground,
-            child: StandardText(currentLang.cancel.toUpperCase()),
+            child: Text(currentLang.cancel.toUpperCase()),
             onPressed: () => Navigator.pop(context),
           ),
           FlatButton(
-            splashColor: CustomColors.colorForeground,
-            child: StandardText(currentLang.confirm.toUpperCase()),
+            child: Text(currentLang.confirm.toUpperCase()),
             onPressed: () => {Navigator.pop(context), onConfirm()},
           ),
         ],
@@ -194,20 +153,11 @@ class StandardText extends Text {
       {double fontSize, TextAlign textAlign, Color fontColor})
       : super(text,
             textAlign: textAlign,
-            style: TextStyle(
-                color: fontColor == null
-                    ? CustomColors.colorForeground
-                    : fontColor,
-                fontSize: fontSize));
+            style: TextStyle(color: fontColor, fontSize: fontSize));
 }
 
 class StandardDivider extends Divider {
-  StandardDivider({double height = 0})
-      : super(
-          color: CustomColors.colorForeground,
-          thickness: 2,
-          height: height,
-        );
+  StandardDivider({double height = 0}) : super(thickness: 2, height: height);
 }
 
 class StandardSpeedDialChild extends SpeedDialChild {
@@ -224,18 +174,12 @@ class StandardButton extends Card {
       void Function() onTap,
       @required String text})
       : super(
-          color: CustomColors.lightBackground,
           child: ListTile(
             leading: Icon(iconData, color: Colors.green),
             title: StandardText(text),
             onTap: onTap,
           ),
         );
-}
-
-class StandardIcon extends Icon {
-  StandardIcon(IconData iconData)
-      : super(iconData, color: CustomColors.colorForeground);
 }
 
 class StandardDropdownButton extends DropdownButton {
@@ -248,6 +192,189 @@ class StandardDropdownButton extends DropdownButton {
           onChanged: onChanged,
           value: value,
           underline: Container(height: 2, color: Colors.green),
-          style: TextStyle(color: CustomColors.colorForeground),
         );
+}
+
+class ThemeChanger with ChangeNotifier {
+  ThemeData _themeData;
+
+  ThemeChanger(this._themeData);
+
+  ThemeData getTheme() => _themeData;
+
+  void setTheme(ThemeData theme) {
+    _themeData = theme;
+    notifyListeners();
+  }
+
+  void setDarkMode(bool b) =>
+      setTheme(b ? Themes.darkTheme : Themes.brightTheme);
+
+  bool usesDarkTheme() => getTheme() == Themes.darkTheme;
+}
+
+class MaterialAppWithTheme extends StatelessWidget {
+  MaterialAppWithTheme({@required this.homePage});
+
+  final Object homePage;
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        builder: (context, child) =>
+            ScrollConfiguration(behavior: MainScrollBehavior(), child: child),
+        home: homePage,
+        theme: Provider.of<ThemeChanger>(context).getTheme(),
+      );
+}
+
+class Themes {
+  var f = ThemeData(primarySwatch: Colors.green);
+  static final ThemeData brightTheme = ThemeData.light().copyWith(
+    primaryColor: Colors.green,
+    cursorColor: Colors.black,
+    accentColor: Colors.green,
+    cardColor: Color.fromRGBO(220, 220, 220, 1),
+    colorScheme: ColorScheme(
+      primary: Colors.green,
+      primaryVariant: Colors.green,
+      secondary: Colors.black,
+      secondaryVariant: Colors.black,
+      surface: Colors.white10,
+      background: Colors.white10,
+      error: Colors.red,
+      onPrimary: Colors.green,
+      onSecondary: Colors.black,
+      onSurface: Colors.white10,
+      onBackground: Colors.white10,
+      onError: Colors.red,
+      brightness: Brightness.light,
+    ),
+    snackBarTheme: SnackBarThemeData(
+      contentTextStyle:
+      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      elevation: 0,
+      backgroundColor: Colors.black12,
+    ),
+    cardTheme: CardTheme(elevation: 0),
+    textTheme: TextTheme(
+      headline1: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      headline2: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      headline3: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      headline4: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      headline5: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      headline6: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      subtitle1: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      subtitle2: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      bodyText1: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      bodyText2: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      caption: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      button: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      overline: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+    ),
+    buttonTheme: ButtonThemeData(
+      buttonColor: Colors.deepPurple, //  <-- dark color
+      textTheme:
+          ButtonTextTheme.primary, //  <-- this auto selects the right color
+    ),
+    sliderTheme: SliderThemeData(
+      activeTrackColor: Colors.green,
+      inactiveTrackColor: Colors.white12,
+      thumbColor: Colors.black,
+      inactiveTickMarkColor: Colors.green,
+      valueIndicatorColor: Colors.green,
+      overlayColor: Colors.black12,
+    ),
+    iconTheme: IconThemeData(color: Colors.black),
+    appBarTheme: AppBarTheme(
+      textTheme: TextTheme(
+        headline6: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      iconTheme: IconThemeData(color: Colors.black),
+      actionsIconTheme: IconThemeData(color: Colors.black),
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      centerTitle: true,
+      color: Colors.black12,
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(color: Colors.black, width: 1.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.black, width: 1.0),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.black, width: 2.0),
+        borderRadius: BorderRadius.circular(5),
+      ),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: Colors.green,
+      foregroundColor: Colors.white,
+    ),
+  );
+  static final ThemeData darkTheme = ThemeData.dark().copyWith(
+    primaryColor: Colors.green,
+    cursorColor: Colors.white,
+    accentColor: Colors.green,
+    cardColor: Color.fromRGBO(70, 70, 70, 1),
+    cardTheme: CardTheme(elevation: 0),
+    snackBarTheme: SnackBarThemeData(
+      contentTextStyle:
+          TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      elevation: 0,
+      backgroundColor: Colors.black12,
+    ),
+    sliderTheme: SliderThemeData(
+      activeTrackColor: Colors.green,
+      inactiveTrackColor: Colors.white12,
+      thumbColor: Colors.white,
+      inactiveTickMarkColor: Colors.green,
+      valueIndicatorColor: Colors.green,
+      overlayColor: Colors.white10,
+    ),
+    iconTheme: IconThemeData(color: Colors.white),
+    textTheme: TextTheme(
+      headline1: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      headline2: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      headline3: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      headline4: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      headline5: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      headline6: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      subtitle1: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      subtitle2: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      bodyText1: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      bodyText2: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      caption: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      button: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      overline: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    ),
+    appBarTheme: AppBarTheme(
+      color: Colors.black26,
+      iconTheme: IconThemeData(color: Colors.white),
+      actionsIconTheme: IconThemeData(color: Colors.white),
+      elevation: 0,
+      centerTitle: true,
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(color: Colors.white, width: 1.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white, width: 1.0),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.white, width: 2.0),
+        borderRadius: BorderRadius.circular(5),
+      ),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: Colors.green,
+      foregroundColor: Colors.white,
+    ),
+  );
 }

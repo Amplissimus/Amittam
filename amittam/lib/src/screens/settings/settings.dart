@@ -4,7 +4,7 @@ import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
-import 'package:Amittam/src/screens/first_login.dart';
+import 'package:Amittam/src/screens/login/first_login.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-import 'after_login.dart';
+import 'package:Amittam/src/screens/settings/after_login.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage(this.onPop);
@@ -35,10 +36,10 @@ class _SettingsPageState extends State<SettingsPage> {
   Lang selectedLang;
 
   var _pageController = PageController();
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    Values.afterBrightnessUpdate = () => setState(() {});
     return WillPopScope(
       onWillPop: () {
         if (_pageController.offset == 0.0)
@@ -54,42 +55,78 @@ class _SettingsPageState extends State<SettingsPage> {
         controller: _pageController,
         children: [
           Scaffold(
-            backgroundColor: CustomColors.colorBackground,
+            key: _scaffoldKey,
             appBar: StandardAppBar(
               title: currentLang.settings,
               leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: CustomColors.colorForeground,
-                ),
-                onPressed: widget.onPop,
-              ),
+                  icon: Icon(Icons.arrow_back), onPressed: widget.onPop),
             ),
             body: Container(
               margin: EdgeInsets.all(16),
               child: ListView(
                 children: [
                   SwitchWithText(
+                    context: context,
                     text: currentLang.fastLogin,
                     value: Prefs.fastLogin,
                     onChanged: (value) =>
                         setState(() => Prefs.fastLogin = value),
                   ),
+                  SwitchWithText(
+                      context: context,
+                      text: currentLang.useSystemTheme,
+                      value: Prefs.useSystemTheme,
+                      onChanged: (value) {
+                        setState(() => Prefs.useSystemTheme = value);
+                        Provider.of<ThemeChanger>(context)
+                            .setDarkMode(Prefs.useDarkTheme);
+                      }),
+                  SwitchWithText(
+                      context: context,
+                      text: currentLang.useDarkTheme,
+                      value: Prefs.useDarkTheme,
+                      onChanged: Prefs.useSystemTheme
+                          ? null
+                          : (value) {
+                              setState(() => Prefs.useDarkTheme = value);
+                              Provider.of<ThemeChanger>(context)
+                                  .setDarkMode(Prefs.useDarkTheme);
+                            }),
                   FirebaseService.isSignedIn
                       ? StandardButton(
                           iconData: MdiIcons.google,
                           text: currentLang.logOut,
-                          onTap: () => FirebaseService.signOut()
-                              .then((value) => setState(() {})),
+                          onTap: () => showStandardDialog(
+                            context: context,
+                            title: currentLang.confirmGoogleLogout,
+                            content: StandardText(
+                                currentLang.confirmGoogleLogoutDesc),
+                            onConfirm: () => FirebaseService.signOut()
+                                .then((value) => setState(() {})),
+                          ),
                         )
                       : StandardButton(
                           iconData: MdiIcons.google,
                           text: currentLang.signInWithGoogle,
                           onTap: () async {
+                            bool hasConfirmed = false;
                             await FirebaseService.signInWithGoogle();
                             if (await FirebaseService.hasExistingData())
                               animateToPage(1, _pageController);
-                            else setState(() {});
+                            else {
+                              await showStandardDialog(
+                                context: context,
+                                title: currentLang.confirmFirstGoogleLogin,
+                                content: StandardText(
+                                    currentLang.confirmFirstGoogleLoginDesc),
+                                onConfirm: () => hasConfirmed = true,
+                              );
+                              if (!hasConfirmed)
+                                await FirebaseService.signOut();
+                              else
+                                await FirebaseService.saveData();
+                              setState(() {});
+                            }
                           },
                         ),
                   StandardButton(
@@ -101,10 +138,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         context: context,
                         title: currentLang.chooseLang,
                         content: Theme(
-                          data: ThemeData(
-                              canvasColor: CustomColors.isDarkMode
-                                  ? CustomMaterialColor(0xFF000000)
-                                  : CustomMaterialColor(0xFFFFFFFF)),
+                          data: Themes.darkTheme,
                           child: StatefulBuilder(
                             builder: (context, setAlState) => Column(
                               mainAxisSize: MainAxisSize.min,
@@ -145,6 +179,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   StandardButton(
+                    iconData: MdiIcons.folderInformation,
+                    text: currentLang.howWeUseYourData,
+                    onTap: () => showStandardDialog(
+                      context: context,
+                      title: currentLang.howWeUseYourData,
+                      content: SingleChildScrollView(
+                        child: StandardText(currentLang.howWeUseYourDataDesc),
+                      ),
+                    ),
+                  ),
+                  StandardButton(
                     iconData: Icons.info_outline,
                     text: currentLang.showAppInfo,
                     onTap: () => showAboutDialog(
@@ -174,71 +219,80 @@ class _SettingsPageState extends State<SettingsPage> {
                         content: StatefulBuilder(
                           builder: (context, setAlState) {
                             return InkWell(
-                                onTap: () {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus)
-                                    currentFocus.unfocus();
-                                },
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      StandardText(
-                                        currentLang.resetActionRequest,
-                                        fontSize: 16,
-                                      ),
-                                      Padding(padding: EdgeInsets.all(8)),
-                                      StandardTextFormField(
-                                        hint: currentLang.requestedText,
-                                        controller: confirmTextFieldController,
-                                        key: confirmTextFieldKey,
-                                        errorText: confirmTextFieldErrorText,
-                                        onChanged: (value) {
+                              onTap: () {
+                                FocusScopeNode currentFocus =
+                                    FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus)
+                                  currentFocus.unfocus();
+                              },
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    StandardText(
+                                      currentLang.resetActionRequest,
+                                      fontSize: 16,
+                                    ),
+                                    Padding(padding: EdgeInsets.all(8)),
+                                    StandardTextFormField(
+                                      hint: currentLang.requestedText,
+                                      controller: confirmTextFieldController,
+                                      key: confirmTextFieldKey,
+                                      errorText: confirmTextFieldErrorText,
+                                      onChanged: (value) {
+                                        setAlState(() =>
+                                            confirmTextFieldErrorText = null);
+                                        if (value.trim().isEmpty)
                                           setAlState(() =>
-                                              confirmTextFieldErrorText = null);
-                                          if (value.trim().isEmpty)
-                                            setAlState(() =>
-                                                confirmTextFieldErrorText =
-                                                    currentLang.fieldIsEmpty);
-                                        },
-                                      ),
-                                      Padding(padding: EdgeInsets.all(8)),
-                                      StandardTextFormField(
-                                        hint: currentLang.enterMasterPW,
-                                        controller: passwordTextFieldController,
-                                        key: passwordTextFieldKey,
-                                        errorText: passwordTextFieldErrorText,
-                                        onChanged: (value) {
+                                              confirmTextFieldErrorText =
+                                                  currentLang.fieldIsEmpty);
+                                      },
+                                    ),
+                                    Padding(padding: EdgeInsets.all(8)),
+                                    StandardTextFormField(
+                                      hint: currentLang.enterMasterPW,
+                                      controller: passwordTextFieldController,
+                                      key: passwordTextFieldKey,
+                                      errorText: passwordTextFieldErrorText,
+                                      onChanged: (value) {
+                                        setAlState(() =>
+                                            passwordTextFieldErrorText = null);
+                                        if (value.trim().isEmpty)
                                           setAlState(() =>
                                               passwordTextFieldErrorText =
-                                                  null);
-                                          if (value.trim().isEmpty)
-                                            setAlState(() =>
-                                                passwordTextFieldErrorText =
-                                                    currentLang.fieldIsEmpty);
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                                                  currentLang.fieldIsEmpty);
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                hoverColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                              );
+                              ),
+                              hoverColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              focusColor: Colors.transparent,
+                            );
                           },
                         ),
                         onConfirm: () async {
                           if (confirmTextFieldController.text ==
-                              currentLang.confirm.toUpperCase() &&
+                                  currentLang.confirm.toUpperCase() &&
                               Prefs.masterPasswordIsValid(
                                   passwordTextFieldController.text)) {
                             await Prefs.preferences.clear();
                             await FirebaseService.deleteOnlineData();
                             SystemNavigator.pop();
-                          }
-                        }
+                          } else
+                            _scaffoldKey.currentState?.showSnackBar(
+                              SnackBar(
+                                backgroundColor: CustomColors.colorBackground,
+                                content: StandardText(
+                                  'Error!',
+                                  textAlign: TextAlign.center,
+                                  fontColor: Colors.green,
+                                ),
+                              ),
+                            );
+                        },
                       );
                     },
                   ),

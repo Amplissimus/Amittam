@@ -17,12 +17,6 @@ class _DisplayQrPageState extends State<DisplayQrPage> {
   bool useNativeTheme = true;
 
   @override
-  void initState() {
-    Values.afterBrightnessUpdate = () => setState(() {});
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: StandardAppBar(

@@ -4,7 +4,7 @@ import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
-import 'package:Amittam/src/screens/display_qr.dart';
+import 'package:Amittam/src/screens/password/display_qr.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -67,7 +67,6 @@ class _DisplayPasswordPageState extends State<DisplayPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    Values.afterBrightnessUpdate = () => setState(() {});
     String value = passwordTextFieldController.text.trim();
     double strength = estimatePasswordStrength(value);
     if (strength < 0.3)
@@ -78,14 +77,10 @@ class _DisplayPasswordPageState extends State<DisplayPasswordPage> {
       setState(() => passwordStrengthColor = Colors.green);
     return WillPopScope(
       child: Scaffold(
-        backgroundColor: CustomColors.colorBackground,
         appBar: StandardAppBar(
           title: currentLang.displayPassword,
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: CustomColors.colorForeground,
-            ),
+            icon: Icon(Icons.arrow_back),
             onPressed: () => {widget.onPop(), FocusScope.of(context).unfocus()},
           ),
         ),
@@ -294,7 +289,7 @@ class _DisplayPasswordPageState extends State<DisplayPasswordPage> {
                 isEditingPassword ||
                 isEditingPlatform ||
                 isEditingUsername)
-            ? ExtendedFab(
+            ? FloatingActionButton.extended(
                 onPressed: () {
                   if ((platformTextFieldController.text
                               .trimRight()

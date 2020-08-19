@@ -5,6 +5,7 @@ import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/main.dart';
 import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
+import 'package:Amittam/src/screens/home.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,21 +25,13 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
   bool masterPWTextFieldInputHidden = false;
 
   @override
-  void initState() {
-    Values.afterBrightnessUpdate = () => setState(() {});
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColors.colorBackground,
       appBar: StandardAppBar(title: Strings.appTitle),
       body: InkWell(
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          color: Colors.transparent,
           margin: EdgeInsets.all(16),
           child: Center(
             child: Column(
@@ -51,10 +44,8 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
                     focusColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     icon: masterPWTextFieldInputHidden
-                        ? Icon(Icons.visibility,
-                            color: CustomColors.colorForeground)
-                        : Icon(Icons.visibility_off,
-                            color: CustomColors.colorForeground),
+                        ? Icon(Icons.visibility)
+                        : Icon(Icons.visibility_off),
                     onPressed: () => setState(() =>
                         masterPWTextFieldInputHidden =
                             !masterPWTextFieldInputHidden),
@@ -102,8 +93,8 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
           if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
         },
       ),
-      floatingActionButton: ExtendedFab(
-        label: StandardText(currentLang.setMasterPW),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text(currentLang.setMasterPW),
         onPressed: () {
           double strength =
               estimatePasswordStrength(masterPWTextFieldController.text.trim());
@@ -134,7 +125,7 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
                   tempPasswordList.add(pw.asPassword);
                 Prefs.passwords = tempPasswordList;
               }
-              Animations.pushReplacement(context, MainApp());
+              Animations.pushReplacement(context, HomePage());
             },
           );
           return;

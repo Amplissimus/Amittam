@@ -37,38 +37,42 @@ class DisplayablePassword {
         titleText = password.platform;
         String checkText = password.platform.trim().toLowerCase();
         if (checkText.contains('google') || checkText.contains('gmail'))
-          return getleadingIcon(MdiIcons.google);
+          return getLeadingIcon(MdiIcons.google);
         else if (checkText.contains('microsoft'))
-          return getleadingIcon(MdiIcons.microsoft);
+          return getLeadingIcon(MdiIcons.microsoft);
         else if (checkText.contains('windows'))
-          return getleadingIcon(MdiIcons.microsoftWindows);
+          return getLeadingIcon(MdiIcons.microsoftWindows);
         else if (checkText.contains('minecraft') ||
             checkText.contains('mojang'))
-          return getleadingIcon(MdiIcons.minecraft);
+          return getLeadingIcon(MdiIcons.minecraft);
         else if (checkText.contains('playstation') ||
             checkText.contains('ps3') ||
             checkText.contains('ps4') ||
             checkText.contains('ps5'))
-          return getleadingIcon(MdiIcons.sonyPlaystation);
+          return getLeadingIcon(MdiIcons.sonyPlaystation);
+        else if (checkText.contains('facebook'))
+          return getLeadingIcon(MdiIcons.facebook);
+        else if (checkText.contains('discord'))
+          return getLeadingIcon(MdiIcons.discord);
         else
-          return getleadingIcon(MdiIcons.accountCircle);
+          return getLeadingIcon(MdiIcons.accountCircle);
         break;
       case PasswordType.emailAccount:
         titleText = currentLang.mailAddress;
-        return getleadingIcon(MdiIcons.email);
+        return getLeadingIcon(MdiIcons.email);
         break;
       case PasswordType.wifiPassword:
         titleText = currentLang.wifi;
-        return getleadingIcon(MdiIcons.wifiStrength3Lock);
+        return getLeadingIcon(MdiIcons.wifiStrength3Lock);
         break;
       default:
-        return getleadingIcon(MdiIcons.accountCircle);
+        return getLeadingIcon(MdiIcons.accountCircle);
     }
   }
 
-  Icon getleadingIcon(IconData data) => Icon(
+  Icon getLeadingIcon(IconData data) => Icon(
         data,
-        color: isSelected ? CustomColors.colorForeground : Colors.green,
+        color: isSelected ? null : Colors.green,
         size: 40,
       );
 }

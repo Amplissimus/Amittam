@@ -103,6 +103,28 @@ class FirebaseService {
         .then((snapshot) => getPasswordsFromFirebaseEventSnapshot(snapshot));
   }
 
+  static Future<void> getPasswordsFromFirebaseEventSnapshot(
+      DataSnapshot dataSnapshot) async {
+    if (!Prefs.allowRetrievingCloudData) return;
+    int i = 0;
+    bool b = true;
+    List<String> tempStringList = [];
+    List<Password> tempPasswordList = [];
+    while (b)
+      try {
+        tempStringList.add(dataSnapshot.value[i]);
+        tempPasswordList.add(Password.fromJson(dataSnapshot.value[i]));
+        i++;
+      } catch (e) {
+        b = false;
+      }
+    Prefs.preferences.setStringList('passwords', tempStringList);
+    Values.passwords = tempPasswordList;
+    await FirebaseService.masterPasswordRef.once().then((snapshot) =>
+        Prefs.preferences.setString(
+            'encrypted_master_password', snapshot.value.toString().trim()));
+  }
+
   static Future<String> storedMasterPassword() async {
     String s;
     await masterPasswordRef
@@ -123,5 +145,15 @@ class FirebaseService {
   static Future<void> deleteOnlineData() async {
     if (generalUserRef == null) _initializeReferences();
     await generalUserRef.set(null);
+  }
+
+  static Future<void> saveData() async {
+    await savePasswords(Prefs.passwords);
+    await saveSettings();
+  }
+
+  static Future<void> loadData() async {
+    await retrievePasswords();
+    await loadSettings();
   }
 }

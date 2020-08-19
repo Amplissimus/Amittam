@@ -19,6 +19,33 @@ class Prefs {
 
   static bool get firstLogin => getBool('first_login', true);
 
+  static set useSystemTheme(bool b) {
+    preferences.setBool('use_system_theme', b);
+    if (b)
+      useDarkTheme = MediaQueryData.fromWindow(WidgetsBinding.instance.window)
+              .platformBrightness ==
+          Brightness.dark;
+    FirebaseService.saveSettings();
+  }
+
+  static bool get useSystemTheme => getBool('use_system_theme', true);
+
+  static set useDarkTheme(bool b) {
+    preferences.setBool('use_dark_theme', b);
+    FirebaseService.saveSettings();
+  }
+
+  static bool get useDarkTheme {
+    if(useSystemTheme) return MediaQueryData.fromWindow(WidgetsBinding.instance.window)
+        .platformBrightness ==
+        Brightness.dark;
+    else return getBool(
+        'use_dark_theme',
+        MediaQueryData.fromWindow(WidgetsBinding.instance.window)
+                .platformBrightness ==
+            Brightness.dark);
+  }
+
   static set fastLogin(bool b) {
     preferences.setBool('fast_login', b);
     FirebaseService.saveSettings();
@@ -41,7 +68,7 @@ class Prefs {
 
   static set lang(Lang l) {
     preferences.setString('saved_lang', EnumToString.parse(l));
-    if(FirebaseService.isSignedIn) FirebaseService.saveSettings();
+    if (FirebaseService.isSignedIn) FirebaseService.saveSettings();
   }
 
   static void setMasterPassword(String password) {

@@ -2,7 +2,7 @@ import 'package:Amittam/src/libs/animationlib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/language.dart';
-import 'package:Amittam/src/objects/password.dart';
+import 'package:Amittam/src/screens/home.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:Amittam/main.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     masterPWTextFieldController.text = '';
-    Values.afterBrightnessUpdate = () => setState(() {});
     super.initState();
     masterPwTextFieldFocusNode.requestFocus();
   }
@@ -33,13 +32,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColors.colorBackground,
       appBar: StandardAppBar(title: Strings.appTitle),
       body: InkWell(
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          color: Colors.transparent,
           margin: EdgeInsets.all(16),
           child: Center(
             child: Column(
@@ -53,10 +50,8 @@ class _LoginPageState extends State<LoginPage> {
                     focusColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     icon: masterPWTextFieldInputHidden
-                        ? Icon(Icons.visibility,
-                            color: CustomColors.colorForeground)
-                        : Icon(Icons.visibility_off,
-                            color: CustomColors.colorForeground),
+                        ? Icon(Icons.visibility)
+                        : Icon(Icons.visibility_off),
                     onPressed: () => setState(() =>
                         masterPWTextFieldInputHidden =
                             !masterPWTextFieldInputHidden),
@@ -80,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                       return;
                     } else if (Prefs.masterPasswordIsValid(text)) {
                       Values.passwords = Prefs.passwords;
-                      Animations.pushReplacement(context, MainApp());
+                      Animations.pushReplacement(context, HomePage());
                     }
                   },
                 ),
@@ -95,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
         focusColor: Colors.transparent,
         onTap: () => FocusScope.of(context).unfocus(),
       ),
-      floatingActionButton: ExtendedFab(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           String text = masterPWTextFieldController.text.trim();
           if (!Prefs.masterPasswordIsValid(text))
@@ -103,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                 masterPWTextFieldErrorString = currentLang.enteredPWIsWrong);
           else {
             Values.passwords = Prefs.passwords;
-            Animations.pushReplacement(context, MainApp());
+            Animations.pushReplacement(context, HomePage());
           }
         },
         icon: Icon(MdiIcons.login),

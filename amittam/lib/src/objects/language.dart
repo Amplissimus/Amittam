@@ -7,7 +7,7 @@ import 'langs/german.dart';
 abstract class Language {
   String get appTitle => 'Amittam';
 
-  String get versionString => '1.2.0';
+  String get versionString => '1.2.3';
 
   String get nativeName;
 
@@ -114,6 +114,22 @@ abstract class Language {
   String get noResults;
 
   String get wifi;
+
+  String get confirmGoogleLogout;
+
+  String get confirmGoogleLogoutDesc;
+
+  String get confirmFirstGoogleLogin;
+
+  String get confirmFirstGoogleLoginDesc;
+
+  String get howWeUseYourData;
+
+  String get howWeUseYourDataDesc;
+
+  String get useSystemTheme;
+
+  String get useDarkTheme;
 
   String deleteSelectedPasswordsWarning(bool multiple);
 

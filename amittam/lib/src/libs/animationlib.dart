@@ -5,7 +5,6 @@ class Animations {
   static void push(BuildContext context, Object newScreen,
       {Duration duration}) {
     if (duration == null) duration = Duration(milliseconds: 350);
-    Values.afterBrightnessUpdate = null;
     Navigator.of(context).push(
       PageRouteBuilder(
         transitionDuration: duration,
@@ -40,6 +39,6 @@ class Animations {
   }
 }
 
-void animateToPage(int page, PageController pageController) =>
-    pageController.animateToPage(page,
+Future<void> animateToPage(int page, PageController pageController) async =>
+    await pageController.animateToPage(page,
         duration: Duration(milliseconds: 600), curve: Curves.easeOutCirc);

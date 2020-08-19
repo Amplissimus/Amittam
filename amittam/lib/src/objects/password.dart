@@ -210,25 +210,4 @@ String expandStringTo32Characters(String string) {
   return tempString.replaceRange(31, tempString.length - 1, '');
 }
 
-Future<void> getPasswordsFromFirebaseEventSnapshot(
-    DataSnapshot dataSnapshot) async {
-  if (!Prefs.allowRetrievingCloudData) return;
-  int i = 0;
-  bool b = true;
-  List<String> tempStringList = [];
-  List<Password> tempPasswordList = [];
-  while (b)
-    try {
-      tempStringList.add(dataSnapshot.value[i]);
-      tempPasswordList.add(Password.fromJson(dataSnapshot.value[i]));
-      i++;
-    } catch (e) {
-      b = false;
-    }
-  Prefs.preferences.setStringList('passwords', tempStringList);
-  Values.passwords = tempPasswordList;
-  await FirebaseService.masterPasswordRef.once().then((snapshot) =>
-      Prefs.preferences.setString(
-          'encrypted_master_password', snapshot.value.toString().trim()));
-  if (Values.afterBrightnessUpdate != null) Values.afterBrightnessUpdate();
-}
+

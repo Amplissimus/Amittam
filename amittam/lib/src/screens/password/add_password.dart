@@ -69,7 +69,6 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
     passwordStrengthColor = Colors.grey;
     passwordTextFieldInputHidden = true;
     currentPWType = PasswordType.onlineAccount;
-    Values.afterBrightnessUpdate = rebuild;
     updateUsernameText();
     super.initState();
   }
@@ -83,14 +82,10 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
         return Future(() => false);
       },
       child: Scaffold(
-        backgroundColor: CustomColors.colorBackground,
         appBar: StandardAppBar(
           title: currentLang.addPassword,
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: CustomColors.colorForeground,
-            ),
+            icon: Icon(Icons.arrow_back),
             onPressed: () => {widget.onPop(), FocusScope.of(context).unfocus()},
           ),
         ),
@@ -99,7 +94,6 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
           child: Container(
             height: double.infinity,
             width: double.infinity,
-            color: Colors.transparent,
             margin: EdgeInsets.all(16),
             child: SingleChildScrollView(
               child: Column(
@@ -109,14 +103,16 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
                   StandardDropdownButton(
                     value: currentPWType,
                     items: PasswordType.values
-                        .map<DropdownMenuItem<PasswordType>>((PasswordType value) => DropdownMenuItem<PasswordType>(
-                        value: value,
-                        child: StandardText(
-                          currentLang.pwTypeToString(value),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    ).toList(),
+                        .map<DropdownMenuItem<PasswordType>>(
+                            (PasswordType value) =>
+                                DropdownMenuItem<PasswordType>(
+                                  value: value,
+                                  child: StandardText(
+                                    currentLang.pwTypeToString(value),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ))
+                        .toList(),
                     onChanged: (value) {
                       currentPWType = value;
                       updateUsernameText();
@@ -158,10 +154,8 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
                       focusColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       icon: passwordTextFieldInputHidden
-                          ? Icon(Icons.visibility,
-                              color: CustomColors.colorForeground)
-                          : Icon(Icons.visibility_off,
-                              color: CustomColors.colorForeground),
+                          ? Icon(Icons.visibility)
+                          : Icon(Icons.visibility_off),
                       onPressed: () => setState(() =>
                           passwordTextFieldInputHidden =
                               !passwordTextFieldInputHidden),
@@ -215,7 +209,7 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
             if (!currentFocus.hasPrimaryFocus) currentFocus.unfocus();
           },
         ),
-        floatingActionButton: ExtendedFab(
+        floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             bool processWillCancel = false;
             if (passwordTextFieldController.text.trim().isEmpty) {

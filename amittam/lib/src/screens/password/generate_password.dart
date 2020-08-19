@@ -24,8 +24,8 @@ class _GeneratePasswordPageState extends State<GeneratePasswordPage> {
   String currentGenPassword = '0';
   double pwTextSize = 23;
 
-  bool usingSpecialCharacters = false;
-  bool usingNumbers = false;
+  bool usingSpecialCharacters = true;
+  bool usingNumbers = true;
 
   void updatePwTextSize() {
     if (currentSliderValue < 9)
@@ -151,19 +151,14 @@ class _GeneratePasswordPageState extends State<GeneratePasswordPage> {
   @override
   Widget build(BuildContext context) {
     if (currentGenPassword == '0') regenPassword();
-    Values.afterBrightnessUpdate = () => setState(() {});
     return WillPopScope(
       onWillPop: widget.onPop,
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: CustomColors.colorBackground,
         appBar: StandardAppBar(
           title: currentLang.generatePassword,
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-              color: CustomColors.colorForeground,
-            ),
+            icon: Icon(Icons.arrow_back),
             onPressed: widget.onPop,
           ),
         ),
@@ -175,14 +170,8 @@ class _GeneratePasswordPageState extends State<GeneratePasswordPage> {
               Container(
                 height: 40,
                 child: Center(
-                  child: Text(
-                    currentGenPassword,
-                    style: TextStyle(
-                      color: CustomColors.colorForeground,
-                      fontSize: pwTextSize,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: StandardText(currentGenPassword,
+                      fontSize: pwTextSize, textAlign: TextAlign.center),
                 ),
               ),
               StandardDivider(height: null),
@@ -200,6 +189,7 @@ class _GeneratePasswordPageState extends State<GeneratePasswordPage> {
               ),
               Divider(color: CustomColors.colorForeground),
               SwitchWithText(
+                context: context,
                 text: currentLang.useNumbers,
                 value: usingNumbers,
                 onChanged: (value) {
@@ -210,6 +200,7 @@ class _GeneratePasswordPageState extends State<GeneratePasswordPage> {
                 },
               ),
               SwitchWithText(
+                context: context,
                 text: currentLang.useSpecialChars,
                 value: usingSpecialCharacters,
                 onChanged: (value) {
@@ -220,24 +211,20 @@ class _GeneratePasswordPageState extends State<GeneratePasswordPage> {
                 },
               ),
               StandardDivider(height: null),
-              Card(
-                color: CustomColors.lightBackground,
-                child: ListTile(
-                  leading: Icon(MdiIcons.contentCopy, color: Colors.green),
-                  title: StandardText(currentLang.copyPWToClipboard),
-                  onTap: () {
-                    Clipboard.setData(ClipboardData(text: currentGenPassword));
-                    scaffoldKey.currentState?.showSnackBar(
-                      SnackBar(
-                        backgroundColor: CustomColors.colorBackground,
-                        content: StandardText(
-                          currentLang.copiedPWToClipboard,
-                          textAlign: TextAlign.center,
-                        ),
+              StandardButton(
+                iconData: MdiIcons.contentCopy,
+                text: currentLang.copyPWToClipboard,
+                onTap: () {
+                  Clipboard.setData(ClipboardData(text: currentGenPassword));
+                  scaffoldKey.currentState?.showSnackBar(
+                    SnackBar(
+                      content: StandardText(
+                        currentLang.copiedPWToClipboard,
+                        textAlign: TextAlign.center,
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ],
           ),
