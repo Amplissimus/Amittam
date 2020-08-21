@@ -1,4 +1,5 @@
 import 'package:Amittam/src/libs/animationlib.dart';
+import 'package:Amittam/src/libs/encryption_library.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/language.dart';
@@ -73,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                     String text = masterPWTextFieldController.text.trim();
                     if (estimatePasswordStrength(text) < 0.3) {
                       return;
-                    } else if (Prefs.masterPasswordIsValid(text)) {
+                    } else if (EncryptionService.masterPasswordIsValid(text)) {
                       Values.passwords = Prefs.passwords;
                       Animations.pushReplacement(context, HomePage());
                     }
@@ -93,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           String text = masterPWTextFieldController.text.trim();
-          if (!Prefs.masterPasswordIsValid(text))
+          if (!EncryptionService.masterPasswordIsValid(text))
             setState(() =>
                 masterPWTextFieldErrorString = currentLang.enteredPWIsWrong);
           else {

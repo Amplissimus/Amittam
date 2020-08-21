@@ -20,6 +20,7 @@ class SplashScreenPage extends StatefulWidget {
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
   bool isDarkMode = false;
+
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
@@ -30,14 +31,15 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     Prefs.initialize().then((value) {
       setState(() => isDarkMode = Prefs.useDarkTheme);
       Future.delayed(Duration(milliseconds: 1500), () async {
-        Provider.of<ThemeChanger>(context)
-            .setTheme(Prefs.useDarkTheme ? Themes.darkTheme : Themes.brightTheme);
+        Provider.of<ThemeChanger>(context).setTheme(
+            Prefs.useDarkTheme ? Themes.darkTheme : Themes.brightTheme);
         await FirebaseService.initialize();
+        print(await internetConnectionAvailable());
         Animations.pushReplacement(
           context,
           (Prefs.firstLogin ||
-              Prefs.preferences.getString('encrypted_master_password') ==
-                  null)
+                  Prefs.preferences.getString('encrypted_master_password') ==
+                      null)
               ? FirstLoginPage()
               : LoginPage(),
         );
@@ -63,7 +65,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       ),
       bottomSheet: LinearProgressIndicator(
         backgroundColor: Colors.grey,
-        valueColor: AlwaysStoppedAnimation<Color>(CustomColors.colorForeground),
+        valueColor: AlwaysStoppedAnimation<Color>(
+            isDarkMode ? Colors.white : Colors.black),
       ),
     );
   }

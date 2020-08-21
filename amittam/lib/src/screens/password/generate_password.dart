@@ -187,7 +187,7 @@ class _GeneratePasswordPageState extends State<GeneratePasswordPage> {
                 divisions: 31,
                 label: '${currentSliderValue.toInt()}',
               ),
-              Divider(color: CustomColors.colorForeground),
+              Divider(),
               SwitchWithText(
                 context: context,
                 text: currentLang.useNumbers,

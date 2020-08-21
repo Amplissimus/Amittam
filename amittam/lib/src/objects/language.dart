@@ -131,6 +131,12 @@ abstract class Language {
 
   String get useDarkTheme;
 
+  String get invalidInput;
+
+  String get reallyDeleteAppData;
+
+  String get enterNewMasterPassword;
+
   String deleteSelectedPasswordsWarning(bool multiple);
 
   String firstLoginConfirmPW(String s);

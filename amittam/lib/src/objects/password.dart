@@ -1,13 +1,9 @@
 import 'dart:convert';
 
-import 'package:Amittam/src/libs/firebaselib.dart';
+import 'package:Amittam/src/libs/encryption_library.dart';
 import 'package:Amittam/src/libs/lib.dart';
-import 'package:Amittam/src/libs/prefslib.dart';
-import 'package:Amittam/src/objects/displayable_password.dart';
-import 'package:Amittam/src/values.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as crypt;
 
 class Password {
@@ -18,21 +14,13 @@ class Password {
     String notes = '',
     this.passwordType,
   }) {
-    if (key == null)
+    if (EncryptionService.keys.isEmpty)
       throw 'Masterpassword not defined! Password could not be initialized!';
     this.password = password;
     this.platform = platform;
-    this.notes = notes;
+    this.notes = notes == null ? '' : notes;
     this.username = username;
   }
-
-  static var key;
-
-  static void updateKey(String s) =>
-      key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
-
-  static set masterPassword(String s) =>
-      Password.key = crypt.Key.fromUtf8(expandStringTo32Characters(s));
 
   PasswordType passwordType;
 
@@ -41,62 +29,32 @@ class Password {
   String encryptedNotes = '';
   String encryptedPassword = '';
 
-  set platform(String s) => encryptedPlatform = encryptWithMasterPWToBase64(s);
+  set platform(String s) =>
+      encryptedPlatform = EncryptionService.encryptToBase64(
+          s, EncryptionService.getEncrypterFromKeys());
 
-  String get platform => decryptWithMasterPWFromBase64(encryptedPlatform);
+  String get platform => EncryptionService.decryptFromBase64(
+      encryptedPlatform, EncryptionService.getEncrypterFromKeys());
 
-  set username(String s) => encryptedUsername = encryptWithMasterPWToBase64(s);
+  set username(String s) =>
+      encryptedUsername = EncryptionService.encryptToBase64(
+          s, EncryptionService.getEncrypterFromKeys());
 
-  String get username => decryptWithMasterPWFromBase64(encryptedUsername);
+  String get username => EncryptionService.decryptFromBase64(
+      encryptedUsername, EncryptionService.getEncrypterFromKeys());
 
-  set notes(String s) => encryptedNotes = encryptWithMasterPWToBase64(s);
+  set notes(String s) => encryptedNotes = EncryptionService.encryptToBase64(
+      s, EncryptionService.getEncrypterFromKeys());
 
-  String get notes => decryptWithMasterPWFromBase64(encryptedNotes);
+  String get notes => EncryptionService.decryptFromBase64(
+      encryptedNotes, EncryptionService.getEncrypterFromKeys());
 
-  set password(String s) => encryptedPassword = encryptWithMasterPWToBase64(s);
+  set password(String s) =>
+      encryptedPassword = EncryptionService.encryptToBase64(
+          s, EncryptionService.getEncrypterFromKeys());
 
-  String get password => decryptWithMasterPWFromBase64(encryptedPassword);
-
-  String encryptWithMasterPWToBase64(String decrypted) {
-    if (decrypted.isEmpty) return '';
-    try {
-      return crypt.Encrypter(crypt.AES(key))
-          .encrypt(decrypted, iv: crypt.IV.fromLength(16))
-          .base64;
-    } catch (e) {
-      throw 'Incorrect data encryption behavior!';
-    }
-  }
-
-  String decryptWithMasterPWFromBase64(String encrypted) {
-    if (encrypted.isEmpty) return '';
-    try {
-      return crypt.Encrypter(crypt.AES(key)).decrypt(
-          crypt.Encrypted.fromBase64(encrypted),
-          iv: crypt.IV.fromLength(16));
-    } catch (e) {
-      throw 'Incorrect Masterpassword or incorrect data decryption behavior!';
-    }
-  }
-
-  Password.fromMap(Map<String, dynamic> json)
-      : encryptedPlatform = json['encryptedPlatform'],
-        encryptedUsername = json['encryptedUsername'],
-        encryptedNotes = json['encryptedNotes'],
-        encryptedPassword = json['encryptedPassword'],
-        passwordType =
-            EnumToString.fromString(PasswordType.values, json['passwordType']);
-
-  factory Password.fromJson(String jsonString) =>
-      Password.fromMap(json.decode(jsonString));
-
-  Password.fromSnapshot(DataSnapshot snapshot)
-      : encryptedPlatform = snapshot.value['encryptedPlatform'],
-        encryptedUsername = snapshot.value['encryptedUsername'],
-        encryptedNotes = snapshot.value['encryptedNotes'],
-        encryptedPassword = snapshot.value['encryptedPassword'],
-        passwordType = EnumToString.fromString(
-            PasswordType.values, snapshot.value['encryptedPlatform']);
+  String get password => EncryptionService.decryptFromBase64(
+      encryptedPassword, EncryptionService.getEncrypterFromKeys());
 
   Map<String, dynamic> toMap() => {
         'encryptedPlatform': this.encryptedPlatform,
@@ -106,8 +64,6 @@ class Password {
         'passwordType': EnumToString.parse(this.passwordType),
       };
 
-  String toJson() => json.encode(toMap());
-
   Map<String, dynamic> toDecryptedMap() => {
         'platform': this.platform,
         'username': this.username,
@@ -115,6 +71,21 @@ class Password {
         'notes': this.notes,
         'passwordType': EnumToString.parse(this.passwordType),
       };
+
+  String toJson() => json.encode(toMap());
+
+  String toEncryptedJson() => EncryptionService.encryptToBase64(
+      toJson(), EncryptionService.getEncrypterFromKeys());
+
+  String toDecryptedJson() => json.encode(toDecryptedMap());
+
+  Password.fromMap(Map<String, dynamic> json)
+      : encryptedPlatform = json['encryptedPlatform'],
+        encryptedUsername = json['encryptedUsername'],
+        encryptedNotes = json['encryptedNotes'],
+        encryptedPassword = json['encryptedPassword'],
+        passwordType =
+            EnumToString.fromString(PasswordType.values, json['passwordType']);
 
   factory Password.fromDecryptedMap(Map<String, dynamic> json) => Password(
         json['password'],
@@ -125,20 +96,6 @@ class Password {
             EnumToString.fromString(PasswordType.values, json['passwordType']),
       );
 
-  factory Password.fromDecryptedJson(String jsonString) =>
-      Password.fromDecryptedMap(json.decode(jsonString));
-
-  String toDecryptedJson() => json.encode(toDecryptedMap());
-
-  static String exportPasswordsToEncryptedString(List<Password> passwords) {
-    List<String> tempStringList = [];
-    for (Password password in passwords) tempStringList.add(password.toJson());
-    String jsonDecrypted = jsonEncode(tempStringList);
-    return crypt.Encrypter(crypt.AES(Password.key))
-        .encrypt(jsonDecrypted, iv: crypt.IV.fromLength(16))
-        .base64;
-  }
-
   DecryptedPassword get asDecryptedPassword => DecryptedPassword(
         platform: this.platform,
         username: this.username,
@@ -146,6 +103,24 @@ class Password {
         notes: this.notes,
         passwordType: this.passwordType,
       );
+
+  Password.fromSnapshot(DataSnapshot snapshot)
+      : encryptedPlatform = snapshot.value['encryptedPlatform'],
+        encryptedUsername = snapshot.value['encryptedUsername'],
+        encryptedNotes = snapshot.value['encryptedNotes'],
+        encryptedPassword = snapshot.value['encryptedPassword'],
+        passwordType = EnumToString.fromString(
+            PasswordType.values, snapshot.value['encryptedPlatform']);
+
+  factory Password.fromJson(String jsonString) =>
+      Password.fromMap(json.decode(jsonString));
+
+  factory Password.fromEncryptedJson(String s) =>
+      Password.fromMap(json.decode(EncryptionService.decryptFromBase64(
+          s, EncryptionService.getEncrypterFromKeys())));
+
+  factory Password.fromDecryptedJson(String jsonString) =>
+      Password.fromDecryptedMap(json.decode(jsonString));
 
   @override
   String toString() =>
@@ -198,16 +173,3 @@ class DecryptedPassword {
   String toString() =>
       'DecryptedPassword{platform: $platform, username: $username, password: $password, notes: $notes, passwordType: $passwordType}';
 }
-
-String expandStringTo32Characters(String string) {
-  String tempString = string;
-  int i = 0;
-  while (tempString.length < 32) {
-    i++;
-    tempString = '$tempString${string.substring(i)}';
-    if (i >= string.length - 1) i = 0;
-  }
-  return tempString.replaceRange(31, tempString.length - 1, '');
-}
-
-

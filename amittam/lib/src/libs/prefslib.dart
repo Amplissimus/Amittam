@@ -1,4 +1,6 @@
+import 'package:Amittam/src/libs/encryption_library.dart';
 import 'package:Amittam/src/libs/firebaselib.dart';
+import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/values.dart';
@@ -25,25 +27,27 @@ class Prefs {
       useDarkTheme = MediaQueryData.fromWindow(WidgetsBinding.instance.window)
               .platformBrightness ==
           Brightness.dark;
-    FirebaseService.saveSettings();
+    if (FirebaseService.isSignedIn) FirebaseService.saveSettings();
   }
 
   static bool get useSystemTheme => getBool('use_system_theme', true);
 
   static set useDarkTheme(bool b) {
     preferences.setBool('use_dark_theme', b);
-    FirebaseService.saveSettings();
+    if (FirebaseService.isSignedIn) FirebaseService.saveSettings();
   }
 
   static bool get useDarkTheme {
-    if(useSystemTheme) return MediaQueryData.fromWindow(WidgetsBinding.instance.window)
-        .platformBrightness ==
-        Brightness.dark;
-    else return getBool(
-        'use_dark_theme',
-        MediaQueryData.fromWindow(WidgetsBinding.instance.window)
-                .platformBrightness ==
-            Brightness.dark);
+    if (useSystemTheme)
+      return MediaQueryData.fromWindow(WidgetsBinding.instance.window)
+              .platformBrightness ==
+          Brightness.dark;
+    else
+      return getBool(
+          'use_dark_theme',
+          MediaQueryData.fromWindow(WidgetsBinding.instance.window)
+                  .platformBrightness ==
+              Brightness.dark);
   }
 
   static set fastLogin(bool b) {
@@ -71,47 +75,19 @@ class Prefs {
     if (FirebaseService.isSignedIn) FirebaseService.saveSettings();
   }
 
-  static void setMasterPassword(String password) {
-    Password.updateKey(password);
-    String encryptedPassword = crypt.Encrypter(crypt.AES(Password.key))
-        .encrypt(password, iv: crypt.IV.fromLength(16))
-        .base64;
-    preferences.setString('encrypted_master_password', encryptedPassword);
-    print('encryptedPassword: $encryptedPassword');
-  }
-
-  static bool masterPasswordIsValid(String password) {
-    try {
-      Password.updateKey(password);
-      if (crypt.Encrypter(crypt.AES(Password.key))
-              .decrypt(
-                  crypt.Encrypted.fromBase64(
-                      preferences.getString('encrypted_master_password')),
-                  iv: crypt.IV.fromLength(16))
-              .trim() !=
-          password) {
-        Password.key = null;
-        return false;
-      }
-      return true;
-    } catch (e) {
-      Password.key = null;
-      return false;
-    }
-  }
-
   static List<Password> get passwords {
     List<Password> tempPasswords = [];
     List<String> tempStringList = getStringList('passwords', []);
     for (String tempString in tempStringList)
-      tempPasswords.add(Password.fromJson(tempString));
+      tempPasswords.add(Password.fromEncryptedJson(tempString));
     return tempPasswords;
   }
 
   static set passwords(List<Password> passwords) {
     if (FirebaseService.isSignedIn) FirebaseService.savePasswords(passwords);
     List<String> tempStringList = [];
-    for (Password password in passwords) tempStringList.add(password.toJson());
+    for (Password password in passwords)
+      tempStringList.add(password.toEncryptedJson());
     preferences.setStringList('passwords', tempStringList);
     Values.passwords = passwords;
   }

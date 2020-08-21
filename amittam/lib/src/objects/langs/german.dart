@@ -34,7 +34,7 @@ class German extends Language {
   String get generatePassword => 'Passwort generieren';
 
   @override
-  String get logOut => 'Ausloggen';
+  String get logOut => 'Abmelden';
 
   @override
   String get noPasswordsRegistered => 'Keine Passwörter registriert!';
@@ -129,7 +129,7 @@ class German extends Language {
 
   @override
   String get proceedByUsingOnlineDataDesc =>
-      'Mit dem Herunterladen der online gespeicherten App-Daten musst du das online gespeicherte Hauptzugangspasswort eingeben, wenn dies nicht dem lokal gespeicherten gleicht. Alle derzeit lokal gespeicherten App-Daten gehen dabei verloren!';
+      'Mit dem Herunterladen der online gespeicherten App-Daten musst du das derzeit online gespeicherte Hauptzugangspasswort eingeben. Alle derzeit lokal gespeicherten App-Daten gehen dabei verloren!';
 
   @override
   String get useLocalStoredData => 'Lokal gespeicherte Daten verwenden';
@@ -183,13 +183,22 @@ class German extends Language {
   String get howWeUseYourData => 'Was wir mit deinen Daten machen';
 
   @override
-  String get howWeUseYourDataDesc => 'Deine eingetragenen Passwörter werden mithilfe des Hauptzugangspassworts verschlüsselt abgespeichert. Solange du nicht mit deinem Google-Konto in unserer App angemeldet bist, bleiben alle manuell eingatragenen App-Daten auf deinem Gerät. Falls du mit deinem Google-Konto inunserer App angemeldet bist, werden deine Daten mit unserer Datenbank synchronisiert.\nWir können dann das, mithilfe des Hauptzugangspassworts verschlüsselte, Haupzugangspasswort einsehen. Für uns sieht ein von dir gespeichertes Passwort so aus: "{\"encryptedPlatform\":\"94iOJZJO4G6p4zO/9K4XQQ==\",\"encryptedUsername\":\"+IaNLpEg4W+o4jK+9a8WQA==\",\"encryptedNotes\":\"\",\"encryptedPassword\":\"5IKSNvIn5miv5TW58qgRRw==\",\"passwordType\":\"onlineAccount\"}".\nAußerdem können wir, falls du mit deinem Google-Kontoeingeloggt bist, deine Einstellungen voll und ganz einsehen, da diese, für ein besseres Nutzererlebnis, nicht verschlüsselt abgespeichert werden. Du kannst auch jederzeit die online gespeicherten Daten löschen lassen, indem du, wenn du eingeloggt bist, in den Einstellungen unter "App-Daten löschen" die dort angeführten Schritte befolgst. Wir erheben außerdem Analysedaten über App-Abstürze, Performance, Nutzerbindung, und Nutzerherkunft. Dabei bleiben deine manuell eingetragenen Daten stets sicher, solange nur du dein Hauptzugangspasswort kennst.';
+  String get howWeUseYourDataDesc => 'Deine eingetragenen Passwörter werden mithilfe des Hauptzugangspassworts verschlüsselt abgespeichert. Solange du nicht mit deinem Google-Konto in unserer App angemeldet bist, bleiben alle manuell eingatragenen App-Daten auf deinem Gerät. Falls du mit deinem Google-Konto inunserer App angemeldet bist, werden deine Daten mit unserer Datenbank synchronisiert.\nWir können dann das, mithilfe des Hauptzugangspassworts verschlüsselte, Haupzugangspasswort einsehen. Für uns und potenzielle Hacker sieht ein von dir gespeichertes Passwort mit Plattform, Benutzernamen und gegebenenfalls Notizen so aus: "okSNZuS1k6S1SIEyiGxA7pFn3sXOWm5/uRq+OzdZZSipU9eVqTX62M0Fr1gzlf9SnqhCb2U8tvKurGv/iyhO5zFduAqEEbsdWNVNs9V865zaxZSWwBOoilbqbfWUmwEab67ORboGOqU3cp9iU9GoGUyJ7ImNg5pzHuJDR3tzqy1/KC+8I8G+7KAkQJn29IjoFkN0dM9134C5G0CEAYgGRcJONbJW0439mbGx63//tbdnJmNDZD81D/ehAoWvtmBEYL2z7Si2bfcOy/wckVx1yNHnrGoz4mp0qRzOjNumQfF5x0xoj/bivArxr2wkxEgSD0WUdkL1kD98IsYjxFFfZlX3NpPbZPT+uHKcxCCXlxT0UdUCx04BOJES1ffkFp6d1udCVYWXnKwwzk4feiQkpy4OTS7FAyq31fwAFmpGzau6qhujW3/dbtejspUNIQS5zPm7QaJssyKtWMto4f3/cW+nJGmqiBQymf+OATbBdYQ6OTQUXMSrGXZ95W/rvppPw0qNY4BD/olh87yt0eXoS2rKKgDEk0+hhV9jLNlb23TzToTS5/vqXYTarByfWYkC6vOP8mIHzwda9ofogbrnlKAeE2B5PWG1Nfb5fy5UGD0ER+cuH3TKUtlsGQETPTpDRzxMTLZ/cRc9i5BmsB7uh6hTPK6YyP86zFd6rgof3LkWi1DBkS07ZNRHr0m/N8baQT+wb5+eSMN9axTyZfKa2boGHt2HWUidiUWZk8Bw3Z8IP2baJvzNOS70DETPfeFhTlP7Uspq04Z2tLmpYjqi1A==". Deine Passwörter werden mithilfe deines Hauptzugangspassworts und zwei zufällig generierten Schlüsseln verschlüsselt.\nAußerdem können wir, falls du mit deinem Google-Konto angemeldet bist, deine Einstellungen voll und ganz einsehen, da diese, für ein besseres Nutzererlebnis, nicht verschlüsselt abgespeichert werden. Du kannst auch jederzeit die online gespeicherten Daten löschen lassen, indem du, wenn du eingeloggt bist, in den Einstellungen unter "App-Daten löschen" die dort angeführten Schritte befolgst. Wir erheben außerdem Analysedaten über App-Abstürze, Performance, Nutzerbindung, und Nutzerherkunft. Dabei bleiben deine manuell eingetragenen Daten stets sicher, solange nur du dein Hauptzugangspasswort kennst.';
 
   @override
   String get useDarkTheme => 'Dunkles Thema verwenden';
 
   @override
   String get useSystemTheme => 'Systemthema verwenden';
+
+  @override
+  String get invalidInput => 'Ungültige Eingabe!';
+
+  @override
+  String get enterNewMasterPassword => 'Neues Hauptzugangspasswort eingeben';
+
+  @override
+  String get reallyDeleteAppData => FirebaseService.isSignedIn ? 'Willst du wirklich die gesamten online und lokal gespeicherten App-Daten löschen?' : 'Willst du wirklich die gesamten lokal gespeicherten App-Daten löschen?';
 
   @override
   String pwTypeToString(PasswordType pwType) {

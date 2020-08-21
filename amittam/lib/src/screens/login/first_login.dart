@@ -1,4 +1,5 @@
 import 'package:Amittam/src/libs/animationlib.dart';
+import 'package:Amittam/src/libs/encryption_library.dart';
 import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
@@ -13,6 +14,10 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:password_strength/password_strength.dart';
 
 class FirstLoginPage extends StatefulWidget {
+  FirstLoginPage({this.onPop});
+
+  final void Function() onPop;
+
   @override
   _FirstLoginPageState createState() => _FirstLoginPageState();
 }
@@ -21,13 +26,29 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
   Color passwordStrengthColor = Colors.grey;
   GlobalKey<FormFieldState> masterPWTextFieldKey = GlobalKey();
   TextEditingController masterPWTextFieldController = TextEditingController();
+  TextEditingController currentMasterPWTextFieldController =
+      TextEditingController();
   String masterPWTextFieldErrorString;
   bool masterPWTextFieldInputHidden = false;
 
   @override
+  void initState() {
+    currentMasterPWTextFieldController.text = '';
+    masterPWTextFieldController.text = '';
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: StandardAppBar(title: Strings.appTitle),
+      appBar: StandardAppBar(
+        title: widget.onPop != null
+            ? currentLang.editMasterPassword
+            : currentLang.appTitle,
+        leading: widget.onPop != null
+            ? IconButton(icon: Icon(Icons.arrow_back), onPressed: widget.onPop)
+            : null,
+      ),
       body: InkWell(
         child: Container(
           height: double.infinity,
@@ -56,7 +77,9 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
                   errorText: masterPWTextFieldErrorString,
                   controller: masterPWTextFieldController,
                   key: masterPWTextFieldKey,
-                  hint: currentLang.enterMasterPW,
+                  hint: widget.onPop != null
+                      ? currentLang.enterNewMasterPassword
+                      : currentLang.enterMasterPW,
                   onChanged: (textFieldText) {
                     setState(() => masterPWTextFieldErrorString = null);
                     String value = textFieldText.trim();
@@ -109,10 +132,12 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
             content: StandardText(currentLang
                 .firstLoginConfirmPW(masterPWTextFieldController.text.trim())),
             onConfirm: () {
+              print('setting mpw');
               try {
-                Prefs.setMasterPassword(
+                EncryptionService.setMasterPassword(
                     masterPWTextFieldController.text.trim());
               } catch (e) {
+                print('failed!');
                 print(errorString(e));
                 setState(() => masterPWTextFieldErrorString = 'Error!');
                 return;
@@ -124,6 +149,9 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
                 for (DecryptedPassword pw in Values.decryptedPasswords)
                   tempPasswordList.add(pw.asPassword);
                 Prefs.passwords = tempPasswordList;
+                Values.decryptedPasswords = [];
+                if (widget.onPop != null) widget.onPop();
+                return;
               }
               Animations.pushReplacement(context, HomePage());
             },

@@ -1,3 +1,4 @@
+import 'package:Amittam/src/screens/home.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +23,7 @@ class Animations {
 
   static void pushReplacement(BuildContext context, Object newScreen,
       {Duration duration}) {
+    HomePage.updateHomePage = null;
     if (duration == null) duration = Duration(milliseconds: 350);
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(

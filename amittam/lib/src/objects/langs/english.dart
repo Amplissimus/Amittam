@@ -129,7 +129,7 @@ class English extends Language {
 
   @override
   String get proceedByUsingOnlineDataDesc =>
-      'By downloading the online data, you will be logged out, if the previous master password does not match the current one. All current local app data will be deleted!';
+      'By downloading the online data, you will have to enter the current online stored master password. All current local app data will be deleted!';
 
   @override
   String get useLocalStoredData => 'Use local stored data';
@@ -185,13 +185,22 @@ class English extends Language {
   String get howWeUseYourData => 'What we do with your data';
 
   @override
-  String get howWeUseYourDataDesc => 'The registered passwords will be saved after encrypting their important information using your master password. As long as you are not singed into our app using yourGoogle account, all of your manually input data remains only on your device. If you are logged into our app using your Google account, your data will be synchronized with our databases.\nIn this case we can see the encrypted version of your master password. We then can also see your manually input data like this: "{\"encryptedPlatform\":\"94iOJZJO4G6p4zO/9K4XQQ==\",\"encryptedUsername\":\"+IaNLpEg4W+o4jK+9a8WQA==\",\"encryptedNotes\":\"\",\"encryptedPassword\":\"5IKSNvIn5miv5TW58qgRRw==\",\"passwordType\":\"onlineAccount\"}"\nIf you are logged into our app using your Google account, we can also see all of your settings, because the settings are saved without using ecryption for getting a better user experience. You can delete your online and locally saved app data at any time. Just navigate to the settings and click on "Delete app data" and follow the given instructions. We also collect analytical data, such as app crashes, performance, user loyality and user origin. Your manually entered data will always be secure as long as you only know your main access password.';
+  String get howWeUseYourDataDesc => 'The registered passwords will be saved after encrypting their important information using your master password. As long as you are not singed into our app using your Google account, all of your manually input data remains only on your device. If you are logged into our app using your Google account, your data will be synchronized with our databases.\nIn this case we can see the encrypted version of your master password. For us and potential hackers, a password you have saved with platform, user name and, if applicable, notes looks like this: "okSNZuS1k6S1SIEyiGxA7pFn3sXOWm5/uRq+OzdZZSipU9eVqTX62M0Fr1gzlf9SnqhCb2U8tvKurGv/iyhO5zFduAqEEbsdWNVNs9V865zaxZSWwBOoilbqbfWUmwEab67ORboGOqU3cp9iU9GoGUyJ7ImNg5pzHuJDR3tzqy1/KC+8I8G+7KAkQJn29IjoFkN0dM9134C5G0CEAYgGRcJONbJW0439mbGx63//tbdnJmNDZD81D/ehAoWvtmBEYL2z7Si2bfcOy/wckVx1yNHnrGoz4mp0qRzOjNumQfF5x0xoj/bivArxr2wkxEgSD0WUdkL1kD98IsYjxFFfZlX3NpPbZPT+uHKcxCCXlxT0UdUCx04BOJES1ffkFp6d1udCVYWXnKwwzk4feiQkpy4OTS7FAyq31fwAFmpGzau6qhujW3/dbtejspUNIQS5zPm7QaJssyKtWMto4f3/cW+nJGmqiBQymf+OATbBdYQ6OTQUXMSrGXZ95W/rvppPw0qNY4BD/olh87yt0eXoS2rKKgDEk0+hhV9jLNlb23TzToTS5/vqXYTarByfWYkC6vOP8mIHzwda9ofogbrnlKAeE2B5PWG1Nfb5fy5UGD0ER+cuH3TKUtlsGQETPTpDRzxMTLZ/cRc9i5BmsB7uh6hTPK6YyP86zFd6rgof3LkWi1DBkS07ZNRHr0m/N8baQT+wb5+eSMN9axTyZfKa2boGHt2HWUidiUWZk8Bw3Z8IP2baJvzNOS70DETPfeFhTlP7Uspq04Z2tLmpYjqi1A==". It looks like a random String because we encrypt your important information using your master password and two random generated keys.\nIf you are logged into our app using your Google account, we can also see all of your settings, because the settings are saved without using ecryption for getting a better user experience. You can delete your online and locally saved app data at any time. Just navigate to the settings and click on "Delete app data" and follow the given instructions. We also collect analytical data, such as app crashes, performance, user loyality and user origin. Your manually entered data will always be secure as long as you only know your main access password.';
 
   @override
   String get useDarkTheme => 'Use dark theme';
 
   @override
   String get useSystemTheme => 'Use system theme';
+
+  @override
+  String get invalidInput => 'Invalid input!';
+
+  @override
+  String get reallyDeleteAppData => FirebaseService.isSignedIn ? 'Do you really want to delete the entire local and online stored app data?' : 'Do you really want to delete the entire local stored app data?';
+
+  @override
+  String get enterNewMasterPassword => 'Enter new master password';
 
   @override
   String deleteSelectedPasswordsWarning(bool multiple) =>

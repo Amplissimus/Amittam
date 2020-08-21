@@ -1,4 +1,5 @@
 import 'package:Amittam/src/libs/animationlib.dart';
+import 'package:Amittam/src/libs/encryption_library.dart';
 import 'package:Amittam/src/libs/firebaselib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
@@ -58,18 +59,10 @@ class _AfterLoginPageState extends State<AfterLoginPage> {
                         .getString('encrypted_master_password')
                         .trim();
                     Prefs.allowRetrievingCloudData = true;
-                    await FirebaseService.loadData();
-                    if (previousMasterPassword ==
-                            Prefs.preferences
-                                .getString('encrypted_master_password')
-                                .trim() &&
-                        widget.onPop != null)
-                      widget.onPop();
-                    else {
-                      Values.passwords = [];
-                      Password.key = null;
-                      Animations.pushReplacement(context, LoginPage());
-                    }
+                    Values.passwords = [];
+                    EncryptionService.loadRandomKeysFromFirebase();
+                    EncryptionService.updateKeys(null);
+                    Animations.pushReplacement(context, LoginPage());
                   },
                 ),
               ),

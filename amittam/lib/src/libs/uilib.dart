@@ -1,7 +1,6 @@
 import 'package:Amittam/src/objects/language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:provider/provider.dart';
 
 class StandardAppBar extends AppBar {
@@ -160,24 +159,19 @@ class StandardDivider extends Divider {
   StandardDivider({double height = 0}) : super(thickness: 2, height: height);
 }
 
-class StandardSpeedDialChild extends SpeedDialChild {
-  StandardSpeedDialChild({
-    String label,
-    @required Icon icon,
-    void Function() onTap,
-  }) : super(label: label, child: icon, onTap: onTap);
-}
-
-class StandardButton extends Card {
+class StandardButton extends ClipRRect {
   StandardButton(
       {@required IconData iconData,
       void Function() onTap,
       @required String text})
       : super(
-          child: ListTile(
-            leading: Icon(iconData, color: Colors.green),
-            title: StandardText(text),
-            onTap: onTap,
+          borderRadius: BorderRadius.circular(18),
+          child: Card(
+            child: ListTile(
+              leading: Icon(iconData, color: Colors.green),
+              title: StandardText(text),
+              onTap: onTap,
+            ),
           ),
         );
 }
@@ -228,7 +222,6 @@ class MaterialAppWithTheme extends StatelessWidget {
 }
 
 class Themes {
-  var f = ThemeData(primarySwatch: Colors.green);
   static final ThemeData brightTheme = ThemeData.light().copyWith(
     primaryColor: Colors.green,
     cursorColor: Colors.black,
@@ -251,7 +244,7 @@ class Themes {
     ),
     snackBarTheme: SnackBarThemeData(
       contentTextStyle:
-      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       elevation: 0,
       backgroundColor: Colors.black12,
     ),
@@ -277,11 +270,13 @@ class Themes {
           ButtonTextTheme.primary, //  <-- this auto selects the right color
     ),
     sliderTheme: SliderThemeData(
+      valueIndicatorTextStyle:
+          TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       activeTrackColor: Colors.green,
-      inactiveTrackColor: Colors.white12,
-      thumbColor: Colors.black,
+      inactiveTrackColor: Colors.black12,
       inactiveTickMarkColor: Colors.green,
       valueIndicatorColor: Colors.green,
+      thumbColor: Colors.black,
       overlayColor: Colors.black12,
     ),
     iconTheme: IconThemeData(color: Colors.black),
@@ -328,10 +323,13 @@ class Themes {
       backgroundColor: Colors.black12,
     ),
     sliderTheme: SliderThemeData(
+      valueIndicatorTextStyle:
+          TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       activeTrackColor: Colors.green,
       inactiveTrackColor: Colors.white12,
-      thumbColor: Colors.white,
       inactiveTickMarkColor: Colors.green,
+      activeTickMarkColor: Colors.green,
+      thumbColor: Colors.white,
       valueIndicatorColor: Colors.green,
       overlayColor: Colors.white10,
     ),

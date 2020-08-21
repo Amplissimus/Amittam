@@ -9,31 +9,13 @@ import 'objects/langs/german.dart';
 import 'objects/language.dart';
 
 Language getLangByLocaleName() {
+  if(Platform.localeName == null) return English();
   switch (Platform.localeName.split('_')[0]) {
     case 'de':
       return German();
     default:
       return English();
   }
-}
-
-class CustomColors {
-  static bool get isDarkMode => _isDarkMode;
-  static bool _isDarkMode = false;
-
-  static Color get colorForeground => _isDarkMode ? Colors.white : Colors.black;
-
-  static Color get colorBackground => _isDarkMode ? Colors.black : Colors.white;
-
-  static Color get lightBackground => _isDarkMode
-      ? Color.fromRGBO(45, 45, 45, 1)
-      : Color.fromRGBO(220, 220, 220, 1);
-
-  static Color get lightForeground => _isDarkMode
-      ? Color.fromRGBO(220, 220, 220, 1)
-      : Color.fromRGBO(45, 45, 45, 1);
-
-  static void setMode({@required bool darkMode}) => _isDarkMode = darkMode;
 }
 
 class Strings {

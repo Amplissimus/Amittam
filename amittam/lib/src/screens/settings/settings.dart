@@ -5,11 +5,9 @@ import 'package:Amittam/src/libs/uilib.dart';
 import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/screens/login/first_login.dart';
+import 'package:Amittam/src/screens/settings/delete_app_data.dart';
 import 'package:Amittam/src/values.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'package:Amittam/src/screens/settings/after_login.dart';
@@ -25,18 +23,21 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  GlobalKey<FormFieldState> confirmTextFieldKey = GlobalKey();
-  TextEditingController confirmTextFieldController = TextEditingController();
-  GlobalKey<FormFieldState> passwordTextFieldKey = GlobalKey();
-  TextEditingController passwordTextFieldController = TextEditingController();
-
-  String confirmTextFieldErrorText;
-  String passwordTextFieldErrorText;
-
   Lang selectedLang;
 
   var _pageController = PageController();
   var _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Widget _secondPage;
+
+  @override
+  void initState() {
+    _secondPage = AfterLoginPage(() {
+      setState(() {});
+      animateToPage(0, _pageController);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +112,13 @@ class _SettingsPageState extends State<SettingsPage> {
                           onTap: () async {
                             bool hasConfirmed = false;
                             await FirebaseService.signInWithGoogle();
-                            if (await FirebaseService.hasExistingData())
+                            if (await FirebaseService.hasExistingData()) {
+                              setState(() => _secondPage = AfterLoginPage(() {
+                                    setState(() {});
+                                    animateToPage(0, _pageController);
+                                  }));
                               animateToPage(1, _pageController);
-                            else {
+                            } else {
                               await showStandardDialog(
                                 context: context,
                                 title: currentLang.confirmFirstGoogleLogin,
@@ -164,7 +169,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         onConfirm: () {
                           currentLang = langToLanguage(selectedLang);
                           setState(() {});
-                          if (widget.onPop != null) widget.onPop();
                         },
                       );
                     },
@@ -175,7 +179,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     onTap: () {
                       for (Password pw in Prefs.passwords)
                         Values.decryptedPasswords.add(pw.asDecryptedPassword);
-                      Animations.pushReplacement(context, FirstLoginPage());
+                      setState(() => _secondPage = FirstLoginPage(onPop: () {
+                            FocusScope.of(context).unfocus();
+                            setState(() {});
+                            animateToPage(0, _pageController);
+                          }));
+                      animateToPage(1, _pageController);
                     },
                   ),
                   StandardButton(
@@ -196,13 +205,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       context: context,
                       applicationName: currentLang.appTitle,
                       applicationVersion: currentLang.versionString,
-                      applicationIcon: CustomColors.isDarkMode
-                          ? ColorFiltered(
-                              colorFilter: ColorFilter.srgbToLinearGamma(),
-                              child: Image.asset('assets/images/logo.png',
-                                  height: 40),
-                            )
-                          : Image.asset('assets/images/logo.png', height: 40),
+                      applicationIcon:
+                          Image.asset('assets/images/logo.png', height: 40),
                       children: [Text(currentLang.appInfo)],
                     ),
                   ),
@@ -210,100 +214,18 @@ class _SettingsPageState extends State<SettingsPage> {
                     iconData: Icons.delete,
                     text: currentLang.deleteAppData,
                     onTap: () {
-                      confirmTextFieldController.text = '';
-                      passwordTextFieldController.text = '';
-                      confirmTextFieldErrorText = null;
-                      passwordTextFieldErrorText = null;
-                      showStandardDialog(
-                        context: context,
-                        content: StatefulBuilder(
-                          builder: (context, setAlState) {
-                            return InkWell(
-                              onTap: () {
-                                FocusScopeNode currentFocus =
-                                    FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus)
-                                  currentFocus.unfocus();
-                              },
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    StandardText(
-                                      currentLang.resetActionRequest,
-                                      fontSize: 16,
-                                    ),
-                                    Padding(padding: EdgeInsets.all(8)),
-                                    StandardTextFormField(
-                                      hint: currentLang.requestedText,
-                                      controller: confirmTextFieldController,
-                                      key: confirmTextFieldKey,
-                                      errorText: confirmTextFieldErrorText,
-                                      onChanged: (value) {
-                                        setAlState(() =>
-                                            confirmTextFieldErrorText = null);
-                                        if (value.trim().isEmpty)
-                                          setAlState(() =>
-                                              confirmTextFieldErrorText =
-                                                  currentLang.fieldIsEmpty);
-                                      },
-                                    ),
-                                    Padding(padding: EdgeInsets.all(8)),
-                                    StandardTextFormField(
-                                      hint: currentLang.enterMasterPW,
-                                      controller: passwordTextFieldController,
-                                      key: passwordTextFieldKey,
-                                      errorText: passwordTextFieldErrorText,
-                                      onChanged: (value) {
-                                        setAlState(() =>
-                                            passwordTextFieldErrorText = null);
-                                        if (value.trim().isEmpty)
-                                          setAlState(() =>
-                                              passwordTextFieldErrorText =
-                                                  currentLang.fieldIsEmpty);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              hoverColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                            );
-                          },
-                        ),
-                        onConfirm: () async {
-                          if (confirmTextFieldController.text ==
-                                  currentLang.confirm.toUpperCase() &&
-                              Prefs.masterPasswordIsValid(
-                                  passwordTextFieldController.text)) {
-                            await Prefs.preferences.clear();
-                            await FirebaseService.deleteOnlineData();
-                            SystemNavigator.pop();
-                          } else
-                            _scaffoldKey.currentState?.showSnackBar(
-                              SnackBar(
-                                backgroundColor: CustomColors.colorBackground,
-                                content: StandardText(
-                                  'Error!',
-                                  textAlign: TextAlign.center,
-                                  fontColor: Colors.green,
-                                ),
-                              ),
-                            );
-                        },
-                      );
+                      setState(() => _secondPage = DeleteAppDataPage(() {
+                            setState(() {});
+                            animateToPage(0, _pageController);
+                          }));
+                      animateToPage(1, _pageController);
                     },
                   ),
                 ],
               ),
             ),
           ),
-          AfterLoginPage(() {
-            setState(() {});
-            animateToPage(0, _pageController);
-          }),
+          _secondPage
         ],
       ),
     );

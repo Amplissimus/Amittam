@@ -1,4 +1,5 @@
 import 'package:Amittam/src/libs/animationlib.dart';
+import 'package:Amittam/src/libs/encryption_library.dart';
 import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 import 'package:Amittam/src/libs/uilib.dart';
@@ -20,6 +21,8 @@ class HomePage extends StatefulWidget {
 
   @override
   _HomePageState createState() => _HomePageState();
+
+  static void Function() updateHomePage;
 }
 
 class _HomePageState extends State<HomePage> {
@@ -38,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     Values.passwords = Prefs.passwords;
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
+    Values.displayablePasswords = passwordsToDisplayable(Values.passwords);
     rebuild();
   }
 
@@ -49,15 +53,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _secondPage = DisplayPasswordPage(
-      Password(
-        'Dummy',
-        passwordType: PasswordType.emailAccount,
-        platform: 'DummyPlatform',
-        username: 'DummyUsername',
-      ),
-      onPop: () {},
-    );
+    HomePage.updateHomePage = fullyRebuild;
+    _secondPage = Container();
     _topSecondPage = SettingsPage(rebuild);
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
@@ -70,7 +67,6 @@ class _HomePageState extends State<HomePage> {
     print('Building Main Page...');
     Values.passwords.sort(
         (a, b) => a.platform.toLowerCase().compareTo(b.platform.toLowerCase()));
-    Values.displayablePasswords = passwordsToDisplayable(Values.passwords);
     return PageView(
       physics: NeverScrollableScrollPhysics(),
       controller: _verticalPageController,
@@ -113,7 +109,6 @@ class _HomePageState extends State<HomePage> {
                               OutlineInputBorder(borderSide: BorderSide.none),
                         ),
                         onChanged: (value) {
-                          print(value);
                           List<Password> tempPasswords = [];
                           for (var pw in Prefs.passwords)
                             if (pw.platform
@@ -129,8 +124,10 @@ class _HomePageState extends State<HomePage> {
                                     .toLowerCase()
                                     .contains(value.trim().toLowerCase()))
                               tempPasswords.add(pw);
-                          print(tempPasswords);
-                          setState(() => Values.passwords = tempPasswords);
+                          Values.passwords = tempPasswords;
+                          Values.displayablePasswords =
+                              passwordsToDisplayable(Values.passwords);
+                          rebuild();
                         },
                       )
                     : StandardText(Strings.appTitle, fontSize: 25),
@@ -193,7 +190,6 @@ class _HomePageState extends State<HomePage> {
                 },
                 child: Container(
                   color: Colors.transparent,
-                  margin: EdgeInsets.all(16),
                   child: Values.displayablePasswords.isEmpty
                       ? isSearching
                           ? ListTile(
@@ -204,7 +200,7 @@ class _HomePageState extends State<HomePage> {
                                   currentLang.noPasswordsRegistered,
                                   fontSize: 20))
                       : ListView.separated(
-                          physics: BouncingScrollPhysics(),
+                          physics: ClampingScrollPhysics(),
                           controller: _scrollController,
                           cacheExtent: 20,
                           itemBuilder: (context, index) {
@@ -249,11 +245,14 @@ class _HomePageState extends State<HomePage> {
                                   break;
                                 }
                               setState(() => isSelecting = atLeastOneSelected);
+                              print(atLeastOneSelected);
                             };
                             return displayablePassword.asWidget;
                           },
-                          separatorBuilder: (context, index) =>
-                              StandardDivider(),
+                          separatorBuilder: (context, index) => Padding(
+                            child: StandardDivider(),
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                          ),
                           itemCount: Values.displayablePasswords.length,
                         ),
                 ),
@@ -312,7 +311,7 @@ class _HomePageState extends State<HomePage> {
                         title: Text(currentLang.logOut),
                         onTap: () {
                           Values.passwords = [];
-                          Password.key = null;
+                          EncryptionService.updateKeys(null);
                           Animations.pushReplacement(context, LoginPage());
                         },
                       ),

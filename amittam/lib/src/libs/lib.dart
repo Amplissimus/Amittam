@@ -1,9 +1,6 @@
 import 'dart:io';
 
-import 'package:Amittam/main.dart';
-import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 
 
@@ -72,4 +69,15 @@ Future<bool> internetConnectionAvailable() async {
   } catch(e) {
     return false;
   }
+}
+
+String expandStringTo32Characters(String string) {
+  String tempString = string;
+  int i = 0;
+  while (tempString.length < 32) {
+    i++;
+    tempString = '$tempString${string.substring(i)}';
+    if (i >= string.length - 1) i = 0;
+  }
+  return tempString.replaceRange(31, tempString.length - 1, '');
 }
