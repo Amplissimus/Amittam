@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:Amittam/src/libs/encryption_library.dart';
 import 'package:Amittam/src/libs/lib.dart';
@@ -125,7 +126,8 @@ class FirebaseService {
       } catch (e) {
         b = false;
       }
-    Prefs.preferences.setStringList('passwords', tempStringList);
+    await Prefs.preferences.setStringList('passwords', tempStringList);
+    Prefs.autofillPasswords = tempPasswordList;
     Values.passwords = tempPasswordList;
     await FirebaseService.masterPasswordRef.once().then((snapshot) =>
         Prefs.preferences.setString(

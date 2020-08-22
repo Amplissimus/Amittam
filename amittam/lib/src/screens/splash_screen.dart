@@ -34,7 +34,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         Provider.of<ThemeChanger>(context).setTheme(
             Prefs.useDarkTheme ? Themes.darkTheme : Themes.brightTheme);
         await FirebaseService.initialize();
-        print(await internetConnectionAvailable());
         Animations.pushReplacement(
           context,
           (Prefs.firstLogin ||

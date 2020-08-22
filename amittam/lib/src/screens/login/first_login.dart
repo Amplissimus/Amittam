@@ -132,12 +132,10 @@ class _FirstLoginPageState extends State<FirstLoginPage> {
             content: StandardText(currentLang
                 .firstLoginConfirmPW(masterPWTextFieldController.text.trim())),
             onConfirm: () {
-              print('setting mpw');
               try {
                 EncryptionService.setMasterPassword(
                     masterPWTextFieldController.text.trim());
               } catch (e) {
-                print('failed!');
                 print(errorString(e));
                 setState(() => masterPWTextFieldErrorString = 'Error!');
                 return;

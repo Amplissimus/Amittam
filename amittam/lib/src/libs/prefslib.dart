@@ -17,6 +17,15 @@ class Prefs {
     currentLang = langToLanguage(lang);
   }
 
+  static set autofillPasswords(List<Password> l) {
+    String tempString = '';
+    for (var pw in l)
+      tempString =
+          '$tempString${pw.asDecryptedPassword.asAutofillPassword}${l.indexOf(pw) != l.length - 1 ? '}' : ''}';
+    preferences.setString('autofill_passwords', tempString);
+    print(tempString);
+  }
+
   static set firstLogin(bool b) => preferences.setBool('first_login', b);
 
   static bool get firstLogin => getBool('first_login', true);
@@ -84,6 +93,7 @@ class Prefs {
   }
 
   static set passwords(List<Password> passwords) {
+    autofillPasswords = passwords;
     if (FirebaseService.isSignedIn) FirebaseService.savePasswords(passwords);
     List<String> tempStringList = [];
     for (Password password in passwords)

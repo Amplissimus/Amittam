@@ -10,7 +10,6 @@ class EncryptionService {
     tempKeys.add(crypt.Key.fromUtf8(expandStringTo32Characters(password)));
     for (var key in EncryptionService.getRandomKeysFromPrefs())
       tempKeys.add(key);
-    for (var key in tempKeys) print(key.base64);
     for (crypt.Key key in tempKeys)
       encrypter.add(crypt.Encrypter(crypt.AES(key)));
     try {
@@ -73,14 +72,12 @@ class EncryptionService {
     } else
       for (var key in getRandomKeysFromPrefs()) _keys.add(key);
     if (FirebaseService.isSignedIn) await saveRandomKeysToFirebase();
-    for (var key in _keys) print(key.base64);
   }
 
   static Future<void> loadRandomKeysFromFirebase() async {
     List<crypt.Key> tempKeys =
         await FirebaseService.getRandomKeysFromFirebase();
     for (var key in _keys) if (_keys.indexOf(key) != 0) _keys.remove(key);
-    for (var key in tempKeys) _keys.add(key);
     saveRandomKeysToPrefs();
   }
 

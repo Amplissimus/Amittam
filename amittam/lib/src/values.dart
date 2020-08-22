@@ -8,15 +8,7 @@ import 'objects/langs/english.dart';
 import 'objects/langs/german.dart';
 import 'objects/language.dart';
 
-Language getLangByLocaleName() {
-  if(Platform.localeName == null) return English();
-  switch (Platform.localeName.split('_')[0]) {
-    case 'de':
-      return German();
-    default:
-      return English();
-  }
-}
+
 
 class Strings {
   static String get appTitle => 'Amittam';

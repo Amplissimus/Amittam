@@ -5,6 +5,7 @@ import 'package:Amittam/src/objects/language.dart';
 import 'package:Amittam/src/objects/password.dart';
 import 'package:Amittam/src/values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:password_strength/password_strength.dart';
 
 class AddPasswordPage extends StatefulWidget {
@@ -123,6 +124,10 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
                       ? Column(
                           children: [
                             StandardTextFormField(
+                              formatters: [
+                                FilteringTextInputFormatter.deny('~'),
+                                FilteringTextInputFormatter.deny('}')
+                              ],
                               hint: currentLang.platform,
                               key: platformTextFieldKey,
                               controller: platformTextFieldController,
@@ -137,6 +142,10 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
                         )
                       : Container(),
                   StandardTextFormField(
+                    formatters: [
+                      FilteringTextInputFormatter.deny('~'),
+                      FilteringTextInputFormatter.deny('}'),
+                    ],
                     textInputType: TextInputType.emailAddress,
                     hint: usernameText,
                     key: usernameTextFieldKey,
@@ -148,6 +157,10 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
                   ),
                   Padding(padding: EdgeInsets.all(8)),
                   StandardTextFormField(
+                    formatters: [
+                      FilteringTextInputFormatter.deny('~'),
+                      FilteringTextInputFormatter.deny('}'),
+                    ],
                     suffixIcon: IconButton(
                       splashColor: Colors.transparent,
                       hoverColor: Colors.transparent,
@@ -191,6 +204,10 @@ class _AddPasswordPageState extends State<AddPasswordPage> {
                   ),
                   Padding(padding: EdgeInsets.all(8)),
                   StandardTextFormField(
+                    formatters: [
+                      FilteringTextInputFormatter.deny('~'),
+                      FilteringTextInputFormatter.deny('}'),
+                    ],
                     hint: currentLang.notesOptional,
                     key: notesTextFieldKey,
                     controller: notesTextFieldController,

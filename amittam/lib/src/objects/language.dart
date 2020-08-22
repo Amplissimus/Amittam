@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:Amittam/src/libs/lib.dart';
 import 'package:Amittam/src/libs/prefslib.dart';
 
@@ -176,4 +178,18 @@ Lang languageToLang(Language l) {
     return Lang.english;
   else
     return Lang.english;
+}
+
+Language getLangByLocaleName() {
+  try {
+    if (Platform.localeName == null) return English();
+    switch (Platform.localeName.split('_')[0]) {
+      case 'de':
+        return German();
+      default:
+        return English();
+    }
+  } catch (e) {
+    return English();
+  }
 }

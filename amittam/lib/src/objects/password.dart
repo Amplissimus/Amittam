@@ -158,6 +158,8 @@ class DecryptedPassword {
         'passwordType': EnumToString.parse(this.passwordType),
       };
 
+  String get asAutofillPassword => '${this.platform}~${this.username}~${this.password}';
+
   DecryptedPassword.fromMap(Map<String, dynamic> json)
       : platform = json['platform'],
         username = json['username'],

@@ -296,6 +296,7 @@ class _DisplayPasswordPageState extends State<DisplayPasswordPage> {
               hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
             ),
             floatingActionButton: (isEditingNotes ||
                     isEditingPassword ||
