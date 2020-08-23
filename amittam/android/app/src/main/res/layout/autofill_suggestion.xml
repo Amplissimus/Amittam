@@ -3,36 +3,36 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:weightSum="100">
+    android:backgroundTint="#F0F0F0">
 
     <ImageView
         android:id="@+id/amittamLogoImageView"
-        android:layout_width="0dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:contentDescription="@string/autofill_image_desc"
         android:src="@drawable/ic_amittam_logo"
-        android:layout_weight="40"
-        android:layout_height="100dp" />
+        android:layout_margin="5dp"
+        android:layout_gravity="center"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="60"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:gravity="center"
-        android:layout_gravity="center">
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/autofill_suggestion_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/username_autofill_suggestion" />
+            android:text="@string/username_autofill_suggestion"/>
 
         <TextView
             android:id="@+id/autofill_suggestion_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/password_autofill_suggestion" />
+            android:text="@string/password_autofill_suggestion"/>
     </LinearLayout>
 
 </LinearLayout>

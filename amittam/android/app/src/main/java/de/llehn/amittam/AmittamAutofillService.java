@@ -23,10 +23,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import io.flutter.embedding.engine.systemchannels.TextInputChannel;
+
 @TargetApi(Build.VERSION_CODES.O)
 public class AmittamAutofillService extends AutofillService {
 
-    ParsedStructure parsedStructure = new ParsedStructure();
+    String autofillAppTitle;
+
+    ParsedStructure parsedStructure;
 
     CurrentAction currentAction;
 
@@ -35,13 +39,10 @@ public class AmittamAutofillService extends AutofillService {
     @Override
     public void onFillRequest(FillRequest request, CancellationSignal cancellationSignal, FillCallback callback) {
         currentAction = CurrentAction.FILLING;
-        printAutofillPasswords();
+        parsedStructure = new ParsedStructure();
         List<FillContext> contexts = request.getFillContexts();
         AssistStructure structure = contexts.get(contexts.size() - 1).getStructure();
         processStructure(structure);
-        AssistStructure.WindowNode windowNode = structure.getWindowNodeAt(0);
-        AssistStructure.ViewNode viewNode = windowNode.getRootViewNode();
-        System.out.println(viewNode.getAutofillId());
 
         String suggestionText = "This is an autofill suggestion!";
         RemoteViews usernameSuggestion = new RemoteViews(getPackageName(), R.layout.autofill_suggestion);
@@ -65,8 +66,35 @@ public class AmittamAutofillService extends AutofillService {
         callback.onSuccess(response);
     }
 
+    public void getFillResponse() {
+        FillResponse.Builder fillResponseBuilder = new FillResponse.Builder()
+                .setSaveInfo(new SaveInfo.Builder(
+                        SaveInfo.SAVE_DATA_TYPE_USERNAME | SaveInfo.SAVE_DATA_TYPE_PASSWORD,
+                        new AutofillId[]{parsedStructure.getUsernameId(), parsedStructure.getPasswordId()})
+                        .build());
+
+    }
+
+
+
+    @Override
+    public void onSaveRequest(SaveRequest request, SaveCallback callback) {
+        System.out.println("Saving...");
+        currentAction = CurrentAction.SAVING;
+        List<FillContext> contexts = request.getFillContexts();
+        AssistStructure structure = contexts.get(contexts.size() - 1).getStructure();
+
+        processStructure(structure);
+
+        callback.onSuccess();
+    }
+
     public void processStructure(AssistStructure structure) {
-        int nodes = structure.getWindowNodeCount();
+        List<String> autofillBundleIdStrings = Arrays.asList(structure.getWindowNodeAt(0).getTitle().toString().split("/")[0].split("."));
+        autofillAppTitle = autofillBundleIdStrings.get(autofillBundleIdStrings.size() -1);
+        if (currentAction == CurrentAction.SAVING) passwordToSave.setPlatform(autofillAppTitle);
+
+        final int nodes = structure.getWindowNodeCount();
         for (int i = 0; i < nodes; i++) {
             AssistStructure.WindowNode windowNode = structure.getWindowNodeAt(i);
             AssistStructure.ViewNode viewNode = windowNode.getRootViewNode();
@@ -75,12 +103,17 @@ public class AmittamAutofillService extends AutofillService {
     }
 
     public void processNode(AssistStructure.ViewNode viewNode) {
-        if (viewNode.getIdEntry() != null && (viewNode.getIdEntry().contains("username") || viewNode.getIdEntry().contains("email")))
-            parsedStructure.setUsernameId(viewNode.getAutofillId());
-        else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().contains("password"))
-            parsedStructure.setPasswordId(viewNode.getAutofillId());
-
-        if (currentAction == CurrentAction.SAVING) {
+        if (currentAction == CurrentAction.FILLING) {
+            if (viewNode.getIdEntry() != null && (viewNode.getIdEntry().toLowerCase().contains("username") || viewNode.getIdEntry().toLowerCase().contains("email"))) {
+                parsedStructure.setUsernameId(viewNode.getAutofillId());
+                parsedStructure.setAutofillType(AutofillType.OTHER);
+            } else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().toLowerCase().contains("password"))
+                parsedStructure.setPasswordId(viewNode.getAutofillId());
+            else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().toLowerCase().contains("ssid")) {
+                parsedStructure.setUsernameId(viewNode.getAutofillId());
+                parsedStructure.setAutofillType(AutofillType.WIFI);
+            }
+        } else if (currentAction == CurrentAction.SAVING) {
             if (viewNode.getIdEntry() != null && (viewNode.getIdEntry().contains("username") || viewNode.getIdEntry().contains("email")))
                 passwordToSave.setUsername(String.valueOf(viewNode.getText()));
             else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().contains("password"))
@@ -92,20 +125,6 @@ public class AmittamAutofillService extends AutofillService {
             AssistStructure.ViewNode childNode = viewNode.getChildAt(i);
             processNode(childNode);
         }
-    }
-
-    @Override
-    public void onSaveRequest(SaveRequest request, SaveCallback callback) {
-        System.out.println("Saving...");
-        currentAction = CurrentAction.SAVING;
-        List<FillContext> contexts = request.getFillContexts();
-        AssistStructure structure = contexts.get(contexts.size() - 1).getStructure();
-
-        processStructure(structure);
-
-        RemoteViews notUsed = new RemoteViews(getPackageName(), android.R.layout.simple_list_item_1);
-
-        callback.onSuccess();
     }
 
     public void printAutofillPasswords() {
@@ -131,23 +150,32 @@ public class AmittamAutofillService extends AutofillService {
 }
 
 class ParsedStructure {
+    private AutofillType autofillType;
     private AutofillId usernameId;
     private AutofillId passwordId;
 
-    public AutofillId getUsernameId() {
+    AutofillId getUsernameId() {
         return usernameId;
     }
 
-    public void setUsernameId(AutofillId usernameId) {
+    void setUsernameId(AutofillId usernameId) {
         this.usernameId = usernameId;
     }
 
-    public AutofillId getPasswordId() {
+    AutofillId getPasswordId() {
         return passwordId;
     }
 
-    public void setPasswordId(AutofillId passwordId) {
+    void setPasswordId(AutofillId passwordId) {
         this.passwordId = passwordId;
+    }
+
+    AutofillType getAutofillType() {
+        return autofillType;
+    }
+
+    void setAutofillType(AutofillType autofillType) {
+        this.autofillType = autofillType;
     }
 }
 
@@ -195,4 +223,9 @@ class AutofillPassword {
 enum CurrentAction {
     SAVING,
     FILLING,
+}
+
+enum AutofillType {
+    WIFI,
+    OTHER,
 }

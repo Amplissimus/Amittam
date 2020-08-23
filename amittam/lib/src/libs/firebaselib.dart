@@ -121,7 +121,7 @@ class FirebaseService {
         tempStringList.add(EncryptionService.decryptFromBase64(
             dataSnapshot.value[i].toString(),
             EncryptionService.getEncrypterFromKeys()));
-        tempPasswordList.add(Password.fromDecryptedJson(dataSnapshot.value[i]));
+        tempPasswordList.add(Password.fromEncryptedJson(dataSnapshot.value[i]));
         i++;
       } catch (e) {
         b = false;
