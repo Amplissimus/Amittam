@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="autofill_image_desc">autofill image</string>
+    <string name="username_autofill_suggestion">Username autofill suggestion</string>
+    <string name="password_autofill_suggestion">Password autofill suggestion</string>
+</resources>

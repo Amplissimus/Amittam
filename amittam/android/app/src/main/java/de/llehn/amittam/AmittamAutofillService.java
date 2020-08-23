@@ -44,10 +44,10 @@ public class AmittamAutofillService extends AutofillService {
         System.out.println(viewNode.getAutofillId());
 
         String suggestionText = "This is an autofill suggestion!";
-        RemoteViews usernameSuggestion = new RemoteViews(getPackageName(), android.R.layout.simple_list_item_1);
-        usernameSuggestion.setTextViewText(android.R.id.text1, suggestionText + " (username)");
-        RemoteViews passwordSuggestion = new RemoteViews(getPackageName(), android.R.layout.simple_list_item_1);
-        passwordSuggestion.setTextViewText(android.R.id.text1, suggestionText + " (password)");
+        RemoteViews usernameSuggestion = new RemoteViews(getPackageName(), R.layout.autofill_suggestion);
+        usernameSuggestion.setTextViewText(R.id.autofill_suggestion_username, suggestionText + " (username)");
+        RemoteViews passwordSuggestion = new RemoteViews(getPackageName(), R.layout.autofill_suggestion);
+        passwordSuggestion.setTextViewText(R.id.autofill_suggestion_password, suggestionText + " (password)");
 
         FillResponse response = new FillResponse.Builder()
                 .addDataset(new Dataset.Builder()
