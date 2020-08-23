@@ -8,11 +8,10 @@
     <ImageView
         android:id="@+id/amittamLogoImageView"
         android:layout_width="0dp"
-        android:layout_height="100dp"
         android:contentDescription="@string/autofill_image_desc"
         android:src="@drawable/ic_amittam_logo"
         android:layout_weight="40"
-        android:layout_margin="10dp"/>
+        android:layout_height="100dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
