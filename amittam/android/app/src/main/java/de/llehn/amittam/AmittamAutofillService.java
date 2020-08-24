@@ -23,26 +23,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.flutter.embedding.engine.systemchannels.TextInputChannel;
-
 @TargetApi(Build.VERSION_CODES.O)
 public class AmittamAutofillService extends AutofillService {
 
     String autofillAppTitle;
 
-    ParsedStructure parsedStructure;
-
-    CurrentAction currentAction;
-
     AutofillPassword passwordToSave = new AutofillPassword("", "", "");
 
     @Override
     public void onFillRequest(FillRequest request, CancellationSignal cancellationSignal, FillCallback callback) {
-        currentAction = CurrentAction.FILLING;
-        parsedStructure = new ParsedStructure();
         List<FillContext> contexts = request.getFillContexts();
         AssistStructure structure = contexts.get(contexts.size() - 1).getStructure();
-        processStructure(structure);
+        ParsedStructure parsedStructure = parseStructure(structure);
+        AutofillObject autofillObject = new AutofillObject(
+                null, parsedStructure, getAppNameOfStructure(structure));
+
 
         String suggestionText = "This is an autofill suggestion!";
         RemoteViews usernameSuggestion = new RemoteViews(getPackageName(), R.layout.autofill_suggestion);
@@ -66,21 +61,62 @@ public class AmittamAutofillService extends AutofillService {
         callback.onSuccess(response);
     }
 
-    public void getFillResponse() {
-        FillResponse.Builder fillResponseBuilder = new FillResponse.Builder()
-                .setSaveInfo(new SaveInfo.Builder(
-                        SaveInfo.SAVE_DATA_TYPE_USERNAME | SaveInfo.SAVE_DATA_TYPE_PASSWORD,
-                        new AutofillId[]{parsedStructure.getUsernameId(), parsedStructure.getPasswordId()})
-                        .build());
-
+    public ParsedStructure parseStructure(AssistStructure structure) {
+        ParsedStructure returnValue = new ParsedStructure();
+        final int nodes = structure.getWindowNodeCount();
+        for (int i = 0; i < nodes; i++) {
+            AssistStructure.WindowNode windowNode = structure.getWindowNodeAt(i);
+            AssistStructure.ViewNode viewNode = windowNode.getRootViewNode();
+            fetchImportantAutofillIdsOfNode(viewNode, returnValue);
+        }
+        if (returnValue.getAutofillType() == null) returnValue.setAutofillType(AutofillType.OTHER);
+        return returnValue;
     }
 
+    public void fetchImportantAutofillIdsOfNode(AssistStructure.ViewNode viewNode, ParsedStructure parsedStructure) {
+        if (viewNode.getIdEntry() != null && (viewNode.getIdEntry().toLowerCase().contains("username") || viewNode.getIdEntry().toLowerCase().contains("email"))) {
+            parsedStructure.setUsernameId(viewNode.getAutofillId());
+            parsedStructure.setAutofillType(AutofillType.OTHER);
+        } else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().toLowerCase().contains("password"))
+            parsedStructure.setPasswordId(viewNode.getAutofillId());
+        else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().toLowerCase().contains("ssid")) {
+            parsedStructure.setUsernameId(viewNode.getAutofillId());
+            parsedStructure.setAutofillType(AutofillType.WIFI);
+        }
+
+        for (int i = 0; i < viewNode.getChildCount(); i++)
+            fetchImportantAutofillIdsOfNode(viewNode.getChildAt(i), parsedStructure);
+    }
+
+    public String getAppNameOfStructure(AssistStructure structure) {
+        String[] autofillBundleIdStrings =
+                structure.getWindowNodeAt(0)
+                        .getTitle()
+                        .toString()
+                        .split("/")[0]
+                        .split(".");
+        return autofillBundleIdStrings[autofillBundleIdStrings.length - 1];
+    }
+
+    public void getFillResponse(AutofillObject autofillObject) {
+        FillResponse.Builder fillResponseBuilder = new FillResponse.Builder()
+                .setSaveInfo(
+                        new SaveInfo.Builder(
+                                SaveInfo.SAVE_DATA_TYPE_USERNAME | SaveInfo.SAVE_DATA_TYPE_PASSWORD,
+                                new AutofillId[]{
+                                        autofillObject.getParsedStructure().getUsernameId(),
+                                        autofillObject.getParsedStructure().getPasswordId()
+                                }
+                        )
+                                .build()
+                );
+
+    }
 
 
     @Override
     public void onSaveRequest(SaveRequest request, SaveCallback callback) {
         System.out.println("Saving...");
-        currentAction = CurrentAction.SAVING;
         List<FillContext> contexts = request.getFillContexts();
         AssistStructure structure = contexts.get(contexts.size() - 1).getStructure();
 
@@ -89,10 +125,9 @@ public class AmittamAutofillService extends AutofillService {
         callback.onSuccess();
     }
 
+
     public void processStructure(AssistStructure structure) {
-        List<String> autofillBundleIdStrings = Arrays.asList(structure.getWindowNodeAt(0).getTitle().toString().split("/")[0].split("."));
-        autofillAppTitle = autofillBundleIdStrings.get(autofillBundleIdStrings.size() -1);
-        if (currentAction == CurrentAction.SAVING) passwordToSave.setPlatform(autofillAppTitle);
+        passwordToSave.setPlatform(autofillAppTitle);
 
         final int nodes = structure.getWindowNodeCount();
         for (int i = 0; i < nodes; i++) {
@@ -103,23 +138,11 @@ public class AmittamAutofillService extends AutofillService {
     }
 
     public void processNode(AssistStructure.ViewNode viewNode) {
-        if (currentAction == CurrentAction.FILLING) {
-            if (viewNode.getIdEntry() != null && (viewNode.getIdEntry().toLowerCase().contains("username") || viewNode.getIdEntry().toLowerCase().contains("email"))) {
-                parsedStructure.setUsernameId(viewNode.getAutofillId());
-                parsedStructure.setAutofillType(AutofillType.OTHER);
-            } else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().toLowerCase().contains("password"))
-                parsedStructure.setPasswordId(viewNode.getAutofillId());
-            else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().toLowerCase().contains("ssid")) {
-                parsedStructure.setUsernameId(viewNode.getAutofillId());
-                parsedStructure.setAutofillType(AutofillType.WIFI);
-            }
-        } else if (currentAction == CurrentAction.SAVING) {
-            if (viewNode.getIdEntry() != null && (viewNode.getIdEntry().contains("username") || viewNode.getIdEntry().contains("email")))
-                passwordToSave.setUsername(String.valueOf(viewNode.getText()));
-            else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().contains("password"))
-                passwordToSave.setPassword(String.valueOf(viewNode.getText()));
-            System.out.println(passwordToSave.toString());
-        }
+        if (viewNode.getIdEntry() != null && (viewNode.getIdEntry().contains("username") || viewNode.getIdEntry().contains("email")))
+            passwordToSave.setUsername(String.valueOf(viewNode.getText()));
+        else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().contains("password"))
+            passwordToSave.setPassword(String.valueOf(viewNode.getText()));
+        System.out.println(passwordToSave.toString());
 
         for (int i = 0; i < viewNode.getChildCount(); i++) {
             AssistStructure.ViewNode childNode = viewNode.getChildAt(i);
@@ -127,11 +150,16 @@ public class AmittamAutofillService extends AutofillService {
         }
     }
 
-    public void printAutofillPasswords() {
-        System.out.println("Passwords: ");
-        for (AutofillPassword pw : getAutofillPasswords()) {
-            System.out.println(pw.toString());
-        }
+    public void fetchRelevantAutofillPasswordsOfListIntoAutofillObject(AutofillObject autofillObject, final List<AutofillPassword> autofillPasswords) {
+        List<AutofillPassword> tempAutofillPasswords = autofillPasswords;
+        if (autofillObject.getParsedStructure().getAutofillType() == AutofillType.WIFI) {
+
+        } else
+            for (AutofillPassword pw : tempAutofillPasswords) {
+                if (!pw.getPassword().toLowerCase().contains(autofillObject.getAppName().toLowerCase().trim()))
+                    tempAutofillPasswords.remove(pw);
+            }
+        autofillObject.setAutofillPasswords(tempAutofillPasswords);
     }
 
     public List<AutofillPassword> getAutofillPasswords() {
@@ -220,9 +248,40 @@ class AutofillPassword {
     }
 }
 
-enum CurrentAction {
-    SAVING,
-    FILLING,
+class AutofillObject {
+    AutofillObject(List<AutofillPassword> autofillPasswords, ParsedStructure parsedStructure, String appName) {
+        this.autofillPasswords = autofillPasswords;
+        this.parsedStructure = parsedStructure;
+        this.appName = appName;
+    }
+
+    private List<AutofillPassword> autofillPasswords;
+    private ParsedStructure parsedStructure;
+    private String appName;
+
+    public ParsedStructure getParsedStructure() {
+        return parsedStructure;
+    }
+
+    public void setParsedStructure(ParsedStructure parsedStructure) {
+        this.parsedStructure = parsedStructure;
+    }
+
+    public List<AutofillPassword> getAutofillPasswords() {
+        return autofillPasswords;
+    }
+
+    public void setAutofillPasswords(List<AutofillPassword> autofillPasswords) {
+        this.autofillPasswords = autofillPasswords;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 }
 
 enum AutofillType {
