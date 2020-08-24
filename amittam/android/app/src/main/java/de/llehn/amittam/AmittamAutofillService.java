@@ -26,10 +26,6 @@ import java.util.regex.Pattern;
 @TargetApi(Build.VERSION_CODES.O)
 public class AmittamAutofillService extends AutofillService {
 
-    String autofillAppTitle;
-
-    AutofillPassword passwordToSave = new AutofillPassword("", "", "");
-
     @Override
     public void onFillRequest(FillRequest request, CancellationSignal cancellationSignal, FillCallback callback) {
         for (AutofillPassword pw : getAutofillPasswords()) System.out.println(pw.toString());
@@ -96,7 +92,7 @@ public class AmittamAutofillService extends AutofillService {
                 RemoteViews suggestion = new RemoteViews(getPackageName(), R.layout.autofill_suggestion);
                 suggestion.setTextViewText(R.id.autofill_suggestion_username, pw.getUsername());
                 suggestion.setTextViewText(R.id.autofill_suggestion_password, pw.getPassword());
-                
+
                 fillResponseBuilder.addDataset(new Dataset.Builder()
                         .setValue(autofillObject.getParsedStructure().getUsernameId(),
                                 AutofillValue.forText(pw.getUsername()), suggestion)
@@ -116,46 +112,22 @@ public class AmittamAutofillService extends AutofillService {
         List<FillContext> contexts = request.getFillContexts();
         AssistStructure structure = contexts.get(contexts.size() - 1).getStructure();
 
-        processStructure(structure);
-
         callback.onSuccess();
-    }
-
-
-    public void processStructure(AssistStructure structure) {
-        passwordToSave.setPlatform(autofillAppTitle);
-
-        final int nodes = structure.getWindowNodeCount();
-        for (int i = 0; i < nodes; i++) {
-            AssistStructure.WindowNode windowNode = structure.getWindowNodeAt(i);
-            AssistStructure.ViewNode viewNode = windowNode.getRootViewNode();
-            processNode(viewNode);
-        }
-    }
-
-    public void processNode(AssistStructure.ViewNode viewNode) {
-        if (viewNode.getIdEntry() != null && (viewNode.getIdEntry().contains("username") || viewNode.getIdEntry().contains("email")))
-            passwordToSave.setUsername(String.valueOf(viewNode.getText()));
-        else if (viewNode.getIdEntry() != null && viewNode.getIdEntry().contains("password"))
-            passwordToSave.setPassword(String.valueOf(viewNode.getText()));
-        System.out.println(passwordToSave.toString());
-
-        for (int i = 0; i < viewNode.getChildCount(); i++) {
-            AssistStructure.ViewNode childNode = viewNode.getChildAt(i);
-            processNode(childNode);
-        }
     }
 
     public void fetchRelevantAutofillPasswordsOfListIntoAutofillObject(AutofillObject autofillObject, List<AutofillPassword> autofillPasswords) {
         final List<AutofillPassword> resultList = new ArrayList<>();
         for (AutofillPassword pw : autofillPasswords) {
             System.out.println("check password platform: ");
-            if (autofillObject.getAppName().toLowerCase().trim().contains(pw.getPlatform().trim().toLowerCase()))
+            if (autofillObject.getAppName().toLowerCase().replaceAll(" ", "")
+                    .contains(pw.getPlatform().trim()
+                            .replace(" ", "").toLowerCase()))
                 resultList.add(pw);
         }
         autofillObject.setAutofillPasswords(resultList);
         System.out.println("Result Passwords length: " + resultList.size());
-        for (AutofillPassword pw : resultList) System.out.println("Result Password: "+ pw.toString());
+        for (AutofillPassword pw : resultList)
+            System.out.println("Result Password: " + pw.toString());
     }
 
     public List<AutofillPassword> getAutofillPasswords() {
