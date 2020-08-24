@@ -32,31 +32,15 @@ public class AmittamAutofillService extends AutofillService {
 
     @Override
     public void onFillRequest(FillRequest request, CancellationSignal cancellationSignal, FillCallback callback) {
+        for (AutofillPassword pw : getAutofillPasswords()) System.out.println(pw.toString());
         List<FillContext> contexts = request.getFillContexts();
         AssistStructure structure = contexts.get(contexts.size() - 1).getStructure();
         ParsedStructure parsedStructure = parseStructure(structure);
         AutofillObject autofillObject = new AutofillObject(
                 null, parsedStructure, getAppNameOfStructure(structure));
+        fetchRelevantAutofillPasswordsOfListIntoAutofillObject(autofillObject, getAutofillPasswords());
 
-
-        String suggestionText = "This is an autofill suggestion!";
-        RemoteViews usernameSuggestion = new RemoteViews(getPackageName(), R.layout.autofill_suggestion);
-        usernameSuggestion.setTextViewText(R.id.autofill_suggestion_username, suggestionText + " (username)");
-        RemoteViews passwordSuggestion = new RemoteViews(getPackageName(), R.layout.autofill_suggestion);
-        passwordSuggestion.setTextViewText(R.id.autofill_suggestion_password, suggestionText + " (password)");
-
-        FillResponse response = new FillResponse.Builder()
-                .addDataset(new Dataset.Builder()
-                        .setValue(parsedStructure.getUsernameId(),
-                                AutofillValue.forText("Autofilled! (username)"), usernameSuggestion)
-                        .setValue(parsedStructure.getPasswordId(),
-                                AutofillValue.forText("Autofilled! (password)"), passwordSuggestion)
-                        .build())
-                .setSaveInfo(new SaveInfo.Builder(
-                        SaveInfo.SAVE_DATA_TYPE_USERNAME | SaveInfo.SAVE_DATA_TYPE_PASSWORD,
-                        new AutofillId[]{parsedStructure.getUsernameId(), parsedStructure.getPasswordId()})
-                        .build())
-                .build();
+        FillResponse response = getFillResponse(autofillObject);
 
         callback.onSuccess(response);
     }
@@ -94,23 +78,35 @@ public class AmittamAutofillService extends AutofillService {
                         .getTitle()
                         .toString()
                         .split("/")[0]
-                        .split(".");
+                        .split("\\.");
         return autofillBundleIdStrings[autofillBundleIdStrings.length - 1];
     }
 
-    public void getFillResponse(AutofillObject autofillObject) {
-        FillResponse.Builder fillResponseBuilder = new FillResponse.Builder()
-                .setSaveInfo(
-                        new SaveInfo.Builder(
-                                SaveInfo.SAVE_DATA_TYPE_USERNAME | SaveInfo.SAVE_DATA_TYPE_PASSWORD,
-                                new AutofillId[]{
-                                        autofillObject.getParsedStructure().getUsernameId(),
-                                        autofillObject.getParsedStructure().getPasswordId()
-                                }
-                        )
-                                .build()
-                );
-
+    public FillResponse getFillResponse(AutofillObject autofillObject) {
+        FillResponse.Builder fillResponseBuilder;
+        if (autofillObject.getParsedStructure().getUsernameId() != null && autofillObject.getParsedStructure().getPasswordId() != null) {
+            fillResponseBuilder = new FillResponse.Builder()
+                    .setSaveInfo(
+                            new SaveInfo.Builder(SaveInfo.SAVE_DATA_TYPE_USERNAME | SaveInfo.SAVE_DATA_TYPE_PASSWORD, new AutofillId[]{
+                                    autofillObject.getParsedStructure().getUsernameId(),
+                                    autofillObject.getParsedStructure().getPasswordId()
+                            }).build()
+                    );
+            for (AutofillPassword pw : autofillObject.getAutofillPasswords()) {
+                RemoteViews suggestion = new RemoteViews(getPackageName(), R.layout.autofill_suggestion);
+                suggestion.setTextViewText(R.id.autofill_suggestion_username, pw.getUsername());
+                suggestion.setTextViewText(R.id.autofill_suggestion_password, pw.getPassword());
+                
+                fillResponseBuilder.addDataset(new Dataset.Builder()
+                        .setValue(autofillObject.getParsedStructure().getUsernameId(),
+                                AutofillValue.forText(pw.getUsername()), suggestion)
+                        .setValue(autofillObject.getParsedStructure().getPasswordId(),
+                                AutofillValue.forText(pw.getPassword()), suggestion)
+                        .build());
+            }
+            return fillResponseBuilder.build();
+        }
+        return null;
     }
 
 
@@ -150,16 +146,16 @@ public class AmittamAutofillService extends AutofillService {
         }
     }
 
-    public void fetchRelevantAutofillPasswordsOfListIntoAutofillObject(AutofillObject autofillObject, final List<AutofillPassword> autofillPasswords) {
-        List<AutofillPassword> tempAutofillPasswords = autofillPasswords;
-        if (autofillObject.getParsedStructure().getAutofillType() == AutofillType.WIFI) {
-
-        } else
-            for (AutofillPassword pw : tempAutofillPasswords) {
-                if (!pw.getPassword().toLowerCase().contains(autofillObject.getAppName().toLowerCase().trim()))
-                    tempAutofillPasswords.remove(pw);
-            }
-        autofillObject.setAutofillPasswords(tempAutofillPasswords);
+    public void fetchRelevantAutofillPasswordsOfListIntoAutofillObject(AutofillObject autofillObject, List<AutofillPassword> autofillPasswords) {
+        final List<AutofillPassword> resultList = new ArrayList<>();
+        for (AutofillPassword pw : autofillPasswords) {
+            System.out.println("check password platform: ");
+            if (autofillObject.getAppName().toLowerCase().trim().contains(pw.getPlatform().trim().toLowerCase()))
+                resultList.add(pw);
+        }
+        autofillObject.setAutofillPasswords(resultList);
+        System.out.println("Result Passwords length: " + resultList.size());
+        for (AutofillPassword pw : resultList) System.out.println("Result Password: "+ pw.toString());
     }
 
     public List<AutofillPassword> getAutofillPasswords() {
